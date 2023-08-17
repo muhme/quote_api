@@ -1,0 +1,43 @@
+version: '3.5'
+services:
+  mariadb:
+    container_name: quote_api_mariadb
+    build:
+      context: .
+      dockerfile: mariadb.Dockerfile # MariaDB
+    volumes:
+      - .:/var/www
+    environment:
+      MARIADB_ROOT_PASSWORD: root
+      MARIADB_DATABASE: quote_development
+      MARIADB_USER: quote_development
+      MARIADB_PASSWORD: quote_development
+    restart: unless-stopped
+
+  mysqladmin:
+    container_name: quote_api_mysqladmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_HOST: mariadb
+    ports:
+      - "3001:80"
+    restart: unless-stopped
+    depends_on:
+      - mariadb
+
+  nodeapp:
+    container_name: quote_api_nodeapp
+    build:
+      context: .
+      dockerfile: nodeapp.Dockerfile  # Node.js LoopBack4 app
+    volumes:
+      - .:/home/node/app
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+    environment:
+      - HOST=0.0.0.0
+      - PORT=3000
+    depends_on:
+      - mariadb
+
