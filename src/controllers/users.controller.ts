@@ -16,6 +16,7 @@ export class UsersController {
     public usersRepository: UsersRepository
   ) { }
   @operation('get', '/users', {
+    tags: ['Users'],
     responses: {
       '200': {
         description: 'OK – the login names and there IDs retrieved successfully. The result is sorted by login names.',

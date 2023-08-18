@@ -16,6 +16,7 @@ export class CategoriesController {
     public categoriesRepository: CategoriesRepository
   ) { }
   @operation('get', '/categories', {
+    tags: ['Categories'],
     responses: {
       '200': {
         description: 'OK – the category names and there IDs retrieved successfully. The result is sorted by category names.',

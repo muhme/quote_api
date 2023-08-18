@@ -13,6 +13,7 @@ export class LocalesController {
    *
    */
   @operation('get', '/locales', {
+    tags: ['Locales'],
     responses: {
       '200': {
         description: 'The resource was successfully retrieved and is in the body of the message.',

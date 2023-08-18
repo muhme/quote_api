@@ -112,6 +112,77 @@ describe('api.zitat-service.de (end2end)', () => {
       "value": "Жити разом"
     }]);
   });
+  it('invokes GET /categories?starting=Ban', async () => {
+    const response = await client.get('/categories?starting=Ban').expect(200);
+    expect(response.body).to.eql([{
+      "id": 557,
+      "value": "Bank"
+    }]);
+  });
+  // German Umlaut
+  it('invokes GET /categories?locale=de&starting=Fah', async () => {
+    const response = await client.get('/categories?locale=de&starting=Fah').expect(200);
+    expect(response.body).to.eql([{
+      "id": 410,
+      "value": "Fähigkeit"
+    }]);
+  });
+  it('invokes GET /categories?locale=de&starting=Fäh', async () => {
+    const response = await client.get('/categories?locale=de&starting=' + encodeURIComponent('Fäh')).expect(200);
+    expect(response.body).to.eql([{
+      "id": 410,
+      "value": "Fähigkeit"
+    }]);
+  });
+  // Espanol acute accent
+  it('invokes GET /categories?locale=es&starting=Áci', async () => {
+    const response = await client.get('/categories?locale=es&starting=' + encodeURIComponent('Áci')).expect(200);
+    expect(response.body).to.eql([{
+      "id": 428,
+      "value": "Ácido"
+    }]);
+  });
+  it('invokes GET /categories?locale=es&starting=Aci', async () => {
+    const response = await client.get('/categories?locale=es&starting=Aci').expect(200);
+    expect(response.body).to.eql([{
+      "id": 428,
+      "value": "Ácido"
+    }]);
+  });
+  // Japanese hiragana
+  it('invokes GET /categories?locale=ja&starting=おそ', async () => {
+    const response = await client.get('/categories?locale=ja&starting=' + encodeURIComponent('おそ')).expect(200);
+    expect(response.body).to.eql([{
+      "id": 457,
+      "value": "おそらく"
+    }]);
+  });
+  // Japanese katakana
+  it('invokes GET /categories?locale=ja&starting=アイブ', async () => {
+    const response = await client.get('/categories?locale=ja&starting=' + encodeURIComponent('アイブ')).expect(200);
+    expect(response.body).to.eql([{
+      "id": 222,
+      "value": "アイブロウ"
+    }]);
+  });
+  // Ukrainian cyrillic
+  it('invokes GET /categories?locale=uk&starting=Іді', async () => {
+    const response = await client.get('/categories?locale=uk&starting=' + encodeURIComponent('Іді')).expect(200);
+    expect(response.body).to.eql([{
+      "id": 273,
+      "value": "Ідіот"
+    }]);
+  });
+  // if not URL encoded it is not found and return 200 with empty array
+  // working, but not testable with Node.js HTTP client
+  // fails with: TypeError: Request path contains unescaped characters
+
+  // it('invokes GET /categories?locale=uk&starting=Іді', async () => {
+  //   const response = await client.get('/categories?locale=uk&starting=Іді').expect(200);
+  //   expect(response.body).to.eql([]);
+  // });
+
+
   // incorrect locale defaults to english
   it('invokes GET /categories?locale=en&page=160&size=1', async () => {
     const response = await client.get('/categories?locale=en&page=160&size=1').expect(200);
