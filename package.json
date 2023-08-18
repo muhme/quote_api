@@ -23,6 +23,7 @@
     "eslint:fix": "npm run eslint -- --fix",
     "pretest": "npm run rebuild",
     "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
+    "test:integration": "lb-mocha --allow-console-logs \"dist/__tests__/integration\"",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
     "docker:build": "docker build -t api.zitat-service.de .",

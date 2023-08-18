@@ -1,9 +1,9 @@
-import {ApplicationConfig, ApiZitatServiceDeApplication} from './application';
+import {ApplicationConfig, QuoteApiApplication} from './application';
 
 export * from './application';
 
 export async function main(options: ApplicationConfig = {}) {
-  const app = new ApiZitatServiceDeApplication(options);
+  const app = new QuoteApiApplication(options);
   await app.boot();
   await app.start();
 

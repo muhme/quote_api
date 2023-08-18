@@ -1,7 +1,7 @@
 import {repository} from '@loopback/repository';
 import {api, operation, param} from '@loopback/rest';
 import {User} from '../models/user.model';
-import {UserFilter, UserRepository} from '../repositories/user.repository';
+import {UserFilter, UsersRepository} from '../repositories/users.repository';
 
 /**
  * /users controller
@@ -12,8 +12,8 @@ import {UserFilter, UserRepository} from '../repositories/user.repository';
 })
 export class UsersController {
   constructor(
-    @repository(UserRepository)
-    public UserRepository: UserRepository
+    @repository(UsersRepository)
+    public userRepository: UsersRepository
   ) { }
   @operation('get', '/users', {
     responses: {
@@ -40,22 +40,20 @@ export class UsersController {
       description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
       required: false,
       schema: {
-        type: 'number',
         default: 1
       }
     })
-    page: number,
+    page = 1,
     @param({
       name: 'size',
       in: 'query',
       description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
       required: false,
       schema: {
-        type: 'number',
         default: 100
       }
     })
-    size: number,
+    size = 100,
     @param({
       name: 'starting',
       in: 'query',
@@ -65,7 +63,7 @@ export class UsersController {
         type: 'string'
       }
     })
-    starting: string,
+    starting?: string,
   ): Promise<User[]> {
     const filter: UserFilter = {
       offset: (page - 1) * size,
@@ -73,6 +71,6 @@ export class UsersController {
       starting: starting
     };
 
-    return this.UserRepository.findUsersWithQuotations(filter);
+    return this.userRepository.findUsersWithQuotations(filter);
   }
 }

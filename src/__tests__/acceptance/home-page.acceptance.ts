@@ -1,9 +1,9 @@
 import {Client} from '@loopback/testlab';
-import {ApiZitatServiceDeApplication} from '../..';
+import {QuoteApiApplication} from '../..';
 import {setupApplication} from './test-helper';
 
 describe('HomePage', () => {
-  let app: ApiZitatServiceDeApplication;
+  let app: QuoteApiApplication;
   let client: Client;
 
   before('setupApplication', async () => {

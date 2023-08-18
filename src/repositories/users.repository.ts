@@ -10,7 +10,7 @@ export interface UserFilter {
   starting?: string;
 }
 
-export class UserRepository extends DefaultCrudRepository<
+export class UsersRepository extends DefaultCrudRepository<
   User,
   typeof User.prototype.id,
   UserRelations
@@ -22,7 +22,7 @@ export class UserRepository extends DefaultCrudRepository<
   }
 
   async findUsersWithQuotations(filter: UserFilter): Promise<User[]> {
-    let sqlQuery = `
+    const sqlQuery = `
       SELECT users.id, users.login
       FROM users
       INNER JOIN quotations ON users.id = quotations.user_id
@@ -39,7 +39,6 @@ export class UserRepository extends DefaultCrudRepository<
     // Replace '?' placeholders with actual values.
     const params = [filter.starting + '%', filter.offset || 0, filter.limit || 10];
 
-    console.log(`SQL query ${sqlQuery} with params ${params}`)
     return this.dataSource.execute(sqlQuery, params);
   }
 
