@@ -1,24 +1,24 @@
 import {repository} from '@loopback/repository';
 import {api, operation, param} from '@loopback/rest';
-import {User} from '../models/user.model';
-import {UserFilter, UsersRepository} from '../repositories/users.repository';
+import {Category} from '../models/category.model';
+import {CategoriesRepository, CategoryFilter} from '../repositories/categories.repository';
 
 /**
- * /users controller
+ * /categories controller
  *
  */
 @api({
   paths: {},
 })
-export class UsersController {
+export class CategoriesController {
   constructor(
-    @repository(UsersRepository)
-    public usersRepository: UsersRepository
+    @repository(CategoriesRepository)
+    public categoriesRepository: CategoriesRepository
   ) { }
-  @operation('get', '/users', {
+  @operation('get', '/categories', {
     responses: {
       '200': {
-        description: 'OK – the login names and there IDs retrieved successfully. The result is sorted by login names.',
+        description: 'OK – the category names and there IDs retrieved successfully. The result is sorted by category names.',
       },
       '400': {
         description: 'Bad Request – request format or parameters are invalid.',
@@ -30,10 +30,21 @@ export class UsersController {
         description: 'Internal Server Error.',
       },
     },
-    operationId: 'get-users',
-    summary: 'Get users login names and there IDs.'
+    operationId: 'get-categories',
+    summary: 'Get category names and there IDs for given locale.'
   })
-  async getUsers(
+  async getCategories(
+    @param({
+      name: 'locale',
+      in: 'query',
+      description: 'The locale for the category names. See /locales for available languages.',
+      required: false,
+      schema: {
+        type: 'string',
+        default: 'en'
+      }
+    })
+    locale = 'en',
     @param({
       name: 'page',
       in: 'query',
@@ -59,20 +70,21 @@ export class UsersController {
     @param({
       name: 'starting',
       in: 'query',
-      description: 'The beginning of the login name to limit the list for type-ahead.',
+      description: 'The beginning of the category name to limit the list for type-ahead.',
       required: false,
       schema: {
         type: 'string'
       }
     })
     starting?: string,
-  ): Promise<User[]> {
-    const filter: UserFilter = {
+  ): Promise<Category[]> {
+    const filter: CategoryFilter = {
+      locale: locale,
       offset: (page - 1) * size,
       limit: size,
       starting: starting
     };
 
-    return this.usersRepository.findUsersWithQuotations(filter);
+    return this.categoriesRepository.findCategories(filter);
   }
 }

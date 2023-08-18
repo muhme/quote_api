@@ -36,8 +36,7 @@ export class UsersRepository extends DefaultCrudRepository<
       filter.starting = '%';
     }
 
-    // Replace '?' placeholders with actual values.
-    const params = [filter.starting + '%', filter.offset || 0, filter.limit || 10];
+    const params = [filter.starting + '%', filter.offset ?? 0, filter.limit ?? 10];
 
     return this.dataSource.execute(sqlQuery, params);
   }
