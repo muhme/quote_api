@@ -40,6 +40,7 @@ export class UsersController {
       description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
       required: false,
       schema: {
+        type: 'number',
         default: 1
       }
     })
@@ -50,6 +51,7 @@ export class UsersController {
       description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
       required: false,
       schema: {
+        type: 'number',
         default: 100
       }
     })

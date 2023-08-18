@@ -24,6 +24,7 @@
     "pretest": "npm run rebuild",
     "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
     "test:integration": "lb-mocha --allow-console-logs \"dist/__tests__/integration\"",
+    "test:end2end": "lb-mocha --allow-console-logs \"dist/__tests__/end2end\"",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",
     "docker:build": "docker build -t api.zitat-service.de .",
@@ -62,10 +63,13 @@
   "devDependencies": {
     "@loopback/build": "^10.1.1",
     "@loopback/eslint-config": "^14.0.2",
-    "@loopback/testlab": "^6.1.1",
+    "@loopback/testlab": "^6.1.2",
     "@types/node": "^16.18.38",
     "eslint": "^8.45.0",
+    "eslint-plugin-chai-friendly": "^0.7.2",
+    "mocha": "^10.2.0",
     "source-map-support": "^0.5.21",
+    "supertest": "^6.3.3",
     "typescript": "~5.1.6"
   }
 }

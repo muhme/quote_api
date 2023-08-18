@@ -54,4 +54,4 @@ understand how you can continue to add features to this application.
 
 ## Contact
 
-Pleae, don't hesitate to ask if you have any questions or comments.
+Please, don't hesitate to ask if you have any questions or comments.
