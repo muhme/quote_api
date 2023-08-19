@@ -32,7 +32,7 @@ export class UsersController {
       },
     },
     operationId: 'get-users',
-    summary: 'Get users login names and there IDs.'
+    summary: 'Get users login names and there IDs. Please note that only the login names of the users who created quotes are provided.'
   })
   async getUsers(
     @param({

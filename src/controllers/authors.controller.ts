@@ -32,7 +32,7 @@ export class AuthorsController {
       },
     },
     operationId: 'get-authors',
-    summary: 'Get authors with first name, (last) name, description and ID for given locale.'
+    summary: 'Get authors with first name, (last) name, description and ID for given locale. Please note only public authors are provided.'
   })
   async getAuthors(
     @param({

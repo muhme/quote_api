@@ -32,7 +32,7 @@ export class CategoriesController {
       },
     },
     operationId: 'get-categories',
-    summary: 'Get category names and there IDs for given locale.'
+    summary: 'Get category names and there IDs for given locale. Please note only public categories are provided.'
   })
   async getCategories(
     @param({
