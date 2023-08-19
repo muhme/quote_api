@@ -22,6 +22,7 @@ export class CategoriesRepository extends DefaultCrudRepository<
     super(Category, dataSource);
   }
 
+  // fallback is :en and is implemented
   async findCategories(filter: CategoryFilter): Promise<Category[]> {
     const sqlQuery = `
       SELECT DISTINCT
@@ -40,6 +41,7 @@ export class CategoriesRepository extends DefaultCrudRepository<
         AND t_default.locale = 'en'
         AND t_default.key = 'category'
       WHERE
+        c.public IS NOT NULL AND
         COALESCE(t.value, t_default.value) LIKE ?
       ORDER BY
         COALESCE(t.value, t_default.value) ASC
