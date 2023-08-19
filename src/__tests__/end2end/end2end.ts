@@ -21,10 +21,19 @@ describe('api.zitat-service.de (end2end)', () => {
 
   after(() => app.stop());
 
+  // ***********
+  // * locales *
+  // ***********
+
   it('invokes GET /locales', async () => {
     const response = await client.get('/locales').expect(200);
     expect(response.body).to.eql(["de", "en", "es", "ja", "uk"]);
   });
+
+
+  // *********
+  // * users *
+  // *********
 
   // correct requests
   it('invokes GET /users', async () => {
@@ -75,11 +84,18 @@ describe('api.zitat-service.de (end2end)', () => {
     expect(response.body).to.eql([]);
   });
 
+
+  // **************
+  // * categories *
+  // **************
+
   // correct requests
   it('invokes GET /categories', async () => {
     const response = await client.get('/categories').expect(200);
     expect(response.body.length).to.equal(100);
   });
+  // this tests also that non-public categories are not given,
+  // as the SQL dump contains 571 categories, including category #623 "Non-Public Category"
   it('invokes GET /categories?size=1000', async () => {
     const response = await client.get('/categories?size=1000').expect(200);
     expect(response.body.length).to.equal(570);
@@ -182,7 +198,6 @@ describe('api.zitat-service.de (end2end)', () => {
   //   expect(response.body).to.eql([]);
   // });
 
-
   // incorrect locale defaults to english
   it('invokes GET /categories?locale=en&page=160&size=1', async () => {
     const response = await client.get('/categories?locale=en&page=160&size=1').expect(200);
@@ -205,4 +220,120 @@ describe('api.zitat-service.de (end2end)', () => {
       "value": "Europe"
     }]);
   });
+
+
+  // ***********
+  // * authors *
+  // ***********
+
+  // correct requests
+  it('invokes GET /authors', async () => {
+    const response = await client.get('/authors').expect(200);
+    expect(response.body.length).to.equal(100);
+  });
+  // this tests also that non-public authors are not given,
+  // as the SQL dump contains 563 authors, including tha author entry #603 "Non-Public Author Entry"
+  it('invokes GET /authors?size=1000', async () => {
+    const response = await client.get('/authors?size=1000').expect(200);
+    expect(response.body.length).to.equal(562);
+  });
+  it('invokes GET /authors?locale=de&page=100&size=1', async () => {
+    const response = await client.get('/authors?locale=de&page=100&size=1').expect(200);
+    expect(response.body).to.eql([{
+      "id": 331,
+      "name": "Chanel",
+      "firstname": "Coco",
+      "description": "Französische Modeschöpferin (1883 – 1971)",
+      "link": "https://de.wikipedia.org/wiki/Coco_Chanel"
+    }]);
+  });
+  it('invokes GET /authors?locale=es&page=120&size=1', async () => {
+    const response = await client.get('/authors?locale=es&page=120&size=1').expect(200);
+    expect(response.body).to.eql([{
+      "id": 451,
+      "name": "Cramer",
+      "firstname": "Dettmar",
+      "description": "Futbolista y entrenador alemán (n. 1925)",
+      "link": "https://es.wikipedia.org/wiki/Dettmar_Cramer"
+    }]);
+  });
+  it('invokes GET /authors?locale=ja&page=140&size=1', async () => {
+    const response = await client.get('/authors?locale=ja&page=140&size=1').expect(200);
+    expect(response.body).to.eql([{
+      "id": 425,
+      "name": "グロッサー",
+      "firstname": "ピーター",
+      "description": "ドイツのサッカー選手、監督（*1938年）",
+      "link": null
+    }]);
+  });
+  it('invokes GET /authors?locale=uk&page=160&size=1', async () => {
+    const response = await client.get('/authors?locale=uk&page=160&size=1').expect(200);
+    expect(response.body).to.eql([{
+      "id": 599,
+      "name": "Григорович",
+      "firstname": "Шевченко Тарас",
+      "description": "Український поет і художник (1814 - 1861)",
+      "link": "https://uk.wikipedia.org/wiki/Шевченко_Тарас_Григорович"
+    }]);
+  });
+  it('invokes GET /authors?name=A&firstname=D&size=1', async () => {
+    const response = await client.get('/authors?name=A&firstname=D&size=1').expect(200);
+    expect(response.body).to.eql([{
+      "id": 345,
+      "name": "Adams",
+      "firstname": "Douglas",
+      "description": "British writer (1952 - 2001)",
+      "link": "https://en.wikipedia.org/wiki/Douglas_Adams"
+    }]);
+  });
+  it('invokes GET /authors?description=British%20actress', async () => {
+    const response = await client.get('/authors?description=British%20actress').expect(200);
+    expect(response.body).to.eql([{
+      "id": 339,
+      "name": "Andrews",
+      "firstname": "Julie",
+      "description": "British actress, singer and writer (born 1935)",
+      "link": "https://en.wikipedia.org/wiki/Julie_Andrews"
+    }]);
+  });
+  it('invokes GET /authors?nfd=Adams,H', async () => {
+    const response = await client.get('/authors?nfd=Adams,H').expect(200);
+    expect(response.body).to.eql([{
+      "id": 92,
+      "name": "Adams",
+      "firstname": "Henry",
+      "description": "US-American historian and cultural philosopher (1838 - 1918)",
+      "link": "https://en.wikipedia.org/wiki/Henry_Adams"
+    }]);
+  });
+  it('invokes GET /authors?nfd=,Karen', async () => {
+    const response = await client.get('/authors?nfd=,Karen').expect(200);
+    expect(response.body).to.eql([{
+      "id": 18,
+      "name": null,
+      "firstname": "Karen, 7 years",
+      "description": "asked: What does love mean?",
+      "link": null
+    }]);
+  });
+  it('invokes GET /authors?locale=de&nfd=Adenauer,Konrad,Deutscher%20Politiker', async () => {
+    const response = await client.get('/authors?locale=de&nfd=Adenauer,Konrad,Deutscher%20Politiker').expect(200);
+    expect(response.body).to.eql([{
+      "id": 243,
+      "name": "Adenauer",
+      "firstname": "Konrad",
+      "description": "Deutscher Politiker und Bundeskanzler (1876 – 1967)",
+      "link": "https://de.wikipedia.org/wiki/Konrad_Adenauer"
+    }]);
+  });
+  it('invokes GET /authors?nfd=&size=1000', async () => {
+    const response = await client.get('/authors?nfd=&size=1000').expect(200);
+    expect(response.body.length).to.equal(562);
+  });
+
+
+  // this tests also that non-public quotations are not given,
+  // as the SQL dump contains 1'443 quotations, including #1919 "Non-Public Quote"
+
 });
