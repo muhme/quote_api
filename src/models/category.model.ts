@@ -15,13 +15,14 @@ export class Category extends Entity {
   })
   category: string;
 
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+  })
+  totalCount: number;
+
   constructor(data?: Partial<Category>) {
     super(data);
   }
 }
-
-export interface CategoryRelations {
-  // describe navigational properties here
-}
-
-export type CategoryWithRelations = Category & CategoryRelations;

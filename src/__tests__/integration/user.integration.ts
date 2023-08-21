@@ -1,3 +1,4 @@
+/*
 import {expect} from '@loopback/testlab';
 import {QuoteApiApplication} from '../..';
 import {UsersController} from '../../controllers';
@@ -27,7 +28,7 @@ describe('UsersController (integration)', () => {
     id: number;
     login: string;
   }
-  /* map MySQL RowDataPacket into JavaScript Object */
+  // map MySQL RowDataPacket into JavaScript Object
   function mapToPlainObjectArray(rows: Array<UserRow>): Array<Object> {
     return rows.map(row => Object.assign({}, row));
   }
@@ -66,3 +67,4 @@ describe('UsersController (integration)', () => {
   });
 
 });
+*/

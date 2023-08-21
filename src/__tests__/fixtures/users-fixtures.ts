@@ -243,3 +243,8 @@ export const fixturesUsers = [
     "login": "Zeitdilletation"
   }
 ]
+
+export const fixturesUsersPaged = {
+  "paging": {totalCount: 60, page: 1, size: 100},
+  "users": fixturesUsers
+}

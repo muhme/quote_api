@@ -1,7 +1,7 @@
 {
   "name": "api.zitat-service.de",
-  "version": "0.0.1",
-  "description": "API for reading quotations and related entries such as authors and categories from <a href=\"https://www.zitat-service.de\">zitat.service.de</a>. Available in English 🇺🇸, Español 🇪🇸, 日本語 🇯🇵 and Українська 🇺🇦. Hosted as an open source software project at <a href=\"https://github.com/muhme/quote_api\">github.com/muhme/quote_api</a>",
+  "version": "0.0.2",
+  "description": "The API provides functionality to retrieve quotes, along with related entries such as their respective authors and associated categories, from the website <a href=\"https://www.zitat-service.de\">zitat.service.de</a>. The content delivered by the API is available in five languages: English 🇺🇸, Español 🇪🇸, 日本語 🇯🇵, Українська 🇺🇦 and Deutsch 🇩🇪. While the content is multilingual, the API itself is provided only in English. You can find the open-source software project hosted on GitHub at <a href=\"https://github.com/muhme/quote_api\">github.com/muhme/quote_api</a>.",
   "keywords": [
     "loopback-application",
     "loopback"

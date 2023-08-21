@@ -33,13 +33,14 @@ export class Author extends Entity {
   })
   link: string;
 
+  @property({
+    type: 'number',
+    id: true,
+    generated: true,
+  })
+  totalCount: number;
+
   constructor(data?: Partial<Author>) {
     super(data);
   }
 }
-
-export interface AuthorRelations {
-  // describe navigational properties here
-}
-
-export type AuthorWithRelations = Author & AuthorRelations;
