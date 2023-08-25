@@ -1,4 +1,5 @@
 import {inject} from '@loopback/core';
+import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged, PagingAuthors} from '../common/types';
 import {MariaDbDataSourceDataSource} from '../datasources';
@@ -10,6 +11,8 @@ export class AuthorsRepository extends DefaultCrudRepository<
 > {
   constructor(
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
+    // @loopback/logging winston logger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger
   ) {
     super(Author, dataSource);
   }
@@ -19,13 +22,13 @@ export class AuthorsRepository extends DefaultCrudRepository<
     const params = new Array(4).fill(filter.language);
 
     // nfd used with "name, firstname, description"?
-    if (filter.nfd) {
-      [filter.name, filter.firstname, filter.description] = filter.nfd.split(",", 3);
+    if (filter.lfd) {
+      [filter.lastname, filter.firstname, filter.description] = filter.lfd.split(",", 3);
     }
     let filterName = "";
-    if (filter.name) {
+    if (filter.lastname) {
       filterName = "mst_name.value LIKE ? AND "
-      params.push(filter.name + '%');
+      params.push(filter.lastname + '%');
     }
     let filterFirstname = "";
     if (filter.firstname) {
@@ -41,7 +44,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
     const sqlQuery = `
     SELECT DISTINCT
         a.id,
-        mst_name.value AS name,
+        mst_name.value AS lastname,
         mst_firstname.value AS firstname,
         mst_description.value AS description,
         mst_link.value AS link
@@ -75,7 +78,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
         ${filterName}
         ${filterFirstname}
         ${filterDescription}
-        a.public IS NOT NULL
+        a.public = 1
       ORDER BY
         mst_name.value ASC
       LIMIT ?, ?;
@@ -112,7 +115,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
         ${filterName}
         ${filterFirstname}
         ${filterDescription}
-        a.public IS NOT NULL
+        a.public = 1
     `;
 
     // execute count query
@@ -123,7 +126,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
     // extend params with paging parameters
     params.push(((filter.page - 1) * filter.size), filter.size);
     // execute the real query
-    const authors = await this.dataSource.execute(sqlQuery, params);
+    let authors = await this.dataSource.execute(sqlQuery, params);
 
     const paging: PagingAuthors = {
       language: filter.language,
@@ -131,8 +134,8 @@ export class AuthorsRepository extends DefaultCrudRepository<
       page: filter.page,
       size: filter.size,
     };
-    if (filter.name) {
-      paging.name = filter.name;
+    if (filter.lastname) {
+      paging.lastname = filter.lastname;
     }
     if (filter.firstname) {
       paging.firstname = filter.firstname;
@@ -140,10 +143,50 @@ export class AuthorsRepository extends DefaultCrudRepository<
     if (filter.description) {
       paging.description = filter.description;
     }
+
+    // exclude all null attributes from OpenAPI output
+    // create name from firstname and lastname
+    authors = this.washAuthorsAttributes(authors, filter.language);
+
     return {
       paging: paging,
       authors: authors
     };
+  }
+  // exclude all null attributes from OpenAPI output
+  // create name from firstname and lastname
+  washAuthorsAttributes(authors: Author[], language: string): Author[] {
+    for (const author of authors) {
+
+      if (author.firstname === null) author.firstname = undefined;
+      if (author.lastname === null) author.lastname = undefined;
+      if (author.description === null) author.description = undefined;
+      if (author.link === null) author.link = undefined;
+
+      author.name = this.combineAuthorName(author.firstname, author.lastname, language);
+
+    }
+    return authors;
+  }
+
+  combineAuthorName(firstname: string | undefined, lastname: string | undefined, language: string): string {
+    firstname = firstname ?? "";
+    lastname = lastname ?? "";
+    let name;
+    if (language === "ja") {
+      if (lastname && firstname) {
+        name = `${lastname}・${firstname}`;
+      } else {
+        name = lastname || firstname;
+      }
+    } else {
+      if (firstname && lastname) {
+        name = `${firstname} ${lastname}`;
+      } else {
+        name = firstname || lastname;
+      }
+    }
+    return name;
   }
 
   /**
@@ -160,7 +203,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
     const sqlQuery = `
     SELECT DISTINCT
         a.id AS id,
-        mst_name.value AS name,
+        mst_name.value AS lastname,
         mst_firstname.value AS firstname,
         mst_description.value AS description,
         mst_link.value AS link
@@ -194,7 +237,43 @@ export class AuthorsRepository extends DefaultCrudRepository<
         a.id = ? AND
         a.public IS NOT NULL;`
 
-    return this.dataSource.execute(sqlQuery, params);
+    let authors = await this.dataSource.execute(sqlQuery, params);
+
+    authors = this.washAuthorsAttributes(authors, filter.language);
+
+    return authors;
+  }
+
+  /**
+   * Get author name for given identifier in given locale.
+   *
+   * @param id unique identifier (authors.id)
+   * @param language locale for authors name (mobility_string_translations.locale)
+   * @returns authors name as e.g. "firstname name" in given locale or "no author entry"
+   */
+  async authorName(id: number, language: string): Promise<string> {
+    const sqlQuery = `
+          SELECT f_mst.value as firstname, l_mst.value as lastname
+          FROM authors a, mobility_string_translations f_mst, mobility_string_translations l_mst
+          WHERE
+            a.id = ? AND
+            f_mst.locale = ? AND
+            f_mst.translatable_type = 'Author' AND
+            f_mst.key = 'firstname' AND
+            f_mst.translatable_id = a.id AND
+            l_mst.locale = ? AND
+            l_mst.translatable_type = 'Author' AND
+            l_mst.key = 'name' AND
+            l_mst.translatable_id = a.id;
+        `;
+    const [result] = await this.dataSource.execute(sqlQuery, [id, language, language]);
+
+    if (!result) {
+      return "no author entry";
+    }
+    const name = this.combineAuthorName(result.firstname, result.lastname, language);
+    this.logger.log('debug', `authorName: found name ${name} for ID ${id} in language ${language}`);
+    return name;
   }
 
 }

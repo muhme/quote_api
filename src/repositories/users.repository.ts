@@ -1,15 +1,17 @@
 import {inject} from '@loopback/core';
+import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {Paging, PagingFilter, UsersPaged} from '../common/types';
 import {MariaDbDataSourceDataSource} from '../datasources';
 import {User} from '../models';
-
 export class UsersRepository extends DefaultCrudRepository<
   User,
   typeof User.prototype.id
 > {
   constructor(
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
+    // @loopback/logging winston logger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger
   ) {
     super(User, dataSource);
   }
@@ -19,7 +21,8 @@ export class UsersRepository extends DefaultCrudRepository<
       SELECT users.id, users.login
       FROM users
       INNER JOIN quotations ON users.id = quotations.user_id
-      WHERE users.login LIKE ?
+      WHERE users.login LIKE ? AND
+      quotations.public = 1
       GROUP BY users.id
       ORDER BY users.login ASC
       LIMIT ?, ?;
@@ -28,7 +31,8 @@ export class UsersRepository extends DefaultCrudRepository<
       SELECT COUNT(DISTINCT users.id) as totalCount
       FROM users
       INNER JOIN quotations ON users.id = quotations.user_id
-      WHERE users.login LIKE ?;
+      WHERE users.login LIKE ? AND
+      quotations.public = 1;
     `;
 
     const searchPattern = filter.starting ? filter.starting + '%' : '%%';
@@ -52,5 +56,26 @@ export class UsersRepository extends DefaultCrudRepository<
       paging: paging,
       users: users
     };
+  }
+
+  /**
+   * Get users login name for given identifier.
+   *
+   * @param id unique identiefier (users.id)
+   * @returns users entry login name (users.login) or "no user entry"
+   */
+  async loginName(id: number): Promise<string> {
+    const sqlQuery = `
+      SELECT login
+      FROM users
+      WHERE id = ?;
+    `;
+    const [result] = await this.dataSource.execute(sqlQuery, [id]) as {login: string}[];
+
+    if (!result) {
+      return "no user entry";
+    }
+    this.logger.log('debug', `found user ${result.login} for ID ${id}`)
+    return result.login;
   }
 }

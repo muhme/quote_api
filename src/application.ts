@@ -1,5 +1,6 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
+import {LoggingBindings, LoggingComponent, WinstonLoggerOptions, format} from '@loopback/logging';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
@@ -8,6 +9,7 @@ import {
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
+import winston from 'winston';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
@@ -17,6 +19,22 @@ export class QuoteApiApplication extends BootMixin(
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
+    // use @loopback/logging
+    this.configure(LoggingBindings.COMPONENT).to({
+      enableFluent: false,
+      enableHttpAccessLog: true
+    });
+    this.configure<WinstonLoggerOptions>(LoggingBindings.WINSTON_LOGGER).to({
+      level: 'debug',
+      format: format.json(),
+      defaultMeta: {Application: 'QuoteApi'},
+      transports: [
+        // Write all logs in file
+        new winston.transports.File({filename: 'development.log', level: 'debug'})
+      ]
+    });
+    this.component(LoggingComponent);
 
     // Set up the custom sequence
     this.sequence(MySequence);

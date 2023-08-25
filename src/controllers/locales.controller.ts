@@ -13,13 +13,14 @@ export class LocalesController {
     tags: ['Languages'],
     responses: {
       '200': {
-        description: 'The available languages were successfully retrieved and returned as an array of two-character strings.',
+        description: 'OK – available languages were successfully retrieved and returned as an array of two-letter ISO 639-1 language codes.',
         content: {
           'application/json': {
             schema: {
               type: 'array',
               items: {
                 type: 'string',
+                description: 'two-letter ISO 639-1 language code'
               },
             },
             example: LOCALES,
@@ -43,7 +44,7 @@ export class LocalesController {
     operationId: 'get-available-languages',
     summary: 'Get all available languages.',
   })
-  async getAvailableLocales(): Promise<unknown> {
+  async getAvailableLocales(): Promise<string[]> {
     /**
      * hard-wired, corresponding with Ruby on Rails:
      * config.i18n.available_locales = [:de, :en, :es, :ja, :uk]

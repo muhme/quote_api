@@ -1,5 +1,4 @@
 import {Entity, model, property} from '@loopback/repository';
-import {Author} from './author.model';
 
 @model()
 export class Quotation extends Entity {
@@ -34,13 +33,7 @@ export class Quotation extends Entity {
     type: 'number',
     id: true,
     generated: true,
-  }) authorId?: number;
-  // having author ID optional to be able to delete
-  // first we need the author ID to retrieve the Author
-  // but afterwards author ID is doubled in sub-entry Author
-  // and we will delete it in Quotation
-
-  author: Author;  // author sub-entry in quote
+  }) authorId: number;
 
   constructor(data?: Partial<Quotation>) {
     super(data);

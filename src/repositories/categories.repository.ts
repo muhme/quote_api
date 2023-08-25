@@ -1,4 +1,5 @@
 import {inject} from '@loopback/core';
+import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {CategoriesPaged, PagingLocale, PagingLocaleFilter} from '../common/types';
 import {MariaDbDataSourceDataSource} from '../datasources';
@@ -10,6 +11,8 @@ export class CategoriesRepository extends DefaultCrudRepository<
 > {
   constructor(
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
+    // @loopback/logging winston logger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger
   ) {
     super(Category, dataSource);
   }
@@ -27,7 +30,7 @@ export class CategoriesRepository extends DefaultCrudRepository<
         AND t.locale = ?
         AND t.key = 'category'
       WHERE
-        c.public IS NOT NULL AND
+        c.public = 1 AND
         t.value LIKE ?
       ORDER BY
         t.value ASC
@@ -43,7 +46,7 @@ export class CategoriesRepository extends DefaultCrudRepository<
         AND t.locale = ?
         AND t.key = 'category'
       WHERE
-        c.public IS NOT NULL AND
+        c.public = 1 AND
         t.value LIKE ?;
     `;
 
@@ -73,5 +76,32 @@ export class CategoriesRepository extends DefaultCrudRepository<
       paging: paging,
       categories: categories
     };
+  }
+
+  /**
+   * Get category name for given identifier in given locale.
+   *
+   * @param id unique identifier (categories.id)
+   * @param language locale for the category name (mobility_string_translations.locale)
+   * @returns category name in given locale or "no category entry"
+   */
+  async categoryName(id: number, language: string): Promise<string> {
+    const sqlQuery = `
+        SELECT value as category
+        FROM categories c, mobility_string_translations mst
+        WHERE
+          c.id = ? AND
+          mst.locale = ? AND
+          mst.translatable_type = 'Category' AND
+          mst.key = 'category' AND
+          mst.translatable_id = c.id;
+      `;
+    const [result] = await this.dataSource.execute(sqlQuery, [id, language]) as {category: string}[];
+
+    if (!result) {
+      return "no category entry";
+    }
+    this.logger.log('debug', `categoryName: found category ${result.category} for ID ${id} in language ${language}`)
+    return result.category;
   }
 }

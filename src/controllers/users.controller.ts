@@ -52,6 +52,7 @@ export class UsersController {
             example: {
               error: {
                 statusCode: 400,
+                name: "BadRequestError",
                 message: "Parameter 'page' must be greater than 1."
               }
             }
@@ -65,6 +66,7 @@ export class UsersController {
             example: {
               error: {
                 statusCode: 404,
+                name: "NotFoundError",
                 message: "No user entries found for the given parameters."
               }
             }
@@ -86,7 +88,7 @@ export class UsersController {
       },
     },
     operationId: 'get-users',
-    summary: 'Get users login names and there IDs. Only login names of the users who created quotes are provided.'
+    summary: 'Get users login names and there IDs. Only login names of the users who created quotes and the quotes are public are provided.'
   })
   async getUsers(
     @param({

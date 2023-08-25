@@ -285,96 +285,127 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?language=de&page=100&size=1').expect(200);
     expect([{
       "id": 331,
-      "name": "Chanel",
+      "lastname": "Chanel",
       "firstname": "Coco",
       "description": "Französische Modeschöpferin (1883 – 1971)",
-      "link": "https://de.wikipedia.org/wiki/Coco_Chanel"
+      "link": "https://de.wikipedia.org/wiki/Coco_Chanel",
+      "name": "Coco Chanel"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /authors?language=es&page=120&size=1', async () => {
     const response = await client.get('/authors?language=es&page=120&size=1').expect(200);
     expect([{
       "id": 451,
-      "name": "Cramer",
+      "lastname": "Cramer",
       "firstname": "Dettmar",
       "description": "Futbolista y entrenador alemán (n. 1925)",
-      "link": "https://es.wikipedia.org/wiki/Dettmar_Cramer"
+      "link": "https://es.wikipedia.org/wiki/Dettmar_Cramer",
+      "name": "Dettmar Cramer"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /authors?language=ja&page=140&size=1', async () => {
     const response = await client.get('/authors?language=ja&page=140&size=1').expect(200);
     expect([{
       "id": 425,
-      "name": "グロッサー",
+      "lastname": "グロッサー",
       "firstname": "ピーター",
       "description": "ドイツのサッカー選手、監督（*1938年）",
-      "link": null
+      "name": "グロッサー・ピーター"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /authors?language=uk&page=160&size=1', async () => {
     const response = await client.get('/authors?language=uk&page=160&size=1').expect(200);
     expect([{
       "id": 599,
-      "name": "Григорович",
+      "lastname": "Григорович",
       "firstname": "Шевченко Тарас",
       "description": "Український поет і художник (1814 - 1861)",
-      "link": "https://uk.wikipedia.org/wiki/Шевченко_Тарас_Григорович"
+      "link": "https://uk.wikipedia.org/wiki/Шевченко_Тарас_Григорович",
+      "name": "Шевченко Тарас Григорович"
     }]).to.eql(response.body.authors);
   });
-  it('invokes GET /authors?name=A&firstname=D&size=1', async () => {
-    const response = await client.get('/authors?name=A&firstname=D&size=1').expect(200);
+  it('invokes GET /authors?lastname=A&firstname=D&size=1', async () => {
+    const response = await client.get('/authors?lastname=A&firstname=D&size=1').expect(200);
     expect([{
       "id": 345,
-      "name": "Adams",
+      "lastname": "Adams",
       "firstname": "Douglas",
       "description": "British writer (1952 - 2001)",
-      "link": "https://en.wikipedia.org/wiki/Douglas_Adams"
+      "link": "https://en.wikipedia.org/wiki/Douglas_Adams",
+      "name": "Douglas Adams"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /authors?description=British%20actress', async () => {
     const response = await client.get('/authors?description=British%20actress').expect(200);
     expect([{
       "id": 339,
-      "name": "Andrews",
+      "lastname": "Andrews",
       "firstname": "Julie",
       "description": "British actress, singer and writer (born 1935)",
-      "link": "https://en.wikipedia.org/wiki/Julie_Andrews"
+      "link": "https://en.wikipedia.org/wiki/Julie_Andrews",
+      "name": "Julie Andrews"
     }]).to.eql(response.body.authors);
   });
-  it('invokes GET /authors?nfd=Adams,H', async () => {
-    const response = await client.get('/authors?nfd=Adams,H').expect(200);
+  it('invokes GET /authors?lfd=Adams,H', async () => {
+    const response = await client.get('/authors?lfd=Adams,H').expect(200);
     expect([{
       "id": 92,
-      "name": "Adams",
+      "lastname": "Adams",
       "firstname": "Henry",
       "description": "US-American historian and cultural philosopher (1838 - 1918)",
-      "link": "https://en.wikipedia.org/wiki/Henry_Adams"
+      "link": "https://en.wikipedia.org/wiki/Henry_Adams",
+      "name": "Henry Adams"
     }]).to.eql(response.body.authors);
   });
-  it('invokes GET /authors?nfd=,Karen', async () => {
-    const response = await client.get('/authors?nfd=,Karen').expect(200);
+  it('invokes GET /authors?lfd=,Karen', async () => {
+    const response = await client.get('/authors?lfd=,Karen').expect(200);
     expect([{
       "id": 18,
-      "name": null,
       "firstname": "Karen, 7 years",
       "description": "asked: What does love mean?",
-      "link": null
+      "name": "Karen, 7 years"
     }]).to.eql(response.body.authors);
   });
-  it('invokes GET /authors?language=de&nfd=Adenauer,Konrad,Deutscher%20Politiker', async () => {
-    const response = await client.get('/authors?language=de&nfd=Adenauer,Konrad,Deutscher%20Politiker').expect(200);
+  it('invokes GET /authors?language=de&lfd=Adenauer,Konrad,Deutscher%20Politiker', async () => {
+    const response = await client.get('/authors?language=de&lfd=Adenauer,Konrad,Deutscher%20Politiker').expect(200);
     expect([{
       "id": 243,
-      "name": "Adenauer",
+      "lastname": "Adenauer",
       "firstname": "Konrad",
       "description": "Deutscher Politiker und Bundeskanzler (1876 – 1967)",
-      "link": "https://de.wikipedia.org/wiki/Konrad_Adenauer"
+      "link": "https://de.wikipedia.org/wiki/Konrad_Adenauer",
+      "name": "Konrad Adenauer"
     }]).to.eql(response.body.authors);
   });
-  it('invokes GET /authors?nfd=&size=1000', async () => {
-    const response = await client.get('/authors?nfd=&size=1000').expect(200);
+  it('invokes GET /authors?lfd=&size=1000', async () => {
+    const response = await client.get('/authors?lfd=&size=1000').expect(200);
     expect(response.body.authors.length).to.equal(562);
   });
+
+  // ***********
+  // * authors *
+  // ***********
+  it('invokes GET /author?id=597&language=ja', async () => {
+    const response = await client.get('/author?id=597&language=ja').expect(200);
+    expect([{
+      "id": 597,
+      "lastname": "坂本",
+      "firstname": "龍一",
+      "description": "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
+      "link": "https://ja.wikipedia.org/wiki/坂本龍一",
+      "name": "坂本・龍一"
+    }]).to.eql(response.body);
+  });
+  // incorrect parameters
+  it('invokes GET /author?id=1000', async () => {
+    const response = await client.get('/author?id=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /author?id=-1', async () => {
+    const response = await client.get('/author?id=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+
 
 
   // this tests also that non-public quotations are not given,

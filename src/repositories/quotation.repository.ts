@@ -23,17 +23,26 @@ export class QuotationRepository extends DefaultCrudRepository<
   }
 
   async findQuotation(filter: QuotationFilter): Promise<Quotation[]> {
-
-    const sqlQuery = `
+    const params: (string | number)[] = [filter.language];
+    let sqlQuery = `
     SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId
-    FROM quotations q
-    WHERE q.locale = ?
-    ORDER BY RAND()
-    LIMIT 1;
-    `;
-    // console.log(sqlQuery);
-    // console.log(params);
-    return this.dataSource.execute(sqlQuery, [filter.language]);
-  }
+    FROM quotations q, categories_quotations cq
+    WHERE q.locale = ? `;
+    if (filter.userId !== undefined) {
+      sqlQuery += ' AND q.user_id = ? ';
+      params.push(filter.userId);
 
+    }
+    if (filter.categoryId !== undefined) {
+      sqlQuery += ' AND cq.quotation_id = q.id AND cq.category_id = ? ';
+      params.push(filter.categoryId);
+    }
+    if (filter.authorId !== undefined) {
+      sqlQuery += ' AND q.author_id = ? ';
+      params.push(filter.authorId);
+    }
+    sqlQuery += ' ORDER BY RAND() LIMIT 1;';
+
+    return this.dataSource.execute(sqlQuery, params);
+  }
 }

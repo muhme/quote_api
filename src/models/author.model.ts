@@ -9,29 +9,37 @@ export class Author extends Entity {
   })
   id: number;
 
+  // this is constructed as "lastname・firstname" for :ja and "firstname lastname" all other languages
   @property({
     type: 'string',
     required: true,
   })
   name: string;
 
+  // this is the name field in DB
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  firstname: string;
+  lastname?: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  description: string;
+  firstname?: string;
 
   @property({
     type: 'string',
-    required: true,
+    required: false,
   })
-  link: string;
+  description?: string;
+
+  @property({
+    type: 'string',
+    required: false,
+  })
+  link?: string;
 
   @property({
     type: 'number',

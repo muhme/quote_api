@@ -19,7 +19,12 @@ export class CategoriesController {
     tags: ['Categories'],
     responses: {
       '200': {
-        description: 'OK – the category names and there IDs retrieved successfully. The result is sorted by category names.',
+        description: 'OK – the category names and there IDs retrieved \
+          successfully. Object \'paging\' contains the two-letter \'language\' \
+          code, the \'totalCount\' as number of all entries, the requested \
+          \'page\' number and the requested number of entries with \'size\'. \
+          The \'categories\' result array gives the unique \'id\' for each \
+          entry and is sorted by \'category\' names.',
         content: {
           'application/json': {
             example: {
@@ -55,6 +60,7 @@ export class CategoriesController {
             example: {
               error: {
                 statusCode: 400,
+                name: "BadRequestError",
                 message: "Parameter 'page' must be greater than 1."
               }
             }
@@ -68,6 +74,7 @@ export class CategoriesController {
             example: {
               error: {
                 statusCode: 404,
+                name: "NotFoundError",
                 message: "No categories found for the given parameters."
               }
             }
@@ -95,7 +102,7 @@ export class CategoriesController {
     @param({
       name: 'language',
       in: 'query',
-      description: 'The language for the category names. See /languages for available languages. If the language is not recognized, it defaults to \'en\' (English).',
+      description: 'The language for the category names. See /languages for available languages. If the language code is not known, it defaults to \'en\' (English).',
       required: false,
       schema: {
         type: 'string',
@@ -128,7 +135,7 @@ export class CategoriesController {
     @param({
       name: 'starting',
       in: 'query',
-      description: 'The beginning of the category name to limit the list for type-ahead.',
+      description: 'Use the \'starting\' parameter to specify the beginning of the category name to limit the list for preselection.',
       required: false,
       schema: {
         type: 'string'

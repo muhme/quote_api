@@ -19,7 +19,7 @@ export interface PagingAuthors {
   page: number;
   size: number;
   firstname?: string;
-  name?: String;
+  lastname?: String;
   description?: String;
 }
 export interface UsersPaged {
@@ -49,12 +49,27 @@ export interface AuthorsFilter {
   language: string;
   page: number;
   size: number;
-  name?: string;
+  lastname?: string;
   firstname?: string;
   description?: string;
-  nfd?: string; // "name, firstname, description"
+  lfd?: string; // "lastname, firstname, description"
 }
 export interface AuthorFilter {
   language: string;
   id: number;
+}
+export interface QuoteFilter {
+  language: string;
+  authorId?: number;
+  userId?: number;
+  categoryId?: number;
+}
+export interface RandomQuote {
+  quote: string;
+  link: string;
+  source?: string;
+  sourceLink?: string;
+  authorId: number;
+  authorName?: string;
+  authorLink?: string;
 }
