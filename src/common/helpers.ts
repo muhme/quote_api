@@ -1,13 +1,17 @@
+import {HttpErrors} from '@loopback/rest';
 import {LOCALES} from './constants';
 
 /**
- *
- * @param locale – given from parameter
- * @returns locale if valid, else 'en'
+ * check language validity or set default if undefined
+ * @param language – given from parameter
+ * @returns language if valid, 'en' if undefined, else throws 400
  */
-export function setDefaultLocale(locale: string): string {
-  if (!LOCALES.includes(locale)) {
+export function checkAndSetLanguage(language: string | undefined): string {
+  if (language === undefined) {
     return 'en';
   }
-  return locale;
+  if (LOCALES.includes(language)) {
+    return language;
+  }
+  throw new HttpErrors.BadRequest(`Parameter 'language' has unknown value '${language}'.`);
 }

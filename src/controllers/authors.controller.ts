@@ -1,5 +1,6 @@
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, operation, param} from '@loopback/rest';
+import {checkAndSetLanguage} from '../common/helpers';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged} from '../common/types';
 import {Author} from '../models/author.model';
 import {AuthorsRepository} from '../repositories/authors.repository';
@@ -171,7 +172,7 @@ export class AuthorsController {
     }) lfd?: string,
   ): Promise<AuthorsPaged> {
     const filter: AuthorsFilter = {
-      language: language,
+      language: checkAndSetLanguage(language),
       page: page,
       size: size,
       lastname: lastname,
@@ -284,7 +285,7 @@ export class AuthorsController {
     }) id = 1,
   ): Promise<Author[] | null> {
     const filter: AuthorFilter = {
-      language: language,
+      language: checkAndSetLanguage(language),
       id: id,
     };
     if (id < 0) {

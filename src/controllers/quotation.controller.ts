@@ -2,7 +2,7 @@ import {inject} from '@loopback/core';
 import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, operation, param} from '@loopback/rest';
-import {setDefaultLocale} from '../common/helpers';
+import {checkAndSetLanguage} from '../common/helpers';
 import {QuoteFilter, RandomQuote} from '../common/types';
 import {Author} from '../models';
 import {Quotation} from '../models/quotation.model';
@@ -101,7 +101,7 @@ export class QuotationController {
       name: 'language',
       in: 'query',
       description: "The language for the random quote. See /languages for \
-        available languages. If the language code is not known, it defaults \
+        available languages. If the parameter language is missing, it defaults \
         to 'en' (English).",
       required: false,
       schema: {
@@ -152,7 +152,7 @@ export class QuotationController {
     }
 
     const filter: QuoteFilter = {
-      language: setDefaultLocale(language),
+      language: checkAndSetLanguage(language),
       userId: userId,
       authorId: authorId,
       categoryId: categoryId

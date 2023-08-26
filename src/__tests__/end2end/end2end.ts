@@ -242,27 +242,23 @@ describe('api.zitat-service.de (end2end)', () => {
   //   expect(response.body).to.eql([]);
   // });
 
-  // incorrect language defaults to english
-  it('invokes GET /categories?language=en&page=160&size=1', async () => {
-    const response = await client.get('/categories?language=en&page=160&size=1').expect(200);
+  // not set language defaults to english
+  it('invokes GET /categories?page=160&size=1', async () => {
+    const response = await client.get('/categories?page=160&size=1').expect(200);
     expect([{
       "id": 483,
       "category": "Europe"
     }]).to.eql(response.body.categories);
   });
+
+  // incorrect parameters
   it('invokes GET /categories?language=&page=160&size=1', async () => {
-    const response = await client.get('/categories?language=&page=160&size=1').expect(200);
-    expect([{
-      "id": 483,
-      "category": "Europe"
-    }]).to.eql(response.body.categories);
+    const response = await client.get('/categories?language=&page=160&size=1').expect(400);
+    response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /categories?language=XXX&page=160&size=1', async () => {
-    const response = await client.get('/categories?language=XXX&page=160&size=1').expect(200);
-    expect([{
-      "id": 483,
-      "category": "Europe"
-    }]).to.eql(response.body.categories);
+    const response = await client.get('/categories?language=XXX&page=160&size=1').expect(400);
+    response.text.should.containEql('BadRequestError');
   });
 
 
@@ -324,6 +320,24 @@ describe('api.zitat-service.de (end2end)', () => {
       "name": "Шевченко Тарас Григорович"
     }]).to.eql(response.body.authors);
   });
+  // missing language defaults to :en
+  it('invokes GET /authors?page=20&size=1', async () => {
+    const response = await client.get('/authors?page=20&size=1').expect(200);
+    expect({
+      "language": "en",
+      "totalCount": 562,
+      "page": 20,
+      "size": 1
+    }).to.eql(response.body.paging);
+    expect([{
+      "id": 92,
+      "lastname": "Adams",
+      "firstname": "Henry",
+      "description": "US-American historian and cultural philosopher (1838 - 1918)",
+      "link": "https://en.wikipedia.org/wiki/Henry_Adams",
+      "name": "Henry Adams"
+    }]).to.eql(response.body.authors);
+  });
   it('invokes GET /authors?lastname=A&firstname=D&size=1', async () => {
     const response = await client.get('/authors?lastname=A&firstname=D&size=1').expect(200);
     expect([{
@@ -382,9 +396,19 @@ describe('api.zitat-service.de (end2end)', () => {
     expect(response.body.authors.length).to.equal(562);
   });
 
-  // ***********
-  // * authors *
-  // ***********
+  // incorrect parameters
+  it('invokes GET /authors?language=', async () => {
+    const response = await client.get('/authors?language=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?language=XXX', async () => {
+    const response = await client.get('/authors?language=XXX').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+
+  // **********
+  // * author *
+  // **********
   it('invokes GET /author?id=597&language=ja', async () => {
     const response = await client.get('/author?id=597&language=ja').expect(200);
     expect([{
@@ -396,6 +420,19 @@ describe('api.zitat-service.de (end2end)', () => {
       "name": "坂本・龍一"
     }]).to.eql(response.body);
   });
+  // missing language defaults to :en
+  it('invokes GET /author?id=597', async () => {
+    const response = await client.get('/author?id=597').expect(200);
+    expect([{
+      "id": 597,
+      "lastname": "Sakamoto",
+      "firstname": "Ryuichi",
+      "description": "Japanese composer, pianist, producer, actor and model (1952 - 2023)",
+      "link": "https://en.wikipedia.org/wiki/Ryuichi_Sakamoto",
+      "name": "Ryuichi Sakamoto"
+    }]).to.eql(response.body);
+  });
+
   // incorrect parameters
   it('invokes GET /author?id=1000', async () => {
     const response = await client.get('/author?id=1000').expect(404);
@@ -405,10 +442,26 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/author?id=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-
+  it('invokes GET /author?id=597&language=', async () => {
+    const response = await client.get('/author?id=597&language=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /author?id=597&language=XXX', async () => {
+    const response = await client.get('/author?id=597&language=XXX').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
 
 
   // this tests also that non-public quotations are not given,
   // as the SQL dump contains 1'443 quotations, including #1919 "Non-Public Quote"
 
+  // incorrect parameters
+  it('invokes GET /quote?language=', async () => {
+    const response = await client.get('/quote?language=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?language=XXX', async () => {
+    const response = await client.get('/quote?language=XXX').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
 });

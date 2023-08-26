@@ -1,6 +1,6 @@
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, operation, param} from '@loopback/rest';
-import {setDefaultLocale} from '../common/helpers';
+import {checkAndSetLanguage} from '../common/helpers';
 import {CategoriesPaged, PagingLocaleFilter} from '../common/types';
 import {CategoriesRepository} from '../repositories/categories.repository';
 /**
@@ -102,7 +102,7 @@ export class CategoriesController {
     @param({
       name: 'language',
       in: 'query',
-      description: 'The language for the category names. See /languages for available languages. If the language code is not known, it defaults to \'en\' (English).',
+      description: 'The language for the category names. See /languages for available languages. If the language code is missing, it defaults to \'en\' (English).',
       required: false,
       schema: {
         type: 'string',
@@ -150,7 +150,7 @@ export class CategoriesController {
       throw new HttpErrors.BadRequest("Parameter 'size' must be greater than 1.");
     }
     const filter: PagingLocaleFilter = {
-      language: setDefaultLocale(language),
+      language: checkAndSetLanguage(language),
       page: page,
       size: size,
       starting: starting
