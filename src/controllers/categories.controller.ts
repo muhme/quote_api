@@ -96,13 +96,16 @@ export class CategoriesController {
       },
     },
     operationId: 'get-categories',
-    summary: 'Get category names and there IDs for given language. Only public categories are provided.'
+    summary: 'Get list of category names with IDs.',
+    description: "Get paged list of categories. List can be restricted with \
+      parameter 'starting'. Category names are in the requested 'language'. \
+      Only public categories are provided."
   })
   async getCategories(
     @param({
       name: 'language',
       in: 'query',
-      description: 'The language for the category names. See /languages for available languages. If the language code is missing, it defaults to \'en\' (English).',
+      description: 'The language for the category names. See /languages for available languages. If the language parameter is missing, it defaults to \'en\' (English).',
       required: false,
       schema: {
         type: 'string',

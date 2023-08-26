@@ -114,12 +114,20 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/users?page=1000').expect(404);
     response.text.should.containEql('NotFoundError');
   });
+  it('invokes GET /users?page=P', async () => {
+    const response = await client.get('/users?page=P').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /users?size=', async () => {
     const response = await client.get('/users?size=').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /users?size=0', async () => {
     const response = await client.get('/users?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /users?size=S', async () => {
+    const response = await client.get('/users?size=S').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   // SQL injection
@@ -258,6 +266,34 @@ describe('api.zitat-service.de (end2end)', () => {
   });
   it('invokes GET /categories?language=XXX&page=160&size=1', async () => {
     const response = await client.get('/categories?language=XXX&page=160&size=1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?page=', async () => {
+    const response = await client.get('/categories?page=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?page=0', async () => {
+    const response = await client.get('/categories?page=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?page=A', async () => {
+    const response = await client.get('/categories?page=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?page=1000', async () => {
+    const response = await client.get('/categories?page=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /categories?size=', async () => {
+    const response = await client.get('/categories?size=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?size=0', async () => {
+    const response = await client.get('/categories?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /categories?size=Y', async () => {
+    const response = await client.get('/categories?size=Y').expect(400);
     response.text.should.containEql('BadRequestError');
   });
 
@@ -405,6 +441,50 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?language=XXX').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /authors?page=', async () => {
+    const response = await client.get('/authors?page=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?page=0', async () => {
+    const response = await client.get('/authors?page=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?page=A', async () => {
+    const response = await client.get('/authors?page=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?page=1000', async () => {
+    const response = await client.get('/authors?page=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /authors?size=', async () => {
+    const response = await client.get('/authors?size=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?size=0', async () => {
+    const response = await client.get('/authors?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?size=Y', async () => {
+    const response = await client.get('/authors?size=Y').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /authors?lfd=X,Y,Z', async () => {
+    const response = await client.get('/authors?lfd=X,Y,Z').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /authors?lastname=XXX', async () => {
+    const response = await client.get('/authors?lastname=XXX').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /authors?firstname=YYY', async () => {
+    const response = await client.get('/authors?firstname=YYY').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /authors?description=ZZZ', async () => {
+    const response = await client.get('/authors?description=ZZZ').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
 
   // **********
   // * author *
@@ -442,6 +522,14 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/author?id=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /author?id=', async () => {
+    const response = await client.get('/author?id=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /author?id=A', async () => {
+    const response = await client.get('/author?id=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /author?id=597&language=', async () => {
     const response = await client.get('/author?id=597&language=').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -451,11 +539,105 @@ describe('api.zitat-service.de (end2end)', () => {
     response.text.should.containEql('BadRequestError');
   });
 
+  // *********
+  // * quote *
+  // *********
 
-  // this tests also that non-public quotations are not given,
-  // as the SQL dump contains 1'443 quotations, including #1919 "Non-Public Quote"
+  it('invokes GET /quote', async () => {
+    const response = await client.get('/quote').expect(200);
+    expect(response.body).to.have.property('quote');
+    expect(response.body).to.have.property('link');
+  });
+  // explicit testing authorID 0 (unknown)
+  it('invokes GET /quote?authorId=0', async () => {
+    const response = await client.get('/quote?authorId=0').expect(200);
+    expect(response.body).to.have.property('quote');
+    expect(response.body).to.have.property('link');
+    expect(response.body).to.have.property('authorId', 0);
+    expect(response.body).to.have.property('authorName', "Unknown");
+  });
+  // following tests are figured out with exactly one quote returned
+  it('invokes GET /quote?authorId=601', async () => {
+    const response = await client.get('/quote?authorId=601').expect(200);
+    expect({
+      quote: "Dance is the hidden language of the soul.",
+      link: "https://www.zitat-service.de/en/quotations/1906",
+      source: "Martha Graham Reflects on Her Art and a Life in Dance, The New York Times, 1985",
+      sourceLink: "https://archive.nytimes.com/www.nytimes.com/library/arts/033185graham.html",
+      authorId: 601,
+      authorName: "Martha Graham",
+      authorLink: "https://en.wikipedia.org/wiki/Martha_Graham"
+    }).to.eql(response.body);
+  });
+  it('invokes GET /quote?userId=97&language=de', async () => {
+    const response = await client.get('/quote?userId=97&language=de').expect(200);
+    expect({
+      quote: "Missverständnis? Die häufigste Form menschlicher Kommunikation.",
+      link: "https://www.zitat-service.de/de/quotations/1527",
+      authorId: 439,
+      authorName: "Peter Benary",
+      authorLink: "https://de.wikipedia.org/wiki/Peter_Benary"
+    }).to.eql(response.body);
+  });
+  it('invokes GET /quote?authorId=0&categoryId=16&userId=73&language=es', async () => {
+    const response = await client.get('/quote?authorId=0&categoryId=16&userId=73&language=es').expect(200);
+    expect({
+      quote: "Vivir con miedo, es como vivir a medias.",
+      link: "https://www.zitat-service.de/es/quotations/1903",
+      authorId: 0,
+      authorName: "Desconocido"
+    }).to.eql(response.body);
+  });
 
   // incorrect parameters
+  it('invokes GET /quote?userId=', async () => {
+    const response = await client.get('/quote?userId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?userId=-1', async () => {
+    const response = await client.get('/quote?userId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?userId=A', async () => {
+    const response = await client.get('/quote?userId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?userId=1000', async () => {
+    const response = await client.get('/quote?userId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /quote?authorId=', async () => {
+    const response = await client.get('/quote?authorId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?authorId=-1', async () => {
+    const response = await client.get('/quote?authorId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?authorId=A', async () => {
+    const response = await client.get('/quote?authorId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?authorId=1000', async () => {
+    const response = await client.get('/quote?authorId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /quote?categoryId=', async () => {
+    const response = await client.get('/quote?categoryId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?categoryId=-1', async () => {
+    const response = await client.get('/quote?categoryId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?categoryId=A', async () => {
+    const response = await client.get('/quote?categoryId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /quote?categoryId=1000', async () => {
+    const response = await client.get('/quote?categoryId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
   it('invokes GET /quote?language=', async () => {
     const response = await client.get('/quote?language=').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -463,5 +645,10 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /quote?language=XXX', async () => {
     const response = await client.get('/quote?language=XXX').expect(400);
     response.text.should.containEql('BadRequestError');
+  });
+  // testing #1919 non-public quote with non-public category #623
+  it('invokes GET /quote?categoryId=623', async () => {
+    const response = await client.get('/quote?categoryId=623').expect(404);
+    response.text.should.containEql('NotFoundError');
   });
 });

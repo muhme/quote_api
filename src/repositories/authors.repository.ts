@@ -21,10 +21,6 @@ export class AuthorsRepository extends DefaultCrudRepository<
 
     const params = new Array(4).fill(filter.language);
 
-    // nfd used with "name, firstname, description"?
-    if (filter.lfd) {
-      [filter.lastname, filter.firstname, filter.description] = filter.lfd.split(",", 3);
-    }
     let filterName = "";
     if (filter.lastname) {
       filterName = "mst_name.value LIKE ? AND "

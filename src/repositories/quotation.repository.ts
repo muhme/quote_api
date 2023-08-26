@@ -30,7 +30,8 @@ export class QuotationRepository extends DefaultCrudRepository<
     let sqlQuery = `
     SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId
     FROM quotations q, categories_quotations cq
-    WHERE q.locale = ? `;
+    WHERE q.locale = ?
+    AND q.public = 1 `;
     if (filter.userId !== undefined) {
       sqlQuery += ' AND q.user_id = ? ';
       params.push(filter.userId);

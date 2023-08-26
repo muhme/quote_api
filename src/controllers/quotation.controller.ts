@@ -139,7 +139,7 @@ export class QuotationController {
         type: 'number'
       }
     }) categoryId?: number,
-  ): Promise<RandomQuote[]> {
+  ): Promise<RandomQuote> {
 
     if (userId && userId < 0) {
       throw new HttpErrors.BadRequest("Parameter 'userId' must be a positive number.");
@@ -182,7 +182,7 @@ export class QuotationController {
       throw new HttpErrors.NotFound(`Could not find a quote for given parameters!`);
     }
 
-    return [await this.mapQuoteToRandomQuote(quote[0], language)];
+    return this.mapQuoteToRandomQuote(quote[0], language);
   }
 
   async mapQuoteToRandomQuote(quote: Quotation, language: string): Promise<RandomQuote> {

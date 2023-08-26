@@ -1,6 +1,6 @@
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, operation, param} from '@loopback/rest';
-import {checkAndSetLanguage} from '../common/helpers';
+import {checkAndSetLanguage, myStringify} from '../common/helpers';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged} from '../common/types';
 import {Author} from '../models/author.model';
 import {AuthorsRepository} from '../repositories/authors.repository';
@@ -76,7 +76,7 @@ export class AuthorsController {
               error: {
                 statusCode: 404,
                 name: "NotFoundError",
-                message: "No authors found for the ID #42."
+                message: "No authors found for given parameters (language: 'en', page: 1, size: 100, lastname: 'XXX')."
               }
             }
           },
@@ -87,16 +87,16 @@ export class AuthorsController {
       },
     },
     operationId: 'get-authors',
-    summary: 'Get list of authors.',
-    description: "Get paged list of authors. Can be restricted with \
+    summary: 'Get list of authors and there IDs.',
+    description: "Get paged list of authors. List can be restricted with \
       'lastname', 'firstname' and 'description'. These tree parameters can be \
-      combined as parameter 'lfd'. Returned 'paging' contains \
+      combined as one comma-separated parameter 'lfd'. Returned 'paging' contains \
       used 'language', total number of author entries found with parameter 'totalCount', \
       the requested page number with parameter 'page', the maximal number of \
       page entries with parameter 'size'. If the list is restricted the \
-      'paing' parameters 'firstname', 'lastname' or 'description' are returned. \
-      The 'authors' array contains entries with always existing attributes \
-      'id' and 'name'. If they exist, the optional attributes 'firstname', \
+      'paging' parameters 'firstname', 'lastname' or 'description' are returned. \
+      The entries of the 'authors' array always contain the attributes 'id' \
+      and 'name'. If they exist, the optional attributes 'firstname', \
       'lastname', 'link' and 'description' will be returned. All attributes \
       are given in the requested 'language'. Only public authors are provided."
   })
@@ -161,10 +161,10 @@ export class AuthorsController {
     @param({
       name: 'lfd',
       in: 'query',
-      description: 'The beginning of the authors \
-        "lastname, firstname, description" to limit the list for type-ahead. \
-        Parameters \'lastname\', \'firstname\' and \'description\' are ignored \
-        if parameter \lfd\' is used.',
+      description: "The beginning of the authors \
+        'lastname,firstname,description' to limit the list for type-ahead. \
+        Parameters 'lastname', 'firstname' and 'description' are ignored \
+        if parameter 'lfd' is used.",
       required: false,
       schema: {
         type: 'string'
@@ -178,13 +178,27 @@ export class AuthorsController {
       lastname: lastname,
       firstname: firstname,
       description: description,
-      lfd: lfd // "lastname, firstname, description"
+      lfd: lfd // "lastname,firstname,description"
     };
+
+    // nfd used with "name, firstname, description"?
+    if (filter.lfd) {
+      [filter.lastname, filter.firstname, filter.description] = filter.lfd.split(",", 3);
+      delete filter.lfd;
+    }
+
+    if (page < 1) {
+      throw new HttpErrors.BadRequest("Parameter 'page' must be greater than 1.");
+    }
+    if (size < 1) {
+      throw new HttpErrors.BadRequest("Parameter 'size' must be greater than 1.");
+    }
+
 
     const authorsPaged = await this.authorsRepository.findAuthors(filter);
 
     if (authorsPaged.authors.length === 0) {
-      throw new HttpErrors.NotFound("No authors found for given parameters.")
+      throw new HttpErrors.NotFound(`No authors found for given parameters (${myStringify(filter)}).`)
     }
 
     return authorsPaged;
@@ -220,7 +234,7 @@ export class AuthorsController {
               error: {
                 statusCode: 400,
                 name: "BadRequestError",
-                message: "Parameter 'page' must be greater than 1."
+                message: "Parameter 'id' must be a positive number."
               }
             }
           },
