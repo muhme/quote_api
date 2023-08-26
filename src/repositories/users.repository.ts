@@ -9,9 +9,9 @@ export class UsersRepository extends DefaultCrudRepository<
   typeof User.prototype.id
 > {
   constructor(
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
     // @loopback/logging winston logger
-    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
   ) {
     super(User, dataSource);
   }

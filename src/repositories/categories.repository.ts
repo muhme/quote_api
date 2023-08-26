@@ -10,9 +10,9 @@ export class CategoriesRepository extends DefaultCrudRepository<
   typeof Category.prototype.id
 > {
   constructor(
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
     // @loopback/logging winston logger
-    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
   ) {
     super(Category, dataSource);
   }

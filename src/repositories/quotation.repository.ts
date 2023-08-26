@@ -1,4 +1,5 @@
 import {inject} from '@loopback/core';
+import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {MariaDbDataSourceDataSource} from '../datasources';
 import {Quotation, QuotationRelations} from '../models';
@@ -17,7 +18,9 @@ export class QuotationRepository extends DefaultCrudRepository<
   QuotationRelations
 > {
   constructor(
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource,
+    // @loopback/logging winston logger
+    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
   ) {
     super(Quotation, dataSource);
   }
