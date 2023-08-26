@@ -34,6 +34,9 @@ export interface AuthorsPaged {
   paging: PagingAuthors;
   authors: Author[];
 }
+export interface AuthorReturned {
+  author: Author;
+}
 export interface PagingFilter {
   page: number;
   size: number;

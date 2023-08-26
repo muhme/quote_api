@@ -491,26 +491,30 @@ describe('api.zitat-service.de (end2end)', () => {
   // **********
   it('invokes GET /author?id=597&language=ja', async () => {
     const response = await client.get('/author?id=597&language=ja').expect(200);
-    expect([{
-      "id": 597,
-      "lastname": "坂本",
-      "firstname": "龍一",
-      "description": "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
-      "link": "https://ja.wikipedia.org/wiki/坂本龍一",
-      "name": "坂本・龍一"
-    }]).to.eql(response.body);
+    expect({
+      author: {
+        id: 597,
+        lastname: "坂本",
+        firstname: "龍一",
+        description: "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
+        link: "https://ja.wikipedia.org/wiki/坂本龍一",
+        name: "坂本・龍一"
+      }
+    }).to.eql(response.body);
   });
   // missing language defaults to :en
   it('invokes GET /author?id=597', async () => {
     const response = await client.get('/author?id=597').expect(200);
-    expect([{
-      "id": 597,
-      "lastname": "Sakamoto",
-      "firstname": "Ryuichi",
-      "description": "Japanese composer, pianist, producer, actor and model (1952 - 2023)",
-      "link": "https://en.wikipedia.org/wiki/Ryuichi_Sakamoto",
-      "name": "Ryuichi Sakamoto"
-    }]).to.eql(response.body);
+    expect({
+      author: {
+        id: 597,
+        lastname: "Sakamoto",
+        firstname: "Ryuichi",
+        description: "Japanese composer, pianist, producer, actor and model (1952 - 2023)",
+        link: "https://en.wikipedia.org/wiki/Ryuichi_Sakamoto",
+        name: "Ryuichi Sakamoto"
+      }
+    }).to.eql(response.body);
   });
 
   // incorrect parameters

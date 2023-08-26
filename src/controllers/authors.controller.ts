@@ -1,8 +1,7 @@
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, operation, param} from '@loopback/rest';
 import {checkAndSetLanguage, myStringify} from '../common/helpers';
-import {AuthorFilter, AuthorsFilter, AuthorsPaged} from '../common/types';
-import {Author} from '../models/author.model';
+import {AuthorFilter, AuthorReturned, AuthorsFilter, AuthorsPaged} from '../common/types';
 import {AuthorsRepository} from '../repositories/authors.repository';
 
 /**
@@ -208,20 +207,22 @@ export class AuthorsController {
     tags: ['Authors'],
     responses: {
       '200': {
-        description: 'OK – the author retrieved successfully.',
+        description: "OK – the author retrieved successfully. \
+          Always present are the attributes 'id' and 'name'. The attributes \
+          'firstname', 'lastname', 'description' and 'link' are only present \
+          if they are exist. All attributes are returned in the requested \
+          'language'.",
         content: {
           'application/json': {
             example: {
-              author: [
-                {
-                  id: 597,
-                  lastname: "坂本",
-                  firstname: "龍一",
-                  description: "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
-                  link: "https://ja.wikipedia.org/wiki/坂本龍一",
-                  name: "坂本・龍一"
-                },
-              ]
+              author: {
+                id: 597,
+                lastname: "坂本",
+                firstname: "龍一",
+                description: "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
+                link: "https://ja.wikipedia.org/wiki/坂本龍一",
+                name: "坂本・龍一"
+              }
             }
           },
         }
@@ -271,7 +272,7 @@ export class AuthorsController {
     operationId: 'get-authors',
     summary: 'Get one author entry for ID.',
     description: "Get one author entry for given 'id' in given 'language'. \
-      Always returing attributes 'id' and 'name'. If they exist, the optional attributes 'firstname', \
+      Always returned attributes are 'id' and 'name'. If they exist, the optional attributes 'firstname', \
       'lastname', 'link' and 'description' will be returned. All attributes \
       are given in the requested 'language'. \
       Requested author entry have to be public."
@@ -297,7 +298,7 @@ export class AuthorsController {
         default: 1
       }
     }) id = 1,
-  ): Promise<Author[] | null> {
+  ): Promise<AuthorReturned | null> {
     const filter: AuthorFilter = {
       language: checkAndSetLanguage(language),
       id: id,
@@ -312,6 +313,6 @@ export class AuthorsController {
       throw new HttpErrors.NotFound(`No author entry found for ID #${filter.id}!`);
     }
 
-    return result;
+    return {author: result[0]};
   }
 }
