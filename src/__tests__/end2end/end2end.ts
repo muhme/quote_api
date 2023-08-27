@@ -357,21 +357,21 @@ describe('api.zitat-service.de (end2end)', () => {
     }]).to.eql(response.body.authors);
   });
   // missing language defaults to :en
-  it('invokes GET /authors?page=20&size=1', async () => {
-    const response = await client.get('/authors?page=20&size=1').expect(200);
+  it('invokes GET /authors?page=200&size=1', async () => {
+    const response = await client.get('/authors?page=200&size=1').expect(200);
     expect({
       "language": "en",
       "totalCount": 562,
-      "page": 20,
+      "page": 200,
       "size": 1
     }).to.eql(response.body.paging);
     expect([{
-      "id": 92,
-      "lastname": "Adams",
-      "firstname": "Henry",
-      "description": "US-American historian and cultural philosopher (1838 - 1918)",
-      "link": "https://en.wikipedia.org/wiki/Henry_Adams",
-      "name": "Henry Adams"
+      "id": 419,
+      "lastname": "Grillparzer",
+      "firstname": "Franz",
+      "description": "Austrian writer (1791 - 1872)",
+      "link": "https://en.wikipedia.org/wiki/Franz_Grillparzer",
+      "name": "Franz Grillparzer"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /authors?lastname=A&firstname=D&size=1', async () => {
