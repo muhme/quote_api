@@ -52,12 +52,33 @@
       margin-top: 1em;
     }
 
+    body {
+      background-color: #DDFFDE;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: bottom right;
+    }
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("flower.png");
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: bottom right;
+      z-index: -1;
+    }
     @media (prefers-color-scheme: dark) {
       body {
-        background-color: rgb(29, 30, 32);
+        background-color: #002200;
         color: white;
       }
-
+      body::before {
+        opacity: 0.1;
+      }
       a, a:visited {
         color: #4990e2;
       }
