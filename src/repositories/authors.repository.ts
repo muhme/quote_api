@@ -108,7 +108,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
   }
 
   /**
-   * fill structure PaginAuthors
+   * fill structure PagingAuthors
    * @param filter
    * @param totalCount
    * @returns PaginAuthors

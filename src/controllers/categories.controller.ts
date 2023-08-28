@@ -5,6 +5,85 @@ import {HttpErrors, api, get, param} from '@loopback/rest';
 import {CategoriesPaged, PARAM_MAX_LENGTH, PagingLanguageFilter, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
 import {CategoriesRepository} from '../repositories/categories.repository';
 
+const RESPONSES = {
+  '200': {
+    description: 'OK – the category names and there IDs retrieved \
+      successfully. Object \'paging\' contains the two-letter \'language\' \
+      code, the \'totalCount\' as number of all entries, the requested \
+      \'page\' number and the requested number of entries with \'size\'. \
+      The \'categories\' result array gives the unique \'id\' for each \
+      entry and is sorted by \'category\' names.',
+    content: {
+      'application/json': {
+        example: {
+          paging: {
+            language: "en",
+            totalCount: 3,
+            page: 1,
+            size: 3,
+            starting: "D"
+          },
+          categories: [
+            {
+              id: 569,
+              "category": "dance"
+            },
+            {
+              id: 74,
+              category: "Darkness"
+            },
+            {
+              id: 100,
+              category: "Day"
+            }
+          ]
+        }
+      },
+    }
+  },
+  '400': {
+    description: 'Bad Request – request format or parameters are invalid.',
+    content: {
+      'application/json': {
+        example: {
+          error: {
+            statusCode: 400,
+            name: "BadRequestError",
+            message: "Parameter 'page' must be greater than 1."
+          }
+        }
+      },
+    }
+  },
+  '404': {
+    description: 'Not Found – no entries found for the given parameters.',
+    content: {
+      'application/json': {
+        example: {
+          error: {
+            statusCode: 404,
+            name: "NotFoundError",
+            message: "No categories found for the given parameters."
+          }
+        }
+      },
+    }
+  },
+  '500': {
+    description: 'Internal Server Error.',
+    content: {
+      'application/json': {
+        example: {
+          error: {
+            statusCode: 500,
+            message: "Internal Server Error"
+          }
+        }
+      },
+    },
+  },
+};
+
 /**
  * /categories controller – gets a list of public categories
  *
@@ -26,84 +105,7 @@ export class CategoriesController {
   // http access is logged by global interceptor
   @get('/categories', {
     tags: ['Categories'],
-    responses: {
-      '200': {
-        description: 'OK – the category names and there IDs retrieved \
-          successfully. Object \'paging\' contains the two-letter \'language\' \
-          code, the \'totalCount\' as number of all entries, the requested \
-          \'page\' number and the requested number of entries with \'size\'. \
-          The \'categories\' result array gives the unique \'id\' for each \
-          entry and is sorted by \'category\' names.',
-        content: {
-          'application/json': {
-            example: {
-              paging: {
-                language: "en",
-                totalCount: 3,
-                page: 1,
-                size: 3,
-                starting: "D"
-              },
-              categories: [
-                {
-                  id: 569,
-                  "category": "dance"
-                },
-                {
-                  id: 74,
-                  category: "Darkness"
-                },
-                {
-                  id: 100,
-                  category: "Day"
-                }
-              ]
-            }
-          },
-        }
-      },
-      '400': {
-        description: 'Bad Request – request format or parameters are invalid.',
-        content: {
-          'application/json': {
-            example: {
-              error: {
-                statusCode: 400,
-                name: "BadRequestError",
-                message: "Parameter 'page' must be greater than 1."
-              }
-            }
-          },
-        }
-      },
-      '404': {
-        description: 'Not Found – no entries found for the given parameters.',
-        content: {
-          'application/json': {
-            example: {
-              error: {
-                statusCode: 404,
-                name: "NotFoundError",
-                message: "No categories found for the given parameters."
-              }
-            }
-          },
-        }
-      },
-      '500': {
-        description: 'Internal Server Error.',
-        content: {
-          'application/json': {
-            example: {
-              error: {
-                statusCode: 500,
-                message: "Internal Server Error"
-              }
-            }
-          },
-        },
-      },
-    },
+    responses: RESPONSES,
     operationId: 'get-categories',
     summary: 'Get list of category names with IDs.',
     description: "Get paged list of categories. List can be restricted with \
@@ -149,9 +151,11 @@ export class CategoriesController {
     };
 
     const categoriesPaged = await this.categoriesRepository.findCategories(filter);
+
     if (categoriesPaged.categories.length === 0) {
       throw new HttpErrors.NotFound(`No categories found for given parameters: ${myStringify(filter)}`)
     }
+
     return categoriesPaged;
   }
 }
