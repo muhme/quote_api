@@ -22,6 +22,9 @@ export class QuoteApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
+    // load environment variables from file .env
+    require('dotenv').config();
+
     // Configure logging
     this.configureLogging();
 
@@ -54,7 +57,7 @@ export class QuoteApiApplication extends BootMixin(
    */
   private configureLogging(): void {
 
-    // configure the main logging component
+    // configure the main logging component (must be called before this.component() to take effect)
     this.configure(LoggingBindings.COMPONENT).to({
       enableFluent: false,
       enableHttpAccessLog: true

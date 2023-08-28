@@ -1,61 +1,57 @@
 import {Author, Category, User} from '../models';
 
-export interface Paging {
+// *Paging
+export interface BasePaging {
   totalCount: number;
   page: number;
   size: number;
+}
+export interface Paging extends BasePaging {
   starting?: string;
 }
-export interface PagingLocale {
+export interface PagingLanguage extends BasePaging {
   language: string;
-  totalCount: number;
-  page: number;
-  size: number;
   starting?: string;
 }
-export interface PagingAuthors {
+export interface PagingAuthors extends BasePaging {
   language: string;
-  totalCount: number;
-  page: number;
-  size: number;
   firstname?: string;
-  lastname?: String;
-  description?: String;
+  lastname?: string;
+  description?: string;
 }
+
+// *Paged
 export interface UsersPaged {
   paging: Paging;
   users: User[];
 }
 export interface CategoriesPaged {
-  paging: PagingLocale;
+  paging: PagingLanguage;
   categories: Category[];
 }
 export interface AuthorsPaged {
   paging: PagingAuthors;
   authors: Author[];
 }
-export interface AuthorReturned {
-  author: Author;
-}
-export interface PagingFilter {
+
+// *Filter
+export interface BaseFilter {
   page: number;
   size: number;
+}
+export interface PagingFilter extends BaseFilter {
   starting?: string;
 }
-export interface PagingLocaleFilter {
+export interface PagingLanguageFilter extends BaseFilter {
   language: string;
-  page: number;
-  size: number;
   starting?: string;
 }
-export interface AuthorsFilter {
+export interface AuthorsFilter extends BaseFilter {
   language: string;
-  page: number;
-  size: number;
   lastname?: string;
   firstname?: string;
   description?: string;
-  lfd?: string; // "lastname, firstname, description"
+  lfd?: string; // Consider giving a more descriptive name if possible
 }
 export interface AuthorFilter {
   language: string;
@@ -66,6 +62,11 @@ export interface QuoteFilter {
   authorId?: number;
   userId?: number;
   categoryId?: number;
+}
+
+// *Returned
+export interface AuthorReturned {
+  author: Author;
 }
 export interface RandomQuote {
   quote: string;

@@ -1,37 +1,34 @@
 import {inject} from '@loopback/core';
 import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {MariaDbDataSourceDataSource} from '../datasources';
-import {Quotation, QuotationRelations} from '../models';
-
-/* maybe later refactored if needed elsewhere too */
-export interface QuotationFilter {
-  language: string;
-  authorId?: number;
-  categoryId?: number;
-  userId?: number;
-}
+import {QuoteFilter} from '../common';
+import {MariaDbDataSource} from '../datasources';
+import {Quotation} from '../models';
 
 export class QuotationRepository extends DefaultCrudRepository<
   Quotation,
-  typeof Quotation.prototype.id,
-  QuotationRelations
+  typeof Quotation.prototype.id
 > {
   constructor(
     // @loopback/logging winston logger
     @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Quotation, dataSource);
   }
 
-  async findQuotation(filter: QuotationFilter): Promise<Quotation[]> {
+  /**
+   * get one random quote
+   * @param filter - language, categoryId, authorId, userId
+   * @returns
+   */
+  async findQuotation(filter: QuoteFilter): Promise<Quotation[]> {
     const params: (string | number)[] = [filter.language];
     let sqlQuery = `
-    SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId
-    FROM quotations q, categories_quotations cq
-    WHERE q.locale = ?
-    AND q.public = 1 `;
+      SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId
+      FROM quotations q, categories_quotations cq
+      WHERE q.locale = ?
+      AND q.public = 1 `;
     if (filter.userId !== undefined) {
       sqlQuery += ' AND q.user_id = ? ';
       params.push(filter.userId);

@@ -1,8 +1,8 @@
 import {inject} from '@loopback/core';
 import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {Paging, PagingFilter, UsersPaged} from '../common/types';
-import {MariaDbDataSourceDataSource} from '../datasources';
+import {NO_USER_ENTRY, Paging, PagingFilter, UsersPaged} from '../common';
+import {MariaDbDataSource} from '../datasources';
 import {User} from '../models';
 export class UsersRepository extends DefaultCrudRepository<
   User,
@@ -11,49 +11,28 @@ export class UsersRepository extends DefaultCrudRepository<
   constructor(
     // @loopback/logging winston logger
     @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(User, dataSource);
   }
 
+  /**
+   * Get paged list of users.
+   * @param filter – starting
+   * @returns
+   */
   async findUsersWithQuotations(filter: PagingFilter): Promise<UsersPaged> {
-    const sqlQuery = `
-      SELECT users.id, users.login
-      FROM users
-      INNER JOIN quotations ON users.id = quotations.user_id
-      WHERE users.login LIKE ? AND
-      quotations.public = 1
-      GROUP BY users.id
-      ORDER BY users.login ASC
-      LIMIT ?, ?;
-    `;
-    const countQuery = `
-      SELECT COUNT(DISTINCT users.id) as totalCount
-      FROM users
-      INNER JOIN quotations ON users.id = quotations.user_id
-      WHERE users.login LIKE ? AND
-      quotations.public = 1;
-    `;
 
-    const searchPattern = filter.starting ? filter.starting + '%' : '%%';
-    const params = [searchPattern, (filter.page - 1) * filter.size, filter.size];
-    const countParams = [searchPattern];
+    const params: (string | number)[] = [filter.starting ? filter.starting + '%' : '%%'];
 
-    // execute the two queries
-    const users = await this.dataSource.execute(sqlQuery, params);
-    const totalCountResult = await this.dataSource.execute(countQuery, countParams);
-    const totalCount = totalCountResult[0].totalCount; // extracting totalCount from the result
+    // execute count query
+    const totalCountResult = await this.dataSource.execute(this.countSqlQuery(), params);
+    // extend params with paging parameters and execute the main query
+    params.push(((filter.page - 1) * filter.size), filter.size);
+    const users = await this.dataSource.execute(this.mainSqlQuery(), params);
 
-    const paging: Paging = {
-      totalCount: totalCount,
-      page: filter.page,
-      size: filter.size,
-    };
-    if (filter.starting) {
-      paging.starting = filter.starting;
-    }
     return {
-      paging: paging,
+      paging: this.constructPaging(filter, totalCountResult[0].totalCount),
       users: users
     };
   }
@@ -73,9 +52,39 @@ export class UsersRepository extends DefaultCrudRepository<
     const [result] = await this.dataSource.execute(sqlQuery, [id]) as {login: string}[];
 
     if (!result) {
-      return "no user entry";
+      return NO_USER_ENTRY;
     }
     this.logger.log('debug', `found user ${result.login} for ID ${id}`)
     return result.login;
+  }
+
+  private constructPaging(filter: PagingFilter, totalCount: number): Paging {
+    return {
+      totalCount,
+      page: filter.page,
+      size: filter.size,
+      ...(filter.starting && {starting: filter.starting})
+    };
+  }
+  private mainSqlQuery(): string {
+    return `
+      SELECT users.id, users.login
+      FROM users
+      INNER JOIN quotations ON users.id = quotations.user_id
+      WHERE users.login LIKE ? AND
+      quotations.public = 1
+      GROUP BY users.id
+      ORDER BY users.login ASC
+      LIMIT ?, ?;
+    `;
+  }
+  private countSqlQuery(): string {
+    return `
+      SELECT COUNT(DISTINCT users.id) as totalCount
+      FROM users
+      INNER JOIN quotations ON users.id = quotations.user_id
+      WHERE users.login LIKE ? AND
+      quotations.public = 1;
+    `;
   }
 }

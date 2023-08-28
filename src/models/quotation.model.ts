@@ -21,12 +21,10 @@ export class Quotation extends Entity {
 
   @property({
     type: 'string',
-    required: true,
   }) source: string;
 
   @property({
     type: 'string',
-    required: true,
   }) sourceLink: string;
 
   @property({
@@ -39,9 +37,3 @@ export class Quotation extends Entity {
     super(data);
   }
 }
-
-export interface QuotationRelations {
-  // describe navigational properties here
-}
-
-export type QuotationWithRelations = Quotation & QuotationRelations;

@@ -18,37 +18,57 @@ export class Author extends Entity {
 
   // this is the name field in DB
   @property({
-    type: 'string',
-    required: false,
+    type: 'string'
   })
   lastname?: string;
 
   @property({
-    type: 'string',
-    required: false,
+    type: 'string'
   })
   firstname?: string;
 
   @property({
-    type: 'string',
-    required: false,
+    type: 'string'
   })
   description?: string;
 
   @property({
-    type: 'string',
-    required: false,
+    type: 'string'
   })
   link?: string;
-
-  @property({
-    type: 'number',
-    id: true,
-    generated: true,
-  })
-  totalCount: number;
 
   constructor(data?: Partial<Author>) {
     super(data);
   }
+
+}
+
+/**
+ * create name from firstname and lastname
+ *
+ * @param firstname - possible more than one, or additional patronyms or titles
+ * @param lastname - surname
+ * @param language
+ * @returns e.g.
+ *   "Abraham Lincoln" for "en"
+ *   "リンカーン・エイブラハム" for "ja"
+ */
+export function combineAuthorName(firstname: string | undefined, lastname: string | undefined, language: string): string {
+  firstname = firstname ?? "";
+  lastname = lastname ?? "";
+  let name;
+  if (language === "ja") {
+    if (lastname && firstname) {
+      name = `${lastname}・${firstname}`;
+    } else {
+      name = lastname || firstname;
+    }
+  } else {
+    if (firstname && lastname) {
+      name = `${firstname} ${lastname}`;
+    } else {
+      name = firstname || lastname;
+    }
+  }
+  return name;
 }

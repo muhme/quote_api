@@ -38,7 +38,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=3000
-      - DEBUG=loopback:connector:mysql,loopback:rest:router,loopback:rest:sequence
+#      - DEBUG=loopback:connector:mysql,loopback:rest:router,loopback:rest:sequence
 #      - DEBUG=*
     depends_on:
       - mariadb

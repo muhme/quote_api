@@ -41,9 +41,9 @@ describe('api.zitat-service.de (end2end)', () => {
   });
 
 
-  // *************
-  // * languages *
-  // *************
+  //************
+  // languages *
+  //************
 
   it('invokes GET /languages', async () => {
     const response = await client.get('/languages').expect(200);
@@ -51,9 +51,9 @@ describe('api.zitat-service.de (end2end)', () => {
   });
 
 
-  // *********
-  // * users *
-  // *********
+  //********
+  // users *
+  //********
 
   // correct requests
   it('invokes GET /users', async () => {
@@ -130,16 +130,26 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/users?size=S').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection
-  it('invokes GET /users?starting=OR \'1\'=\'1', async () => {
-    const response = await client.get('/users?starting=OR \'1\'=\'1').expect(404);
+  // exact 20 chars are working, but does not find any user
+  it('invokes GET /users?starting=abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/users?starting=abcdefghijklmnopqrst').expect(404);
     response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /users?starting=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/users?starting=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /users?starting=OR \'1\'=\'1', async () => {
+    const response = await client.get('/users?starting=OR \'1\'=\'1').expect(400);
+    response.text.should.containEql('BadRequestError');
   });
 
 
-  // **************
-  // * categories *
-  // **************
+  //*************
+  // categories *
+  //*************
 
   // correct requests
   it('invokes GET /categories', async () => {
@@ -296,11 +306,26 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/categories?size=Y').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  // exact 20 chars are working, but does not find any category
+  it('invokes GET /categories?starting=abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/categories?starting=abcdefghijklmnopqrst').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /categories?starting=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/categories?starting=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /categories?starting=a.b', async () => {
+    const response = await client.get('/categories?starting=a.b').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
 
 
-  // ***********
-  // * authors *
-  // ***********
+  //**********
+  // authors *
+  //**********
 
   // correct requests
   it('invokes GET /authors', async () => {
@@ -485,6 +510,66 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?description=ZZZ').expect(404);
     response.text.should.containEql('NotFoundError');
   });
+  // exact 20 chars are working, but does not find any user
+  it('invokes GET /authors?lastname=abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/authors?lastname=abcdefghijklmnopqrst').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /authors?lastname=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/authors?lastname=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /authors?lastname=a.b', async () => {
+    const response = await client.get('/authors?lastname=a.b').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // exact 20 chars are working, but does not find any user
+  it('invokes GET /authors?firstname=abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/authors?firstname=abcdefghijklmnopqrst').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /authors?firstname=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/authors?firstname=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /authors?firstname=a.b', async () => {
+    const response = await client.get('/authors?firstname=a.b').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // exact 20 chars are working, but does not find any user
+  it('invokes GET /authors?description=abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/authors?description=abcdefghijklmnopqrst').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /authors?description=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/authors?description=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /authors?description=a.b', async () => {
+    const response = await client.get('/authors?description=a.b').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // exact 20 chars are working, but does not find any user
+  it('invokes GET /authors?lfd=abcdefghijklmnopqrst,abcdefghijklmnopqrst,abcdefghijklmnopqrst', async () => {
+    const response = await client.get('/authors?lfd=abcdefghijklmnopqrst,abcdefghijklmnopqrst,abcdefghijklmnopqrst').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  // SQL injection, not more than 20 chars
+  it('invokes GET /authors?lfd=abcdefghijklmnopqrstu', async () => {
+    const response = await client.get('/authors?lfd=abcdefghijklmnopqrstu').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // SQL injection, only letters allowed
+  it('invokes GET /authors?lfd=a.b', async () => {
+    const response = await client.get('/authors?lfd=a.b').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
 
   // **********
   // * author *
@@ -543,9 +628,9 @@ describe('api.zitat-service.de (end2end)', () => {
     response.text.should.containEql('BadRequestError');
   });
 
-  // *********
-  // * quote *
-  // *********
+  //********
+  // quote *
+  //********
 
   it('invokes GET /quote', async () => {
     const response = await client.get('/quote').expect(200);

@@ -1,8 +1,8 @@
 import {inject} from '@loopback/core';
 import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {CategoriesPaged, PagingLocale, PagingLocaleFilter} from '../common/types';
-import {MariaDbDataSourceDataSource} from '../datasources';
+import {CategoriesPaged, NO_CATEGORY_ENTRY, PagingLanguage, PagingLanguageFilter} from '../common';
+import {MariaDbDataSource} from '../datasources';
 import {Category} from '../models';
 
 export class CategoriesRepository extends DefaultCrudRepository<
@@ -12,66 +12,36 @@ export class CategoriesRepository extends DefaultCrudRepository<
   constructor(
     // @loopback/logging winston logger
     @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSourceDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Category, dataSource);
   }
 
-  async findCategories(filter: PagingLocaleFilter): Promise<CategoriesPaged> {
-    const sqlQuery = `
-      SELECT DISTINCT
-        c.id,
-        t.value AS category
-      FROM
-        categories c
-      LEFT JOIN
-        mobility_string_translations t ON c.id = t.translatable_id
-        AND t.translatable_type = 'Category'
-        AND t.locale = ?
-        AND t.key = 'category'
-      WHERE
-        c.public = 1 AND
-        t.value LIKE ?
-      ORDER BY
-        t.value ASC
-      LIMIT ?, ?;
-    `;
-    const countQuery = `
-      SELECT COUNT(DISTINCT c.id) as totalCount
-      FROM
-        categories c
-      LEFT JOIN
-        mobility_string_translations t ON c.id = t.translatable_id
-        AND t.translatable_type = 'Category'
-        AND t.locale = ?
-        AND t.key = 'category'
-      WHERE
-        c.public = 1 AND
-        t.value LIKE ?;
-    `;
+  /**
+   * get paged list of categories
+   * @param filter – starting, language
+   * @returns CategoriesPaged
+   */
+  async findCategories(filter: PagingLanguageFilter): Promise<CategoriesPaged> {
 
     const searchPattern = filter.starting ? filter.starting + '%' : '%%';
     const params: (string | number)[] = [filter.language, searchPattern];
 
     // execute count query
-    const totalCountResult = await this.dataSource.execute(countQuery, params);
-    // extracting totalCount from the result
-    const totalCount = totalCountResult[0].totalCount;
+    const totalCountResult = await this.dataSource.execute(this.countSqlQuery(), params);
 
-    // extend params with paging parameters
+    // extend params with paging parameters and execute the main query
     params.push(((filter.page - 1) * filter.size), filter.size);
-    // execute the real query
-    const categories = await this.dataSource.execute(sqlQuery, params);
+    const categories = await this.dataSource.execute(this.mainSqlQuery(), params);
 
-    const paging: PagingLocale = {
+    const paging: PagingLanguage = {
       language: filter.language,
-      totalCount: totalCount,
+      totalCount: totalCountResult[0].totalCount,
       page: filter.page,
       size: filter.size,
+      ...(filter.starting && {starting: filter.starting})
     };
-    if (filter.starting) {
-      paging.starting = filter.starting;
-    }
+
     return {
       paging: paging,
       categories: categories
@@ -99,9 +69,45 @@ export class CategoriesRepository extends DefaultCrudRepository<
     const [result] = await this.dataSource.execute(sqlQuery, [id, language]) as {category: string}[];
 
     if (!result) {
-      return "no category entry";
+      return NO_CATEGORY_ENTRY;
     }
     this.logger.log('debug', `categoryName: found category ${result.category} for ID ${id} in language ${language}`)
     return result.category;
+  }
+
+  private mainSqlQuery(): string {
+    return `
+      SELECT DISTINCT
+        c.id,
+        t.value AS category
+      FROM
+        categories c
+      LEFT JOIN
+        mobility_string_translations t ON c.id = t.translatable_id
+        AND t.translatable_type = 'Category'
+        AND t.locale = ?
+        AND t.key = 'category'
+      WHERE
+        c.public = 1 AND
+        t.value LIKE ?
+      ORDER BY
+        t.value ASC
+      LIMIT ?, ?;
+      `;
+  }
+  private countSqlQuery(): string {
+    return `
+      SELECT COUNT(DISTINCT c.id) as totalCount
+      FROM
+        categories c
+      LEFT JOIN
+        mobility_string_translations t ON c.id = t.translatable_id
+        AND t.translatable_type = 'Category'
+        AND t.locale = ?
+        AND t.key = 'category'
+      WHERE
+        c.public = 1 AND
+        t.value LIKE ?;
+  `;
   }
 }

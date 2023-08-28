@@ -1,8 +1,10 @@
+import {inject} from '@loopback/core';
+import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
-import {HttpErrors, api, operation, param} from '@loopback/rest';
-import {checkAndSetLanguage} from '../common/helpers';
-import {CategoriesPaged, PagingLocaleFilter} from '../common/types';
+import {HttpErrors, api, get, param} from '@loopback/rest';
+import {CategoriesPaged, PARAM_MAX_LENGTH, PagingLanguageFilter, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
 import {CategoriesRepository} from '../repositories/categories.repository';
+
 /**
  * /categories controller – gets a list of public categories
  *
@@ -11,11 +13,18 @@ import {CategoriesRepository} from '../repositories/categories.repository';
   paths: {},
 })
 export class CategoriesController {
+
+  // Inject a winston logger
+  @inject(LoggingBindings.WINSTON_LOGGER)
+  private logger: WinstonLogger;
+
   constructor(
     @repository(CategoriesRepository)
     public categoriesRepository: CategoriesRepository
   ) { }
-  @operation('get', '/categories', {
+
+  // http access is logged by global interceptor
+  @get('/categories', {
     tags: ['Categories'],
     responses: {
       '200': {
@@ -101,58 +110,38 @@ export class CategoriesController {
       parameter 'starting'. Category names are in the requested 'language'. \
       Only public categories are provided."
   })
+  // log method invocations
+  @logInvocation()
   async getCategories(
-    @param({
-      name: 'language',
-      in: 'query',
-      description: 'The language for the category names. See /languages for available languages. If the language parameter is missing, it defaults to \'en\' (English).',
-      required: false,
-      schema: {
-        type: 'string',
-        default: 'en'
-      }
-    })
-    language = 'en',
-    @param({
-      name: 'page',
-      in: 'query',
-      description: 'The response is made page by page, the parameter \'page\' controls the page number of the result. Starting with page 1.',
-      required: false,
-      schema: {
-        type: 'number',
-        default: 1
-      }
-    })
-    page = 1,
-    @param({
-      name: 'size',
-      in: 'query',
-      description: 'The response is made page by page, the parameter \'size\' controls how many entries are returned on a page.',
-      required: false,
-      schema: {
-        type: 'number',
-        default: 100
-      }
-    })
-    size = 100,
-    @param({
-      name: 'starting',
-      in: 'query',
-      description: 'Use the \'starting\' parameter to specify the beginning of the category name to limit the list for preselection.',
-      required: false,
-      schema: {
-        type: 'string'
-      }
-    })
-    starting?: string,
+    @param.query.string('language', {
+      description: 'The language for the author entries. See /languages for available languages.',
+      default: 'en'
+    }) language = 'en',
+
+    @param.query.number('page', {
+      description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
+      default: 1
+    }) page = 1,
+
+    @param.query.number('size', {
+      description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
+      default: 100
+    }) size = 100,
+
+    @param.query.string('starting', {
+      description: `Use the \'starting\' parameter to specify the beginning of \
+        the category name to limit the list for preselection. The parameter \
+        'starting' may contain only up-to ${PARAM_MAX_LENGTH} letters or spaces.`,
+    }) starting?: string
   ): Promise<CategoriesPaged> {
-    if (page < 1) {
-      throw new HttpErrors.BadRequest("Parameter 'page' must be greater than 1.");
-    }
-    if (size < 1) {
-      throw new HttpErrors.BadRequest("Parameter 'size' must be greater than 1.");
-    }
-    const filter: PagingLocaleFilter = {
+
+    // prevent SQL injection on where like
+    validateOnlyLettersAndMaxLength(starting, 'starting');
+
+    // page and size >= 1?
+    validatePageAndSize(page, size);
+
+    const filter: PagingLanguageFilter = {
       language: checkAndSetLanguage(language),
       page: page,
       size: size,
@@ -161,7 +150,7 @@ export class CategoriesController {
 
     const categoriesPaged = await this.categoriesRepository.findCategories(filter);
     if (categoriesPaged.categories.length === 0) {
-      throw new HttpErrors.NotFound("No categories found for given parameters.")
+      throw new HttpErrors.NotFound(`No categories found for given parameters: ${myStringify(filter)}`)
     }
     return categoriesPaged;
   }

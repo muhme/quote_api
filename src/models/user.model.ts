@@ -15,13 +15,6 @@ export class User extends Entity {
   })
   login: string;
 
-  @property({
-    type: 'number',
-    id: true,
-    generated: true,
-  })
-  totalCount: number;
-
   constructor(data?: Partial<User>) {
     super(data);
   }
