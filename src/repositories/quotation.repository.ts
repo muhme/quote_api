@@ -24,9 +24,12 @@ export class QuotationRepository extends DefaultCrudRepository<
    */
   async findQuotation(filter: QuoteFilter): Promise<Quotation[]> {
     const params: (string | number)[] = [filter.language];
+    // only join for categories if needed as this is DB expensive
+    const categoriesQuotationsTable =
+      (filter.categoryId === undefined) ? "" : ", categories_quotations cq";
     let sqlQuery = `
       SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId
-      FROM quotations q, categories_quotations cq
+      FROM quotations q ${categoriesQuotationsTable}
       WHERE q.locale = ?
       AND q.public = 1 `;
     if (filter.userId !== undefined) {
