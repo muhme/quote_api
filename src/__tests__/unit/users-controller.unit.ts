@@ -1,5 +1,5 @@
-/*
 import {expect, sinon} from '@loopback/testlab';
+import {UsersPaged} from '../../common/types';
 import {UsersController} from '../../controllers';
 import {User} from '../../models';
 import {UsersRepository} from '../../repositories';
@@ -10,29 +10,36 @@ describe('UsersController', () => {
 
   beforeEach(givenStubbedRepository);
 
-  const mockUsers: User[] = [
-    {
-      id: 1,
-      login: 'alice'
+  const mockUsers: UsersPaged =
+  {
+    "paging": {
+      "totalCount": 5,
+      "page": 1,
+      "size": 100
     },
-    {
-      id: 2,
-      login: 'bob'
-    },
-    {
-      id: 3,
-      login: 'charlie'
-    },
-    {
-      id: 4,
-      login: 'david'
-    },
-    {
-      id: 5,
-      login: 'eve'
-    },
-  ] as User[];
-
+    "users": [
+      new User({
+        id: 1,
+        login: 'alice'
+      }),
+      new User({
+        id: 2,
+        login: 'bob'
+      }),
+      new User({
+        id: 3,
+        login: 'charlie'
+      }),
+      new User({
+        id: 4,
+        login: 'david'
+      }),
+      new User({
+        id: 5,
+        login: 'eve'
+      })
+    ]
+  };
 
   it('retrieves users without any parameters', async () => {
     usersRepositoryStub.findUsersWithQuotations.resolves(mockUsers);
@@ -60,4 +67,3 @@ describe('UsersController', () => {
     controller = new UsersController(usersRepositoryStub as unknown as UsersRepository);
   }
 });
-*/
