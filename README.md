@@ -53,13 +53,13 @@ There is a script for load testing with [K6](https://k6.io/). This runs (at the 
 - 100% test cases with language parameter, with
   - 90% randomly using one of the available languages and
   - 10% not using the parameter
-- 33% of 100% userId parameter, with
+- 33% of 100% test cases with userId parameter, with
   - 50% randomly using one of the existing user IDs and
   - 50% not using the parameter
-- 33% of 100% authorId parameter, with
+- 33% of 100% test cases with authorId parameter, with
   - 50% randomly using one of the existing author IDs and
   - 50% not using the parameter
-- 33% of 100% categoryId parameter, with
+- 33% of 100% test cases with categoryId parameter, with
   - 50% randomly using one of the existing category IDs and
   - 50% not using the parameter
 
