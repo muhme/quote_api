@@ -1,6 +1,14 @@
 // available languages, corresponding with Ruby on Rails:
 // config.i18n.available_locales = [:de, :en, :es, :ja, :uk]
-export const LOCALES = ["de", "en", "es", "ja", "uk"];
+export const LANGUAGES = {
+  de: "German",
+  en: "English",
+  es: "Spanish",
+  ja: "Japanese",
+  uk: "Ukrainian"
+};
+
+export const LANGUAGE_DEFAULT = 'en';
 // maximal length for parameters like 'starting', 'firstname' ... to prevent SQL injection
 export const PARAM_MAX_LENGTH = 20;
 // used as login name if user entry was not found, e.g. in error messages

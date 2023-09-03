@@ -1,16 +1,17 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {NO_USER_ENTRY, Paging, PagingFilter, UsersPaged} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {User} from '../models';
+import {MyLogger} from '../providers';
+
 export class UsersRepository extends DefaultCrudRepository<
   User,
   typeof User.prototype.id
 > {
   constructor(
     // @loopback/logging winston logger
-    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('logger') private logger: MyLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(User, dataSource);

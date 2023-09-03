@@ -1,9 +1,10 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {AuthorFilter, AuthorReturned, AuthorsFilter, AuthorsPaged, PARAM_MAX_LENGTH, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
 import {Author} from '../models';
+import {MyLogger} from '../providers';
 import {AuthorsRepository} from '../repositories/authors.repository';
 
 const AUTHORS_RESPONSES = {
@@ -149,8 +150,9 @@ const AUTHOR_RESPONSES = {
 export class AuthorsController {
 
   // Inject a winston logger
-  @inject(LoggingBindings.WINSTON_LOGGER)
-  private logger: WinstonLogger;
+  // @inject(LoggingBindings.WINSTON_LOGGER)
+  // private logger: WinstonLogger;
+  @inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(AuthorsRepository)
@@ -214,6 +216,9 @@ export class AuthorsController {
       description: "The beginning of the authors 'lastname,firstname,description' to limit the list for type-ahead. Parameters 'lastname', 'firstname' and 'description' are ignored if parameter 'lfd' is used."
     }) lfd?: string
   ): Promise<AuthorsPaged> {
+
+    this.logger.log('debug', '@get/authors');
+
     const filter: AuthorsFilter = {
       language: checkAndSetLanguage(language),
       page: page,

@@ -2,9 +2,10 @@ import {inject} from '@loopback/core';
 import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
-import {QuoteFilter, RandomQuote, ZITAT_SERVICE_DE, checkAndSetLanguage} from '../common';
+import {LANGUAGES, QuoteFilter, RandomQuote, SupportedLanguage, ZITAT_SERVICE_DE, checkAndSetLanguage} from '../common';
 import {Author} from '../models';
 import {Quotation} from '../models/quotation.model';
+// import {MyLogger} from '../providers';
 import {CategoriesRepository, UsersRepository} from '../repositories';
 import {AuthorsRepository} from '../repositories/authors.repository';
 import {QuotationRepository} from '../repositories/quotation.repository';
@@ -20,6 +21,7 @@ const RESPONSES = {
       'application/json': {
         example: {
           quote: "We always overestimate the change that will occur in the next two years and underestimate the change that will occur in the next ten.",
+          language: "en",
           link: "https://www.zitat-service.de/en/quotations/1337",
           source: "The Road Ahead, Afterword, p. 316, 2006",
           authorId: 286,
@@ -51,7 +53,7 @@ const RESPONSES = {
           error: {
             statusCode: 404,
             name: "NotFoundError",
-            message: "No quote found for given parameters: language=es, userId=42 (rezitant), categoryId=42 (Carpintero), authorId=42 (Jean Paul)!"
+            message: "No quote found for given parameters: language=es (Spanish), userId=42 (rezitant), categoryId=42 (Carpintero), authorId=42 (Jean Paul)!"
           }
         }
       }
@@ -73,6 +75,7 @@ export class QuotationController {
   // Inject a winston logger
   @inject(LoggingBindings.WINSTON_LOGGER)
   private logger: WinstonLogger;
+  //@inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(QuotationRepository)
@@ -102,9 +105,8 @@ export class QuotationController {
   @logInvocation()
   async getQuotations(
     @param.query.string('language', {
-      description: "The language for the random quote. See /languages for available languages. If the parameter language is missing, it defaults to 'en' (English).",
-      default: 'en'
-    }) language = 'en',
+      description: "The language for the random quote. See /languages for available languages. If the language parameter is missing, all languages will be used for the quotes. Authors name and the links are used in quotations language.",
+    }) language?: SupportedLanguage,
 
     @param.query.number('userId', {
       description: "Restrict to pick-up quotes only from given 'userId'. See /users for available user entries."
@@ -121,7 +123,12 @@ export class QuotationController {
 
     this.validateParameters(userId, authorId, categoryId);
 
-    const filter: QuoteFilter = {language: checkAndSetLanguage(language), userId, authorId, categoryId};
+    // for quotes, only check if language is set
+    if (language !== undefined) {
+      checkAndSetLanguage(language)
+    }
+
+    const filter: QuoteFilter = {language, userId, authorId, categoryId};
 
     const quote = await this.quotationRepository.findQuotation(filter);
 
@@ -132,20 +139,21 @@ export class QuotationController {
       throw new HttpErrors.NotFound(`Could not find a quote for given parameters.`);
     }
 
-    return this.mapQuoteToRandomQuote(quote[0], language);
+    return this.mapQuoteToRandomQuote(quote[0]);
   }
 
-  private async mapQuoteToRandomQuote(quote: Quotation, language: string): Promise<RandomQuote> {
+  private async mapQuoteToRandomQuote(quote: Quotation): Promise<RandomQuote> {
 
     const randomQuote: RandomQuote = {
       quote: quote.quotation,
-      link: ZITAT_SERVICE_DE + `/${language}/quotations/${quote.id}`,
+      language: quote.language,
+      link: ZITAT_SERVICE_DE + `/${quote.language}/quotations/${quote.id}`,
       source: quote.source === null ? undefined : quote.source,
       sourceLink: quote.sourceLink === null ? undefined : quote.sourceLink,
       authorId: quote.authorId
     };
 
-    const author: (Author | undefined) = await this.authorsRepository.findAuthor({language: language, id: quote.authorId ?? 0}); // using author ID 0 'unknown' in case of problems
+    const author: (Author | undefined) = await this.authorsRepository.findAuthor({language: quote.language, id: quote.authorId ?? 0}); // using author ID 0 'unknown' in case of problems
 
     if (author) {
       randomQuote.authorName = author.name;
@@ -170,20 +178,23 @@ export class QuotationController {
   // create descriptive error message with all parameters set and throw 404
   private async throwNotFoundWithGivenParametes(filter: QuoteFilter) {
 
-    let givenParams = `language=${filter.language}`;
+    const givenParams = [];
+    if (filter.language !== undefined) {
+      givenParams.push(`language=${filter.language} (${LANGUAGES[filter.language]})`);
+    }
     if (filter.userId !== undefined) {
       const loginName = await this.usersRepository.loginName(filter.userId);
-      givenParams += `, userId=${filter.userId} (${loginName})`
+      givenParams.push(`userId=${filter.userId} (${loginName})`);
     }
     if (filter.categoryId !== undefined) {
       const categoryName = await this.categoriesRepository.categoryName(filter.categoryId, filter.language);
-      givenParams += `, categoryId=${filter.categoryId} (${categoryName})`
+      givenParams.push(`categoryId=${filter.categoryId} (${categoryName})`);
     }
     if (filter.authorId !== undefined) {
       const authorName = await this.authorsRepository.authorName(filter.authorId, filter.language);
-      givenParams += `, authorId=${filter.authorId} (${authorName})`
+      givenParams.push(`authorId=${filter.authorId} (${authorName})`);
     }
-    throw new HttpErrors.NotFound(`No quote found for given parameters: ${givenParams}!`);
+    throw new HttpErrors.NotFound(`No quote found for given parameters: ${givenParams.join(", ")}.`);
   }
 
 }

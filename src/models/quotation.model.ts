@@ -17,6 +17,11 @@ export class Quotation extends Entity {
   @property({
     type: 'string',
     required: true,
+  }) language: string;
+
+  @property({
+    type: 'string',
+    required: true,
   }) quotationLink: string;
 
   @property({

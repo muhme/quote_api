@@ -1,5 +1,5 @@
 import {HttpErrors} from '@loopback/rest';
-import {LOCALES, PARAM_MAX_LENGTH} from '.';
+import {LANGUAGES, PARAM_MAX_LENGTH} from '.';
 
 /**
  * Verify the given languae is valid.
@@ -13,10 +13,10 @@ export function checkAndSetLanguage(language: string | undefined): string {
   if (language === undefined) {
     return 'en';
   }
-  if (LOCALES.includes(language)) {
+  if (Object.keys(LANGUAGES).includes(language)) {
     return language;
   }
-  throw new HttpErrors.BadRequest(`Parameter 'language' has unknown value '${language}'.`);
+  throw new HttpErrors.BadRequest(`Parameter 'language' has unknown value '${language}'. You have to choose from ${Object.keys(LANGUAGES).join(", ")}.`);
 }
 
 /**

@@ -643,13 +643,14 @@ describe('api.zitat-service.de (end2end)', () => {
     expect(response.body).to.have.property('quote');
     expect(response.body).to.have.property('link');
     expect(response.body).to.have.property('authorId', 0);
-    expect(response.body).to.have.property('authorName', "Unknown");
+    expect(response.body).to.have.property('authorName');
   });
   // following tests are figured out with exactly one quote returned
   it('invokes GET /quote?authorId=601', async () => {
     const response = await client.get('/quote?authorId=601').expect(200);
     expect({
       quote: "Dance is the hidden language of the soul.",
+      language: "en",
       link: "https://www.zitat-service.de/en/quotations/1906",
       source: "Martha Graham Reflects on Her Art and a Life in Dance, The New York Times, 1985",
       sourceLink: "https://archive.nytimes.com/www.nytimes.com/library/arts/033185graham.html",
@@ -662,6 +663,7 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/quote?userId=97&language=de').expect(200);
     expect({
       quote: "Missverständnis? Die häufigste Form menschlicher Kommunikation.",
+      language: "de",
       link: "https://www.zitat-service.de/de/quotations/1527",
       authorId: 439,
       authorName: "Peter Benary",
@@ -672,9 +674,21 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/quote?authorId=0&categoryId=16&userId=73&language=es').expect(200);
     expect({
       quote: "Vivir con miedo, es como vivir a medias.",
+      language: "es",
       link: "https://www.zitat-service.de/es/quotations/1903",
       authorId: 0,
       authorName: "Desconocido"
+    }).to.eql(response.body);
+  });
+  it('invokes GET /quote?authorId=33&categoryId=501&language=de', async () => {
+    const response = await client.get('/quote?authorId=33&categoryId=501&language=de').expect(200);
+    expect({
+      quote: "Was nicht umstritten ist, ist auch nicht sonderlich interessant.",
+      language: "de",
+      link: "https://www.zitat-service.de/de/quotations/1687",
+      authorId: 33,
+      authorName: "Johann Wolfgang von Goethe",
+      authorLink: "https://de.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe"
     }).to.eql(response.body);
   });
 

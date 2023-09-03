@@ -12,6 +12,8 @@ services:
       MARIADB_DATABASE: quote_development
       MARIADB_USER: quote_development
       MARIADB_PASSWORD: quote_development
+    ports:
+      - "3002:3306"
     restart: unless-stopped
 
   mysqladmin:

@@ -1,9 +1,9 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {CategoriesPaged, NO_CATEGORY_ENTRY, PagingLanguage, PagingLanguageFilter} from '../common';
+import {CategoriesPaged, LANGUAGE_DEFAULT, NO_CATEGORY_ENTRY, PagingLanguage, PagingLanguageFilter} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Category} from '../models';
+import {MyLogger} from '../providers';
 
 export class CategoriesRepository extends DefaultCrudRepository<
   Category,
@@ -11,8 +11,9 @@ export class CategoriesRepository extends DefaultCrudRepository<
 > {
   constructor(
     // @loopback/logging winston logger
-    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('logger') private logger: MyLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
+
   ) {
     super(Category, dataSource);
   }
@@ -52,10 +53,13 @@ export class CategoriesRepository extends DefaultCrudRepository<
    * Get category name for given identifier in given locale.
    *
    * @param id unique identifier (categories.id)
-   * @param language locale for the category name (mobility_string_translations.locale)
+   * @param language locale for the category name (mobility_string_translations.locale) or undefined and default 'en' will be used
    * @returns category name in given locale or "no category entry"
    */
-  async categoryName(id: number, language: string): Promise<string> {
+  async categoryName(id: number, language: string | undefined): Promise<string> {
+    if (!language) {
+      language = LANGUAGE_DEFAULT;
+    }
     const sqlQuery = `
         SELECT value as category
         FROM categories c, mobility_string_translations mst

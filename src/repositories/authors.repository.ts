@@ -1,9 +1,10 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger} from '@loopback/logging';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {AuthorFilter, AuthorsFilter, AuthorsPaged, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
+import {AuthorFilter, AuthorsFilter, AuthorsPaged, LANGUAGE_DEFAULT, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Author, combineAuthorName} from '../models';
+import {MyLogger} from '../providers';
 
 export class AuthorsRepository extends DefaultCrudRepository<
   Author,
@@ -11,7 +12,8 @@ export class AuthorsRepository extends DefaultCrudRepository<
 > {
   constructor(
     // @loopback/logging winston logger
-    @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
+    @inject('logger') private logger: MyLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Author, dataSource);
@@ -79,11 +81,14 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * This is a easier implementation and garantiee always string return as used for error messages.
    *
    * @param id unique identifier (authors.id)
-   * @param language locale for authors name (mobility_string_translations.locale)
+   * @param language locale for authors name (mobility_string_translations.locale) or undefined and default 'en' will be used
    * @returns authors name as e.g. "firstname name" in given locale or "no author entry"
    */
-  async authorName(id: number, language: string): Promise<string> {
+  async authorName(id: number, language: string | undefined): Promise<string> {
 
+    if (!language) {
+      language = LANGUAGE_DEFAULT;
+    }
     const [result] = await this.dataSource.execute(this.authorsNameSqlQuery(), [id, language, language]);
 
     if (!result) {
@@ -91,6 +96,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
     }
     const name = combineAuthorName(result.firstname, result.lastname, language);
     this.logger.log('debug', `authorName: found name ${name} for ID ${id} in language ${language}`);
+    // this.logger(`authorName: found name ${name} for ID ${id} in language ${language}`);
     return name;
   }
 

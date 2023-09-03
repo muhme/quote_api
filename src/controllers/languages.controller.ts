@@ -1,7 +1,8 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {api, get} from '@loopback/rest';
-import {LOCALES} from '../common';
+import {LANGUAGES} from '../common';
+import {MyLogger} from '../providers';
 
 const RESPONSES = {
   '200': {
@@ -15,7 +16,7 @@ const RESPONSES = {
             description: 'two-letter ISO 639-1 language code'
           },
         },
-        example: LOCALES,
+        example: Object.keys(LANGUAGES),
       },
     },
   },
@@ -43,8 +44,7 @@ const RESPONSES = {
 export class LanguagesController {
 
   // Inject a winston logger
-  @inject(LoggingBindings.WINSTON_LOGGER)
-  private logger: WinstonLogger;
+  @inject('logger') private logger: MyLogger;
 
   constructor() { }
   // http access is logged by global interceptor
@@ -55,7 +55,7 @@ export class LanguagesController {
     summary: 'Get list of all available language codes.',
     description: `Get a list of all available languages for all the content \
       (quotes, author names, category names and links) as string-array of \
-      two-letter ISO 639-1 codes. At the moment these are ${LOCALES}.`,
+      two-letter ISO 639-1 codes. At the moment these are ${Object.keys(LANGUAGES)}.`,
   })
   // log method invocations
   @logInvocation()
@@ -64,6 +64,6 @@ export class LanguagesController {
      * hard-wired, corresponding with Ruby on Rails:
      * config.i18n.available_locales = [:de, :en, :es, :ja, :uk]
      */
-    return LOCALES;
+    return Object.keys(LANGUAGES);
   }
 }

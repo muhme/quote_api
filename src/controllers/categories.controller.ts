@@ -1,8 +1,9 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {CategoriesPaged, PARAM_MAX_LENGTH, PagingLanguageFilter, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
+import {MyLogger} from '../providers';
 import {CategoriesRepository} from '../repositories/categories.repository';
 
 const RESPONSES = {
@@ -94,8 +95,7 @@ const RESPONSES = {
 export class CategoriesController {
 
   // Inject a winston logger
-  @inject(LoggingBindings.WINSTON_LOGGER)
-  private logger: WinstonLogger;
+  @inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(CategoriesRepository)

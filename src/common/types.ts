@@ -1,4 +1,5 @@
 import {Author, Category, User} from '../models';
+import {LANGUAGES} from './constants';
 
 // *Paging
 export interface BasePaging {
@@ -58,7 +59,7 @@ export interface AuthorFilter {
   id: number;
 }
 export interface QuoteFilter {
-  language: string;
+  language?: SupportedLanguage;
   authorId?: number;
   userId?: number;
   categoryId?: number;
@@ -70,6 +71,7 @@ export interface AuthorReturned {
 }
 export interface RandomQuote {
   quote: string;
+  language: string;
   link: string;
   source?: string;
   sourceLink?: string;
@@ -77,3 +79,5 @@ export interface RandomQuote {
   authorName?: string;
   authorLink?: string;
 }
+
+export type SupportedLanguage = keyof typeof LANGUAGES;

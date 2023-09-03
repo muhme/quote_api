@@ -1,8 +1,9 @@
 import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {PARAM_MAX_LENGTH, PagingFilter, UsersPaged, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
+import {MyLogger} from '../providers';
 import {UsersRepository} from '../repositories/users.repository';
 
 const RESPONSES = {
@@ -87,8 +88,7 @@ const RESPONSES = {
 export class UsersController {
 
   // Inject a winston logger
-  @inject(LoggingBindings.WINSTON_LOGGER)
-  private logger: WinstonLogger;
+  @inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(UsersRepository)
