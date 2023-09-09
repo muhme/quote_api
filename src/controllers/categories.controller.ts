@@ -1,9 +1,9 @@
-import {inject} from '@loopback/core';
-import {logInvocation} from '@loopback/logging';
+// import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {CategoriesPaged, PARAM_MAX_LENGTH, PagingLanguageFilter, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
-import {MyLogger} from '../providers';
+//import {MyLogger} from '../providers';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {CategoriesRepository} from '../repositories/categories.repository';
 
 const RESPONSES = {
@@ -95,7 +95,9 @@ const RESPONSES = {
 export class CategoriesController {
 
   // Inject a winston logger
-  @inject('logger') private logger: MyLogger;
+  // Inject a winston logger
+  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
+  // @inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(CategoriesRepository)
@@ -113,7 +115,7 @@ export class CategoriesController {
       Only public categories are provided."
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getCategories(
     @param.query.string('language', {
       description: 'The language for the author entries. See /languages for available languages.',

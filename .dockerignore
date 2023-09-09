@@ -1,5 +1,15 @@
-node_modules
-npm-debug.log
-/dist
+# dependencies
+**/node_modules
+
+# container useless
+**/build
+**/dist
+.git/
+.gitignore
+.vscode
+
+# no logs
+*.log
+
 # Cache used by TypeScript's incremental build
 *.tsbuildinfo

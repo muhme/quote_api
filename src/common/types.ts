@@ -56,7 +56,7 @@ export interface AuthorsFilter extends BaseFilter {
 }
 export interface AuthorFilter {
   language: string;
-  id: number;
+  authorId: number;
 }
 export interface QuoteFilter {
   language?: SupportedLanguage;

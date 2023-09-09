@@ -4,7 +4,7 @@ This will be the new API for [zitat-service.de](https://www.zitat-service.de)
 
 ## Docker Containers
 
-There is a Docker test and development environment prepared. You can create your own test and development instance with the following commands:
+There is a Docker test and development environment prepared. You can create your own test and development instance with:
 
 ```
 $ git clone https://github.com/muhme/quote_api
@@ -48,24 +48,41 @@ node $ npm run test
 
 ### K6
 
-There is a script for load testing with [K6](https://k6.io/). This runs (at the moment) endpoint /quote with:
+There is a script for load testing with [K6](https://k6.io/). This runs home, OpenAPI spec, API explorer and all endpoints with all parameter combinations.
 
-- 100% test cases with language parameter, with
-  - 90% randomly using one of the available languages and
-  - 10% not using the parameter
-- 33% of 100% test cases with userId parameter, with
-  - 50% randomly using one of the existing user IDs and
-  - 50% not using the parameter
-- 33% of 100% test cases with authorId parameter, with
-  - 50% randomly using one of the existing author IDs and
-  - 50% not using the parameter
-- 33% of 100% test cases with categoryId parameter, with
-  - 50% randomly using one of the existing category IDs and
-  - 50% not using the parameter
+For example, on an 8-core Docker running 50 virtual users in parallel for three minutes, more than 100,000 requests are executed in an average of 25 ms (maximum 423 ms). The Node.js container is using only a quarter of the CPU and the MariaDB container using three quarters. With 90% HTTP status 200. The remaining 10% are HTTP Status 404 from the /quote endpoint combinations of language with author/user/category ID for which there are no matches.
 
 ```sh
 host $ cd src/__tests__/k6
-host $ k6 -u 20 -d 20s run script.js
+host $ k6 -u 50 -d 3m run script.js
+```
+
+All requests can be shown with env variable SHOW_REQUESTS:
+
+```sh
+host $ cd src/__tests__/k6
+host $ k6 -e SHOW_REQUESTS=true -d 1s run script.js
+Testing http://localhost:3000
+Fetched 5 languages: de,en,es,ja,uk
+Fetched 60 users
+Fetched 562 authors
+Fetched 570 categories
+19:03:53.311 GET 404    6 http://localhost:3000/quote?language=ja&authorId=599
+19:03:53.403 GET 200    7 http://localhost:3000/quote
+19:03:53.467 GET 200    8 http://localhost:3000/categories?language=en&starting=Ang
+19:03:53.510 GET 200    8 http://localhost:3000/quote
+19:03:53.577 GET 200    8 http://localhost:3000/quote?language=de
+19:03:53.676 GET 200    5 http://localhost:3000/quote?language=de&userId=27
+19:03:53.756 GET 200    6 http://localhost:3000/
+19:03:53.808 GET 200    6 http://localhost:3000/quote?language=uk
+19:03:53.830 GET 404    5 http://localhost:3000/quote?language=en&userId=21
+19:03:53.930 GET 404    4 http://localhost:3000/explorer
+19:03:54.017 GET 200    5 http://localhost:3000/openapi.json
+19:03:54.035 GET 200    2 http://localhost:3000/languages
+19:03:54.111 GET 200    2 http://localhost:3000/explorer
+19:03:54.155 GET 200    4 http://localhost:3000/categories?language=ja&starting=%E8%A8%BC%E5%88%B8%E5%8F%96%E5%BC%95
+19:03:54.181 GET 200    7 http://localhost:3000/quote?language=de
+19:03:54.265 GET 200    6 http://localhost:3000/quote?language=uk
 ```
 
 ## History

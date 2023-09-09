@@ -1,10 +1,10 @@
-import {inject} from '@loopback/core';
-import {logInvocation} from '@loopback/logging';
+// import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {AuthorFilter, AuthorReturned, AuthorsFilter, AuthorsPaged, PARAM_MAX_LENGTH, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
 import {Author} from '../models';
-import {MyLogger} from '../providers';
+//import {MyLogger} from '../providers';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {AuthorsRepository} from '../repositories/authors.repository';
 
 const AUTHORS_RESPONSES = {
@@ -15,7 +15,7 @@ const AUTHORS_RESPONSES = {
       number and the requested number of entries with \'size\'. \
       If the result is using preselection with \'firstnam\', \'name\' or \
       \'description\' the values are shown. The \'authors\' result array \
-      is sorted by the the authors \'lastname\'. Attributes \'id\' and \
+      is sorted by the the authors \'lastname\'. Attributes \'authorId\' and \
       \'name\' are always present. Other only if the contain values.',
     content: {
       'application/json': {
@@ -30,7 +30,7 @@ const AUTHORS_RESPONSES = {
           },
           authors: [
             {
-              id: 140,
+              authorId: 140,
               lastname: "Allen",
               firstname: "Woody",
               description: "US-American director, actor, comedian, writer and musician (born 1935)",
@@ -50,7 +50,7 @@ const AUTHORS_RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'id' must be a positive number."
+            message: "Parameter 'authorId' must be a positive number."
           }
         }
       },
@@ -78,7 +78,7 @@ const AUTHORS_RESPONSES = {
 const AUTHOR_RESPONSES = {
   '200': {
     description: "OK – the author retrieved successfully. \
-      Always present are the attributes 'id' and 'name'. The attributes \
+      Always present are the attributes 'authorId' and 'name'. The attributes \
       'firstname', 'lastname', 'description' and 'link' are only present \
       if they are exist. All attributes are returned in the requested \
       'language'.",
@@ -86,7 +86,7 @@ const AUTHOR_RESPONSES = {
       'application/json': {
         example: {
           author: {
-            id: 597,
+            authorId: 597,
             lastname: "坂本",
             firstname: "龍一",
             description: "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
@@ -105,7 +105,7 @@ const AUTHOR_RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'id' must be a positive number."
+            message: "Parameter 'authorId' must be a positive number."
           }
         }
       },
@@ -150,9 +150,8 @@ const AUTHOR_RESPONSES = {
 export class AuthorsController {
 
   // Inject a winston logger
-  // @inject(LoggingBindings.WINSTON_LOGGER)
-  // private logger: WinstonLogger;
-  @inject('logger') private logger: MyLogger;
+  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
+  // @inject('logger') private logger: MyLogger;
 
   constructor(
     @repository(AuthorsRepository)
@@ -171,13 +170,13 @@ export class AuthorsController {
       the requested page number with parameter 'page', the maximal number of \
       page entries with parameter 'size'. If the list is restricted the \
       'paging' parameters 'firstname', 'lastname' or 'description' are returned. \
-      The entries of the 'authors' array always contain the attributes 'id' \
+      The entries of the 'authors' array always contain the attributes 'authorId' \
       and 'name'. If they exist, the optional attributes 'firstname', \
       'lastname', 'link' and 'description' will be returned. All attributes \
       are given in the requested 'language'. Only public authors are provided."
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getAuthors(
     @param.query.string('language', {
       description: 'The language for the author entries. See /languages for available languages.',
@@ -197,27 +196,29 @@ export class AuthorsController {
     @param.query.string('lastname', {
       description: `The beginning of the authors last name to limit the list \
         for type-ahead. The parameter 'lastname' may contain only up-to \
-        ${PARAM_MAX_LENGTH} letters or spaces.`
+        ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
     }) lastname?: string,
 
     @param.query.string('firstname', {
       description: `The beginning of the authors first name to limit the list \
         for type-ahead. The parameter 'lastname' may contain only up-to \
-        ${PARAM_MAX_LENGTH} letters or spaces.`
+        ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
     }) firstname?: string,
 
     @param.query.string('description', {
       description: `The beginning of the authors description to limit the list \
       for type-ahead. The parameter 'lastname' may contain only up-to \
-      ${PARAM_MAX_LENGTH} letters or spaces.`
+      ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
     }) description?: string,
 
     @param.query.string('lfd', {
-      description: "The beginning of the authors 'lastname,firstname,description' to limit the list for type-ahead. Parameters 'lastname', 'firstname' and 'description' are ignored if parameter 'lfd' is used."
+      description: "The beginning of the authors 'lastname,firstname,description' \
+      to limit the list for type-ahead. The parameter 'lfd' is used to set the \
+      parameters 'lastname', 'firstname' and 'description'. See restrictions there."
     }) lfd?: string
   ): Promise<AuthorsPaged> {
 
-    this.logger.log('debug', '@get/authors');
+    // TODO this.logger.log('debug', '@get/authors');
 
     const filter: AuthorsFilter = {
       language: checkAndSetLanguage(language),
@@ -258,36 +259,36 @@ export class AuthorsController {
     responses: AUTHOR_RESPONSES,
     operationId: 'get-authors',
     summary: 'Get one author entry by ID.',
-    description: "Get one author entry for given 'id' in given 'language'. \
-      Always returned attributes are 'id' and 'name'. If they exist, the optional attributes 'firstname', \
+    description: "Get one author entry for given 'authorId' in given 'language'. \
+      Always returned attributes are 'authorId' and 'name'. If they exist, the optional attributes 'firstname', \
       'lastname', 'link' and 'description' will be returned. All attributes \
       are given in the requested 'language'. \
       Requested author entry have to be public."
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getAuthor(
     @param.query.string('language', {
       description: 'The language for the author entry. See /languages for available languages.',
       default: 'en'
     }) language = 'en',
 
-    @param.query.number('id', {
+    @param.query.number('authorId', {
       description: 'Authors ID. For a list of all author entries with their IDs see /authors',
       default: 1
-    }) id = 1
+    }) authorId = 1
   ): Promise<AuthorReturned | null> {
     const filter: AuthorFilter = {
       language: checkAndSetLanguage(language),
-      id: id,
+      authorId: authorId,
     };
-    if (id < 0) {
-      throw new HttpErrors.BadRequest("Parameter 'id' must be a positive number.");
+    if (authorId < 0) {
+      throw new HttpErrors.BadRequest("Parameter 'authorId' must be a positive number.");
     }
     const author: (Author | undefined) = await this.authorsRepository.findAuthor(filter);
 
     if (!author) {
-      throw new HttpErrors.NotFound(`No author entry found for ID #${filter.id}!`);
+      throw new HttpErrors.NotFound(`No author entry found for ID #${filter.authorId}!`);
     }
 
     return {author: author};

@@ -1,8 +1,8 @@
-import {inject} from '@loopback/core';
-import {logInvocation} from '@loopback/logging';
+// import {logInvocation} from '@loopback/logging';
 import {api, get} from '@loopback/rest';
 import {LANGUAGES} from '../common';
-import {MyLogger} from '../providers';
+// import {MyLogger} from '../providers';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 const RESPONSES = {
   '200': {
@@ -44,7 +44,8 @@ const RESPONSES = {
 export class LanguagesController {
 
   // Inject a winston logger
-  @inject('logger') private logger: MyLogger;
+  //@inject('logger') private logger: MyLogger;
+  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
 
   constructor() { }
   // http access is logged by global interceptor
@@ -58,7 +59,7 @@ export class LanguagesController {
       two-letter ISO 639-1 codes. At the moment these are ${Object.keys(LANGUAGES)}.`,
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getAvailableLanguages(): Promise<string[]> {
     /**
      * hard-wired, corresponding with Ruby on Rails:

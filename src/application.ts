@@ -25,8 +25,11 @@ export class QuoteApiApplication extends BootMixin(
     // load environment variables from file .env
     require('dotenv').config();
 
+    // MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 finish listeners added to [File]. Use emitter.setMaxListeners() to increase limit
+    require('events').EventEmitter.defaultMaxListeners = 30; // TODO
+
     // Configure logging
-    this.configureLogging();
+    // this.configureLogging();
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -108,7 +111,7 @@ export class QuoteApiApplication extends BootMixin(
     // redirect debug module's output to Winston
     // (use void to intentionally ignore the promise)
     // eslint-disable-next-line no-void
-    void this.redirectDebugToWinston();
+    // void this.redirectDebugToWinston();
   }
 
   /**

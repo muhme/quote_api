@@ -1,9 +1,10 @@
-import {inject} from '@loopback/core';
-import {logInvocation} from '@loopback/logging';
+// import {inject} from '@loopback/core';
+// import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {PARAM_MAX_LENGTH, PagingFilter, UsersPaged, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
-import {MyLogger} from '../providers';
+// import {MyLogger} from '../providers';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {UsersRepository} from '../repositories/users.repository';
 
 const RESPONSES = {
@@ -88,7 +89,8 @@ const RESPONSES = {
 export class UsersController {
 
   // Inject a winston logger
-  @inject('logger') private logger: MyLogger;
+  // @inject('logger') private logger: MyLogger;
+  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
 
   constructor(
     @repository(UsersRepository)
@@ -104,7 +106,7 @@ export class UsersController {
       created quotes and whose quotes are public are provided.'
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getUsers(
     @param.query.number('page', {
       description: "The response is made page by page, the optional parameter \
@@ -119,7 +121,7 @@ export class UsersController {
     @param.query.string('starting', {
       description: `The beginning of the login name to limit the list for \
       type-ahead. The parameter 'starting' may contain only up-to \
-      ${PARAM_MAX_LENGTH} letters or spaces.`
+      ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
     }) starting?: string
   ): Promise<UsersPaged> {
 

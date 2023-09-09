@@ -1,5 +1,4 @@
-import {inject} from '@loopback/core';
-import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
+// import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {LANGUAGES, QuoteFilter, RandomQuote, SupportedLanguage, ZITAT_SERVICE_DE, checkAndSetLanguage} from '../common';
@@ -73,8 +72,7 @@ const RESPONSES = {
 export class QuotationController {
 
   // Inject a winston logger
-  @inject(LoggingBindings.WINSTON_LOGGER)
-  private logger: WinstonLogger;
+  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
   //@inject('logger') private logger: MyLogger;
 
   constructor(
@@ -102,7 +100,7 @@ export class QuotationController {
       only from author Laozi (#46) and category Learning (#17)."
   })
   // log method invocations
-  @logInvocation()
+  // @logInvocation()
   async getQuotations(
     @param.query.string('language', {
       description: "The language for the random quote. See /languages for available languages. If the language parameter is missing, all languages will be used for the quotes. Authors name and the links are used in quotations language.",
@@ -153,7 +151,7 @@ export class QuotationController {
       authorId: quote.authorId
     };
 
-    const author: (Author | undefined) = await this.authorsRepository.findAuthor({language: quote.language, id: quote.authorId ?? 0}); // using author ID 0 'unknown' in case of problems
+    const author: (Author | undefined) = await this.authorsRepository.findAuthor({language: quote.language, authorId: quote.authorId ?? 0}); // using author ID 0 'unknown' in case of problems
 
     if (author) {
       randomQuote.authorName = author.name;

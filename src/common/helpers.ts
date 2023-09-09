@@ -55,8 +55,27 @@ export function validateOnlyLettersAndMaxLength(param: (string | undefined), par
   if (param && param.length > PARAM_MAX_LENGTH) {
     throw new HttpErrors.BadRequest(`Parameter '${paramName}' has ${param.length} characters, but can have only ${PARAM_MAX_LENGTH}.`);
   }
-  const regex = /^[ \p{L}]+$/u; // UTF-8 any kind of letter from any language
-  if (param && !regex.test(param)) {
-    throw new HttpErrors.BadRequest(`Parameter '${paramName}' with '${param}', contains not only letters or spaces.`);
+  /**
+   * To prevent typical SQL injection attacks, implementation started with
+   * all UTF-8 characters and added more and more characters like japanese
+   * comma 、or asterix ※.
+   *
+   * It looks easier to search simple for apostroph as first character, see:
+   * ' OR '1'='1
+   * ' OR '1'='1' --
+   * ' OR '1'='1' /*
+   * ' OR 1=1; DROP TABLE users; --
+   * ' OR 1=1; SELECT * FROM users WHERE name LIKE '%
+   * ' OR 'x'='x
+   * ' AND ASCII(SUBSTRING((SELECT password FROM users WHERE username='admin'),1,1)) > 48; --
+   * ' UNION ALL SELECT NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL--
+   * ' UNION SELECT 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i';--
+   * ' AND '1'=(SELECT COUNT(*) FROM tabname); --
+   */
+  // allowes UTF-8 number, dot, minus, underline, (japanese) comma, (japanese) space, (japanese) asterix and any kind of letter from any language
+  // const regex = /^[0-9.\-_,、 ・*※\p{L}]+$/u;
+  // if (param && !regex.test(param)) {
+  if (param && param.trimStart().charAt(0) === "'") {
+    throw new HttpErrors.BadRequest(`Parameter '${paramName}' cannot start with an apostrophe.`);
   }
 }

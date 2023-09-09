@@ -4,7 +4,8 @@ import {DefaultCrudRepository} from '@loopback/repository';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged, LANGUAGE_DEFAULT, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Author, combineAuthorName} from '../models';
-import {MyLogger} from '../providers';
+// import {MyLogger} from '../providers';
+// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 export class AuthorsRepository extends DefaultCrudRepository<
   Author,
@@ -13,7 +14,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
   constructor(
     // @loopback/logging winston logger
     // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('logger') private logger: MyLogger,
+    // s@inject('logger') private logger: MyLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Author, dataSource);
@@ -69,7 +70,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
   async findAuthor(filter: AuthorFilter): Promise<Author | undefined> {
 
     const params = new Array(4).fill(filter.language);
-    params.push(filter.id)
+    params.push(filter.authorId)
 
     const authors = await this.dataSource.execute(this.authorByIdSqlQuery(), params);
 
@@ -95,7 +96,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
       return NO_AUTHOR_ENTRY;
     }
     const name = combineAuthorName(result.firstname, result.lastname, language);
-    this.logger.log('debug', `authorName: found name ${name} for ID ${id} in language ${language}`);
+    // TODO this.logger.log('debug', `authorName: found name ${name} for ID ${authorId} in language ${language}`);
     // this.logger(`authorName: found name ${name} for ID ${id} in language ${language}`);
     return name;
   }
@@ -136,7 +137,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
   private mainSqlQuery(whereClause: string): string {
     return `
       SELECT DISTINCT
-          a.id,
+          a.id AS authorId,
           mst_name.value AS lastname,
           mst_firstname.value AS firstname,
           mst_description.value AS description,
@@ -212,7 +213,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
   private authorByIdSqlQuery(): string {
     return `
       SELECT DISTINCT
-          a.id AS id,
+          a.id AS authorId,
           mst_name.value AS lastname,
           mst_firstname.value AS firstname,
           mst_description.value AS description,

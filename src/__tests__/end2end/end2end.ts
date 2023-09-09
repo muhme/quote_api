@@ -140,9 +140,9 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/users?starting=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /users?starting=OR \'1\'=\'1', async () => {
-    const response = await client.get('/users?starting=OR \'1\'=\'1').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /users?starting=   \' OR \'1\'=\'1', async () => {
+    const response = await client.get('/users?starting=   \' OR \'1\'=\'1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
 
@@ -316,9 +316,9 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/categories?starting=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /categories?starting=a.b', async () => {
-    const response = await client.get('/categories?starting=a.b').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /categories?starting=\' OR', async () => {
+    const response = await client.get('/categories?starting=\' OR').expect(400);
     response.text.should.containEql('BadRequestError');
   });
 
@@ -341,7 +341,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?language=de&page=100&size=1', async () => {
     const response = await client.get('/authors?language=de&page=100&size=1').expect(200);
     expect([{
-      "id": 331,
+      "authorId": 331,
       "lastname": "Chanel",
       "firstname": "Coco",
       "description": "Französische Modeschöpferin (1883 – 1971)",
@@ -352,7 +352,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?language=es&page=120&size=1', async () => {
     const response = await client.get('/authors?language=es&page=120&size=1').expect(200);
     expect([{
-      "id": 451,
+      "authorId": 451,
       "lastname": "Cramer",
       "firstname": "Dettmar",
       "description": "Futbolista y entrenador alemán (n. 1925)",
@@ -363,7 +363,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?language=ja&page=140&size=1', async () => {
     const response = await client.get('/authors?language=ja&page=140&size=1').expect(200);
     expect([{
-      "id": 425,
+      "authorId": 425,
       "lastname": "グロッサー",
       "firstname": "ピーター",
       "description": "ドイツのサッカー選手、監督（*1938年）",
@@ -373,7 +373,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?language=uk&page=160&size=1', async () => {
     const response = await client.get('/authors?language=uk&page=160&size=1').expect(200);
     expect([{
-      "id": 599,
+      "authorId": 599,
       "lastname": "Григорович",
       "firstname": "Шевченко Тарас",
       "description": "Український поет і художник (1814 - 1861)",
@@ -391,7 +391,7 @@ describe('api.zitat-service.de (end2end)', () => {
       "size": 1
     }).to.eql(response.body.paging);
     expect([{
-      "id": 419,
+      "authorId": 419,
       "lastname": "Grillparzer",
       "firstname": "Franz",
       "description": "Austrian writer (1791 - 1872)",
@@ -402,7 +402,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?lastname=A&firstname=D&size=1', async () => {
     const response = await client.get('/authors?lastname=A&firstname=D&size=1').expect(200);
     expect([{
-      "id": 345,
+      "authorId": 345,
       "lastname": "Adams",
       "firstname": "Douglas",
       "description": "British writer (1952 - 2001)",
@@ -413,7 +413,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?description=British%20actress', async () => {
     const response = await client.get('/authors?description=British%20actress').expect(200);
     expect([{
-      "id": 339,
+      "authorId": 339,
       "lastname": "Andrews",
       "firstname": "Julie",
       "description": "British actress, singer and writer (born 1935)",
@@ -424,7 +424,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?lfd=Adams,H', async () => {
     const response = await client.get('/authors?lfd=Adams,H').expect(200);
     expect([{
-      "id": 92,
+      "authorId": 92,
       "lastname": "Adams",
       "firstname": "Henry",
       "description": "US-American historian and cultural philosopher (1838 - 1918)",
@@ -435,7 +435,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?lfd=,Karen', async () => {
     const response = await client.get('/authors?lfd=,Karen').expect(200);
     expect([{
-      "id": 18,
+      "authorId": 18,
       "firstname": "Karen, 7 years",
       "description": "asked: What does love mean?",
       "name": "Karen, 7 years"
@@ -444,7 +444,7 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /authors?language=de&lfd=Adenauer,Konrad,Deutscher%20Politiker', async () => {
     const response = await client.get('/authors?language=de&lfd=Adenauer,Konrad,Deutscher%20Politiker').expect(200);
     expect([{
-      "id": 243,
+      "authorId": 243,
       "lastname": "Adenauer",
       "firstname": "Konrad",
       "description": "Deutscher Politiker und Bundeskanzler (1876 – 1967)",
@@ -520,9 +520,9 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?lastname=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /authors?lastname=a.b', async () => {
-    const response = await client.get('/authors?lastname=a.b').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /authors?lastname=\' OR', async () => {
+    const response = await client.get('/authors?lastname=\' OR').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   // exact 20 chars are working, but does not find any user
@@ -535,9 +535,9 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?firstname=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /authors?firstname=a.b', async () => {
-    const response = await client.get('/authors?firstname=a.b').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /authors?firstname=\' OR', async () => {
+    const response = await client.get('/authors?firstname=\' OR').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   // exact 20 chars are working, but does not find any user
@@ -550,9 +550,9 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?description=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /authors?description=a.b', async () => {
-    const response = await client.get('/authors?description=a.b').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /authors?description= \' OR', async () => {
+    const response = await client.get('/authors?description= \' OR').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   // exact 20 chars are working, but does not find any user
@@ -565,20 +565,20 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/authors?lfd=abcdefghijklmnopqrstu').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  // SQL injection, only letters allowed
-  it('invokes GET /authors?lfd=a.b', async () => {
-    const response = await client.get('/authors?lfd=a.b').expect(400);
+  // SQL injection, not starting with an apostrophe
+  it('invokes GET /authors?lfd=  \' OR', async () => {
+    const response = await client.get('/authors?lfd=  \' OR').expect(400);
     response.text.should.containEql('BadRequestError');
   });
 
   // **********
   // * author *
   // **********
-  it('invokes GET /author?id=597&language=ja', async () => {
-    const response = await client.get('/author?id=597&language=ja').expect(200);
+  it('invokes GET /author?authorId=597&language=ja', async () => {
+    const response = await client.get('/author?authorId=597&language=ja').expect(200);
     expect({
       author: {
-        id: 597,
+        authorId: 597,
         lastname: "坂本",
         firstname: "龍一",
         description: "日本の作曲家、ピアニスト、プロデューサー、俳優、モデル（1952年～2023年）",
@@ -588,11 +588,11 @@ describe('api.zitat-service.de (end2end)', () => {
     }).to.eql(response.body);
   });
   // missing language defaults to :en
-  it('invokes GET /author?id=597', async () => {
-    const response = await client.get('/author?id=597').expect(200);
+  it('invokes GET /author?authorId=597', async () => {
+    const response = await client.get('/author?authorId=597').expect(200);
     expect({
       author: {
-        id: 597,
+        authorId: 597,
         lastname: "Sakamoto",
         firstname: "Ryuichi",
         description: "Japanese composer, pianist, producer, actor and model (1952 - 2023)",
@@ -603,28 +603,28 @@ describe('api.zitat-service.de (end2end)', () => {
   });
 
   // incorrect parameters
-  it('invokes GET /author?id=1000', async () => {
-    const response = await client.get('/author?id=1000').expect(404);
+  it('invokes GET /author?authorId=1000', async () => {
+    const response = await client.get('/author?authorId=1000').expect(404);
     response.text.should.containEql('NotFoundError');
   });
-  it('invokes GET /author?id=-1', async () => {
-    const response = await client.get('/author?id=-1').expect(400);
+  it('invokes GET /author?authorId=-1', async () => {
+    const response = await client.get('/author?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  it('invokes GET /author?id=', async () => {
-    const response = await client.get('/author?id=-1').expect(400);
+  it('invokes GET /author?authorId=', async () => {
+    const response = await client.get('/author?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  it('invokes GET /author?id=A', async () => {
-    const response = await client.get('/author?id=-1').expect(400);
+  it('invokes GET /author?authorId=A', async () => {
+    const response = await client.get('/author?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  it('invokes GET /author?id=597&language=', async () => {
-    const response = await client.get('/author?id=597&language=').expect(400);
+  it('invokes GET /author?authorId=597&language=', async () => {
+    const response = await client.get('/author?authorId=597&language=').expect(400);
     response.text.should.containEql('BadRequestError');
   });
-  it('invokes GET /author?id=597&language=XXX', async () => {
-    const response = await client.get('/author?id=597&language=XXX').expect(400);
+  it('invokes GET /author?authorId=597&language=XXX', async () => {
+    const response = await client.get('/author?authorId=597&language=XXX').expect(400);
     response.text.should.containEql('BadRequestError');
   });
 
