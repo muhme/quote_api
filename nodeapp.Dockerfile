@@ -1,7 +1,7 @@
 # Check out https://hub.docker.com/_/node to select a new base image
 FROM node:18-slim
 
-RUN npm install pm2 -g
+RUN npm install pm2 -g && apt-get update && apt-get install -y htop
 
 # Set to a non-root built-in user `node`
 USER node
@@ -24,10 +24,15 @@ COPY --chown=node . .
 RUN npm run build
 
 # Bind to all network interfaces so that it can be mapped to the host OS
-# DEBUG=loopback:connector:*
-ENV HOST=0.0.0.0 PORT=3000
+# other useful ENV variables are:
+#   DEBUG=loopback:connector:*
+#   NODE_ENV=production
+ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=production
 
 EXPOSE ${PORT}
 # CMD [ "node", "." ]
 # CMD [ "node", "--trace-warnings", "." ]
-CMD [ "pm2-runtime", "npm", "--", "start" ]
+# "--trace-warnings" can be set in package.json
+# CMD [ "pm2-runtime", "npm", "--", "start" ]
+# CMD [ "pm2-runtime", "ecosystem.config.js", "--env", "production" ]
+CMD [ "pm2-runtime", "ecosystem.config.js" ]

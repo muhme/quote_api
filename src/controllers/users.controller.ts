@@ -1,5 +1,5 @@
 // import {inject} from '@loopback/core';
-// import {logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {PARAM_MAX_LENGTH, PagingFilter, UsersPaged, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
@@ -106,7 +106,7 @@ export class UsersController {
       created quotes and whose quotes are public are provided.'
   })
   // log method invocations
-  // @logInvocation()
+  @logInvocation()
   async getUsers(
     @param.query.number('page', {
       description: "The response is made page by page, the optional parameter \

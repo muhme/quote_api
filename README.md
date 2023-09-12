@@ -33,9 +33,17 @@ quote_api-mariadb            0.0.0.0:3002->3306/tcp       quote_api_mariadb
     - contains cleaned live database import from August 2023
 - quote_api_mysqladmin – phpMyAdmin (user root/root)
   - http://localhost:3001
-- quote_api_nodeapp – Node.JS LoopBack4 application for api.zitat-service
+- quote_api_nodeapp – Node.js LoopBack4 application running by PM2
   - http://localhost:3000
   - there you have OpenAPI spec and the API explorer
+
+## Logging
+
+Logging goes via Winston into file. By default log level is `DEBUG` and filename is `development.log`. Is the environment variable `NODE_ENV` set to `production`, log level is set to `INFO` and filename is `production.log`.
+
+## Debug
+
+With `LoopBack4` debug strings can be set as environment variables. For example `DEBUG=loopback:connector:*` show database queries and responses.
 
 ## Tests
 
@@ -76,7 +84,7 @@ Fetched 570 categories
 19:03:53.756 GET 200    6 http://localhost:3000/
 19:03:53.808 GET 200    6 http://localhost:3000/quote?language=uk
 19:03:53.830 GET 404    5 http://localhost:3000/quote?language=en&userId=21
-19:03:53.930 GET 404    4 http://localhost:3000/explorer
+19:03:53.930 GET 200    4 http://localhost:3000/explorer
 19:03:54.017 GET 200    5 http://localhost:3000/openapi.json
 19:03:54.035 GET 200    2 http://localhost:3000/languages
 19:03:54.111 GET 200    2 http://localhost:3000/explorer

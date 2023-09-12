@@ -1,3 +1,4 @@
+import {logInvocation} from '@loopback/logging';
 // import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
@@ -100,7 +101,7 @@ export class QuotationController {
       only from author Laozi (#46) and category Learning (#17)."
   })
   // log method invocations
-  // @logInvocation()
+  @logInvocation()
   async getQuotations(
     @param.query.string('language', {
       description: "The language for the random quote. See /languages for available languages. If the language parameter is missing, all languages will be used for the quotes. Authors name and the links are used in quotations language.",

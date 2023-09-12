@@ -1,4 +1,4 @@
-// import {logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
 import {CategoriesPaged, PARAM_MAX_LENGTH, PagingLanguageFilter, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
@@ -115,7 +115,7 @@ export class CategoriesController {
       Only public categories are provided."
   })
   // log method invocations
-  // @logInvocation()
+  @logInvocation()
   async getCategories(
     @param.query.string('language', {
       description: 'The language for the author entries. See /languages for available languages.',

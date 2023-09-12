@@ -1,4 +1,4 @@
-// import {logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {api, get} from '@loopback/rest';
 import {LANGUAGES} from '../common';
 // import {MyLogger} from '../providers';
@@ -59,7 +59,7 @@ export class LanguagesController {
       two-letter ISO 639-1 codes. At the moment these are ${Object.keys(LANGUAGES)}.`,
   })
   // log method invocations
-  // @logInvocation()
+  @logInvocation()
   async getAvailableLanguages(): Promise<string[]> {
     /**
      * hard-wired, corresponding with Ruby on Rails:

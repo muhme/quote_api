@@ -1,5 +1,4 @@
 import {inject} from '@loopback/core';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 import {DefaultCrudRepository} from '@loopback/repository';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged, LANGUAGE_DEFAULT, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
 import {MariaDbDataSource} from '../datasources';
@@ -13,8 +12,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
 > {
   constructor(
     // @loopback/logging winston logger
-    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    // s@inject('logger') private logger: MyLogger,
+    //@inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Author, dataSource);
@@ -85,19 +83,18 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * @param language locale for authors name (mobility_string_translations.locale) or undefined and default 'en' will be used
    * @returns authors name as e.g. "firstname name" in given locale or "no author entry"
    */
-  async authorName(id: number, language: string | undefined): Promise<string> {
+  async authorName(authorId: number, language: string | undefined): Promise<string> {
 
     if (!language) {
       language = LANGUAGE_DEFAULT;
     }
-    const [result] = await this.dataSource.execute(this.authorsNameSqlQuery(), [id, language, language]);
+    const [result] = await this.dataSource.execute(this.authorsNameSqlQuery(), [authorId, language, language]);
 
     if (!result) {
       return NO_AUTHOR_ENTRY;
     }
     const name = combineAuthorName(result.firstname, result.lastname, language);
-    // TODO this.logger.log('debug', `authorName: found name ${name} for ID ${authorId} in language ${language}`);
-    // this.logger(`authorName: found name ${name} for ID ${id} in language ${language}`);
+    // this.logger.log('debug', `authorName: found name ${name} for ID ${authorId} in language ${language}`);
     return name;
   }
 

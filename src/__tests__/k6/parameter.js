@@ -63,7 +63,7 @@ export function randomStartingCategoryParameter(categories, language) {
   // pick-up category name in given language
   const category = categories[categoryNumber][language];
   // calculate random length and ensure we have at least one character
-  const length = 1 + Math.floor(Math.random() * category.length - 1);
+  let length = 1 + Math.floor(Math.random() * category.length - 1);
   // ensure not more than 20 characters
   if (length > 20) {
     length = 20;

@@ -10,8 +10,10 @@ import {
 import {ServiceMixin} from '@loopback/service-proxy';
 import debug from 'debug';
 import path from 'path';
-import * as util from 'util';
+import util from 'util';
 import winston from 'winston';
+import {MY_WINSTON_LOGGER} from './common';
+import {WinstonLoggerProvider} from './providers/winston.logger.provider';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
@@ -22,14 +24,18 @@ export class QuoteApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
+    this.bind(MY_WINSTON_LOGGER).toProvider(WinstonLoggerProvider);
+
     // load environment variables from file .env
     require('dotenv').config();
 
     // MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 finish listeners added to [File]. Use emitter.setMaxListeners() to increase limit
-    require('events').EventEmitter.defaultMaxListeners = 30; // TODO
+    require('events').EventEmitter.defaultMaxListeners = 100; // TODO
+
+    console.log(`NODE_ENV=${process.env.NODE_ENV}`);
 
     // Configure logging
-    // this.configureLogging();
+    this.configureLogging();
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -68,7 +74,7 @@ export class QuoteApiApplication extends BootMixin(
 
     /**
      * format e.g. "230830 04:20:41.366    DEBUG [18A44AC0F13] +3ms @get/authors"
-     * we have:
+     * we have npm levels:
      *   ERROR   0: Error level log.
      *   WARN    1: Warning level log.
      *   INFO    2: Informational log.
@@ -93,15 +99,28 @@ export class QuoteApiApplication extends BootMixin(
 
     // configure Winston logger
     this.configure<WinstonLoggerOptions>(LoggingBindings.WINSTON_LOGGER).to({
-      level: 'debug',
-      // format: format.json(),
-      format: winston.format.combine(
-        winston.format.timestamp(),
-        customFormatter
-      ),
-      defaultMeta: {Application: 'QuoteApi'},
+      level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug',
+      // format: winston.format.json(),
+      // format: winston.format.combine(
+      //   winston.format.timestamp(),
+      //   customFormatter
+      // ),
+      defaultMeta: {Application: 'quote_api'},
       transports: [
-        new winston.transports.File({filename: 'development.log', level: 'debug'})
+        // new winston.transports.File({
+        //   filename: process.env.NODE_ENV === 'production' ?
+        //     'production.log' :
+        //     'development.log',
+        //   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
+        // })
+        new winston.transports.Console({
+          // format: winston.format.simple(),
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            customFormatter
+          ),
+          level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug'
+        })
       ]
     });
 
@@ -109,7 +128,7 @@ export class QuoteApiApplication extends BootMixin(
     this.component(LoggingComponent);
 
     // redirect debug module's output to Winston
-    // (use void to intentionally ignore the promise)
+    // (use void to intentionally to ignore the promise)
     // eslint-disable-next-line no-void
     // void this.redirectDebugToWinston();
   }
@@ -121,15 +140,22 @@ export class QuoteApiApplication extends BootMixin(
    */
   private async redirectDebugToWinston(): Promise<void> {
 
+    console.log("HU HU");
     const logger = await this.get(LoggingBindings.WINSTON_LOGGER);
+    // const debug = require('debug');
 
-    debug.log = (...args: string[]) => {
-      const namespace = args[0].split(' ')[0];
-      console.log(`NAMESPACE ${namespace}`);
-      console.log(`ARGS ${args}`);
-      const message = util.format(...args).replace(`${namespace} `, '');
-      logger.debug(`[${namespace}] ${message}`);
+    debug.log = function (...args: any[]) {
+      // const namespace = args[0].split(' ')[0];
+      // console.log(`NAMESPACE ${namespace}`);
+      // console.log(`ARGS ${args}`);
+      // const message = util.format(...args).replace(`${namespace} `, '');
+      // logger.debug(`[${namespace}] ${message}`);
+      logger.debug(util.format(...args));
     };
+    console.log("HO HO");
+    logger.debug("HI HI");
+    const loopbackConnectorDebug = debug('loopback:connector:mydebug');
+    loopbackConnectorDebug('This is a debug message #1');
   }
 
 }

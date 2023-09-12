@@ -19,3 +19,5 @@ export const NO_AUTHOR_ENTRY = "no author entry";
 export const NO_CATEGORY_ENTRY = "no category entry";
 // the URL
 export const ZITAT_SERVICE_DE = "https://www.zitat-service.de"
+// my own Winston logger single instance
+export const MY_WINSTON_LOGGER = 'services.MyWinstonLogger';
