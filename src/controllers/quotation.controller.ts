@@ -1,14 +1,9 @@
 import {logInvocation} from '@loopback/logging';
-// import {LoggingBindings, WinstonLogger, logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
-import {HttpErrors, api, get, param} from '@loopback/rest';
-import {LANGUAGES, QuoteFilter, RandomQuote, SupportedLanguage, ZITAT_SERVICE_DE, checkAndSetLanguage} from '../common';
-import {Author} from '../models';
-import {Quotation} from '../models/quotation.model';
-// import {MyLogger} from '../providers';
-import {CategoriesRepository, UsersRepository} from '../repositories';
-import {AuthorsRepository} from '../repositories/authors.repository';
-import {QuotationRepository} from '../repositories/quotation.repository';
+import {api, get, HttpErrors, param} from '@loopback/rest';
+import {checkAndSetLanguage, LANGUAGES, QuoteFilter, RandomQuote, SupportedLanguage, ZITAT_SERVICE_DE} from '../common';
+import {Author, Quotation} from '../models';
+import {AuthorsRepository, CategoriesRepository, QuotationRepository, UsersRepository} from '../repositories';
 
 const RESPONSES = {
   '200': {
@@ -71,11 +66,6 @@ const RESPONSES = {
   paths: {},
 })
 export class QuotationController {
-
-  // Inject a winston logger
-  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
-  //@inject('logger') private logger: MyLogger;
-
   constructor(
     @repository(QuotationRepository)
     public quotationRepository: QuotationRepository,
@@ -100,7 +90,7 @@ export class QuotationController {
       'language=de&authorId=46&categoryId=17' for German (de) quotes \
       only from author Laozi (#46) and category Learning (#17)."
   })
-  // log method invocations
+  // log method invocation
   @logInvocation()
   async getQuotations(
     @param.query.string('language', {
@@ -122,7 +112,7 @@ export class QuotationController {
 
     this.validateParameters(userId, authorId, categoryId);
 
-    // for quotes, only check if language is set
+    // for quotes, only check if language is set (w/o language simple return quotes from any language)
     if (language !== undefined) {
       checkAndSetLanguage(language)
     }
@@ -147,8 +137,8 @@ export class QuotationController {
       quote: quote.quotation,
       language: quote.language,
       link: ZITAT_SERVICE_DE + `/${quote.language}/quotations/${quote.id}`,
-      source: quote.source === null ? undefined : quote.source,
-      sourceLink: quote.sourceLink === null ? undefined : quote.sourceLink,
+      source: quote.source ?? undefined,
+      sourceLink: quote.sourceLink ?? undefined,
       authorId: quote.authorId
     };
 

@@ -3,3 +3,4 @@ dist/
 coverage/
 .eslintrc.js
 src/__tests__/k6/
+ecosystem.config.js

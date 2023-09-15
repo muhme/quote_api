@@ -3,19 +3,14 @@ import {DefaultCrudRepository} from '@loopback/repository';
 import {CategoriesPaged, LANGUAGE_DEFAULT, NO_CATEGORY_ENTRY, PagingLanguage, PagingLanguageFilter} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Category} from '../models';
-// import {MyLogger} from '../providers';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 export class CategoriesRepository extends DefaultCrudRepository<
   Category,
   typeof Category.prototype.id
 > {
   constructor(
-    // @loopback/logging winston logger
-    // @inject('logger') private logger: MyLogger,
-    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
-
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource,
+    // @inject(MY_WINSTON_LOGGER) private logger: WinstonLogger
   ) {
     super(Category, dataSource);
   }
@@ -77,7 +72,7 @@ export class CategoriesRepository extends DefaultCrudRepository<
     if (!result) {
       return NO_CATEGORY_ENTRY;
     }
-    // TODO this.logger.log('debug', `categoryName: found category ${result.category} for ID ${id} in language ${language}`)
+    // this.logger.log('debug', `categoryName: found category ${result.category} for ID ${id} in language ${language}`)
     return result.category;
   }
 

@@ -3,18 +3,14 @@ import {DefaultCrudRepository} from '@loopback/repository';
 import {NO_USER_ENTRY, Paging, PagingFilter, UsersPaged} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {User} from '../models';
-// import {MyLogger} from '../providers';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 export class UsersRepository extends DefaultCrudRepository<
   User,
   typeof User.prototype.id
 > {
   constructor(
-    // @loopback/logging winston logger
-    // @inject('logger') private logger: MyLogger,
-    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource,
+    // @inject(MY_WINSTON_LOGGER) private logger: WinstonLogger
   ) {
     super(User, dataSource);
   }
@@ -57,7 +53,7 @@ export class UsersRepository extends DefaultCrudRepository<
     if (!result) {
       return NO_USER_ENTRY;
     }
-    // TODO this.logger.log('debug', `found user ${result.login} for ID ${id}`)
+    // this.logger.log('debug', `found user ${result.login} for ID ${id}`)
     return result.login;
   }
 

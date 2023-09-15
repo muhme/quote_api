@@ -1,7 +1,6 @@
 import {expect} from '@loopback/testlab';
 import {QuoteApiApplication} from '../..';
 import {UsersController} from '../../controllers';
-import {MyLogger} from '../../providers';
 import {UsersRepository} from '../../repositories';
 import {fixtures} from '../fixtures';
 
@@ -14,10 +13,10 @@ describe('UsersController (integration)', () => {
     app = new QuoteApiApplication();
 
     // to prevent: failing "before all" hook: The key 'logger' is not bound to any value in context QuoteApiApplication
-    const mockLogger: MyLogger = {
-      log: () => { },  // no-op function
-    };
-    app.bind('logger').to(mockLogger);
+    // const mockLogger: MyLogger = {
+    //   log: () => { },  // no-op function
+    // };
+    // app.bind('logger').to(mockLogger);
 
     await app.boot();
 

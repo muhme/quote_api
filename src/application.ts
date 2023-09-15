@@ -8,12 +8,8 @@ import {
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
-import debug from 'debug';
 import path from 'path';
-import util from 'util';
 import winston from 'winston';
-import {MY_WINSTON_LOGGER} from './common';
-import {WinstonLoggerProvider} from './providers/winston.logger.provider';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
@@ -24,18 +20,23 @@ export class QuoteApiApplication extends BootMixin(
   constructor(options: ApplicationConfig = {}) {
     super(options);
 
-    this.bind(MY_WINSTON_LOGGER).toProvider(WinstonLoggerProvider);
+    // use my single instance Winston logger
+    // this.bind(MY_WINSTON_LOGGER).toProvider(MyWinstonLoggerProvider);
+    // this.bind(LoggingBindings.WINSTON_LOGGER)
+    //   .toProvider(MyWinstonLoggerProvider);
+    // this.bind('logging.winston.invocationLogger')
+    //   .toProvider(MyWinstonLoggerProvider);
+    //   .inScope(BindingScope.SINGLETON);
+    // this.bind(LoggingBindings.WINSTON_INVOCATION_LOGGER).toProvider(MyWinstonLoggerProvider)
+    //   .inScope(BindingScope.SINGLETON);
+
+    // Configure LoopBack logging
+    this.configureLogging();
 
     // load environment variables from file .env
     require('dotenv').config();
 
-    // MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 finish listeners added to [File]. Use emitter.setMaxListeners() to increase limit
-    require('events').EventEmitter.defaultMaxListeners = 100; // TODO
-
     console.log(`NODE_ENV=${process.env.NODE_ENV}`);
-
-    // Configure logging
-    this.configureLogging();
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -107,19 +108,15 @@ export class QuoteApiApplication extends BootMixin(
       // ),
       defaultMeta: {Application: 'quote_api'},
       transports: [
-        // new winston.transports.File({
-        //   filename: process.env.NODE_ENV === 'production' ?
-        //     'production.log' :
-        //     'development.log',
-        //   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
-        // })
-        new winston.transports.Console({
-          // format: winston.format.simple(),
+        new winston.transports.File({
+          filename: process.env.NODE_ENV === 'production' ?
+            'production.log' :
+            'development.log',
           format: winston.format.combine(
             winston.format.timestamp(),
             customFormatter
           ),
-          level: process.env.NODE_ENV === 'production' ? 'warn' : 'debug'
+          level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
         })
       ]
     });
@@ -127,46 +124,5 @@ export class QuoteApiApplication extends BootMixin(
     // add logging component
     this.component(LoggingComponent);
 
-    // redirect debug module's output to Winston
-    // (use void to intentionally to ignore the promise)
-    // eslint-disable-next-line no-void
-    // void this.redirectDebugToWinston();
   }
-
-  /**
-   * Redirect the debug module output (used by loopback-connector-mysql and many
-   * other modules) to Winston (same as @loopback/logging), hook into the debug
-   * module and override its log function to send messages to Winston.
-   */
-  private async redirectDebugToWinston(): Promise<void> {
-
-    console.log("HU HU");
-    const logger = await this.get(LoggingBindings.WINSTON_LOGGER);
-    // const debug = require('debug');
-
-    debug.log = function (...args: any[]) {
-      // const namespace = args[0].split(' ')[0];
-      // console.log(`NAMESPACE ${namespace}`);
-      // console.log(`ARGS ${args}`);
-      // const message = util.format(...args).replace(`${namespace} `, '');
-      // logger.debug(`[${namespace}] ${message}`);
-      logger.debug(util.format(...args));
-    };
-    console.log("HO HO");
-    logger.debug("HI HI");
-    const loopbackConnectorDebug = debug('loopback:connector:mydebug');
-    loopbackConnectorDebug('This is a debug message #1');
-  }
-
 }
-
-// function requestIdMiddleware(req: Request, res: Response, next: NextFunction) {
-//   req.requestId = Date.now();  // time as milliseconds since 1970
-//   next();
-// }
-// function requestIdMiddleware(req: Request, res: Response, next: NextFunction) {
-//   const requestId = Date.now();
-//   const ctx = req.app.get(RestBindings.Http.CONTEXT);
-//   ctx.bind('requestId').to(requestId);
-//   next();
-// }

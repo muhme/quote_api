@@ -1,8 +1,6 @@
 import {logInvocation} from '@loopback/logging';
 import {api, get} from '@loopback/rest';
 import {LANGUAGES} from '../common';
-// import {MyLogger} from '../providers';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 const RESPONSES = {
   '200': {
@@ -42,11 +40,6 @@ const RESPONSES = {
   paths: {},
 })
 export class LanguagesController {
-
-  // Inject a winston logger
-  //@inject('logger') private logger: MyLogger;
-  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
-
   constructor() { }
   // http access is logged by global interceptor
   @get('/languages', {
@@ -58,7 +51,7 @@ export class LanguagesController {
       (quotes, author names, category names and links) as string-array of \
       two-letter ISO 639-1 codes. At the moment these are ${Object.keys(LANGUAGES)}.`,
   })
-  // log method invocations
+  // log method invocation
   @logInvocation()
   async getAvailableLanguages(): Promise<string[]> {
     /**

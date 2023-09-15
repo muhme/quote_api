@@ -3,17 +3,12 @@ import {DefaultCrudRepository} from '@loopback/repository';
 import {QuoteFilter} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Quotation} from '../models';
-// import {MyLogger} from '../providers';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 export class QuotationRepository extends DefaultCrudRepository<
   Quotation,
   typeof Quotation.prototype.id
 > {
   constructor(
-    // @loopback/logging winston logger
-    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    // @inject('logger') private logger: MyLogger,
     @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
   ) {
     super(Quotation, dataSource);

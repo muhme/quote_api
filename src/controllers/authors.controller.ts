@@ -1,8 +1,7 @@
-import {inject} from '@loopback/core';
-import {WinstonLogger, logInvocation} from '@loopback/logging';
+import {logInvocation} from '@loopback/logging';
 import {repository} from '@loopback/repository';
 import {HttpErrors, api, get, param} from '@loopback/rest';
-import {AuthorFilter, AuthorReturned, AuthorsFilter, AuthorsPaged, MY_WINSTON_LOGGER, PARAM_MAX_LENGTH, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
+import {AuthorFilter, AuthorReturned, AuthorsFilter, AuthorsPaged, PARAM_MAX_LENGTH, checkAndSetLanguage, myStringify, validateOnlyLettersAndMaxLength, validatePageAndSize} from '../common';
 import {Author} from '../models';
 import {AuthorsRepository} from '../repositories/authors.repository';
 
@@ -147,15 +146,9 @@ const AUTHOR_RESPONSES = {
   paths: {},
 })
 export class AuthorsController {
-
-  // Inject a winston logger
-  // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger;
-  // @inject('logger') private logger: MyLogger;
-
   constructor(
     @repository(AuthorsRepository)
     public authorsRepository: AuthorsRepository,
-    @inject(MY_WINSTON_LOGGER) private logger: WinstonLogger
   ) { }
   // http access is logged by global interceptor
   @get('/authors', {
@@ -175,7 +168,7 @@ export class AuthorsController {
       'lastname', 'link' and 'description' will be returned. All attributes \
       are given in the requested 'language'. Only public authors are provided."
   })
-  // log method invocations
+  // log method invocation
   @logInvocation()
   async getAuthors(
     @param.query.string('language', {
@@ -217,8 +210,6 @@ export class AuthorsController {
       parameters 'lastname', 'firstname' and 'description'. See restrictions there."
     }) lfd?: string
   ): Promise<AuthorsPaged> {
-
-    this.logger.log('debug', '@get/authors');
 
     const filter: AuthorsFilter = {
       language: checkAndSetLanguage(language),
@@ -265,7 +256,7 @@ export class AuthorsController {
       are given in the requested 'language'. \
       Requested author entry have to be public."
   })
-  // log method invocations
+  // log method invocation
   @logInvocation()
   async getAuthor(
     @param.query.string('language', {

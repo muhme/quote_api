@@ -3,17 +3,15 @@ import {DefaultCrudRepository} from '@loopback/repository';
 import {AuthorFilter, AuthorsFilter, AuthorsPaged, LANGUAGE_DEFAULT, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Author, combineAuthorName} from '../models';
-// import {MyLogger} from '../providers';
-// import {LoggingBindings, WinstonLogger} from '@loopback/logging';
 
 export class AuthorsRepository extends DefaultCrudRepository<
   Author,
   typeof Author.prototype.id
 > {
   constructor(
-    // @loopback/logging winston logger
-    //@inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource,
+    // @inject(MY_WINSTON_LOGGER) private logger: WinstonLogger
+    // @inject(LoggingBindings.WINSTON_LOGGER) private logger: WinstonLogger,
   ) {
     super(Author, dataSource);
   }
