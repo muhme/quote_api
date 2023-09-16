@@ -28,6 +28,9 @@ if (require.main === module) {
       openApiSpec: {
         // useful when used with OpenAPI-to-GraphQL to locate your application
         setServersFromRequest: true,
+        endpointMapping: {
+          '/v1/openapi.json': {version: '3.0.0', format: 'json'},
+        },
       },
     },
   };

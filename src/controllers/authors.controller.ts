@@ -151,7 +151,7 @@ export class AuthorsController {
     public authorsRepository: AuthorsRepository,
   ) { }
   // http access is logged by global interceptor
-  @get('/authors', {
+  @get('/v1/authors', {
     tags: ['Authors'],
     responses: AUTHORS_RESPONSES,
     operationId: 'get-authors',
@@ -245,7 +245,7 @@ export class AuthorsController {
   }
 
   // http access is logged by global interceptor
-  @get('/author', {
+  @get('/v1/author', {
     tags: ['Authors'],
     responses: AUTHOR_RESPONSES,
     operationId: 'get-authors',

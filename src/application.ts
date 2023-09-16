@@ -46,7 +46,7 @@ export class QuoteApiApplication extends BootMixin(
 
     // Customize @loopback/rest-explorer configuration here
     this.configure(RestExplorerBindings.COMPONENT).to({
-      path: '/explorer',
+      path: '/v1/explorer',
     });
     this.component(RestExplorerComponent);
 

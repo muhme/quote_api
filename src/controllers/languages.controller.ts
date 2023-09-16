@@ -42,7 +42,7 @@ const RESPONSES = {
 export class LanguagesController {
   constructor() { }
   // http access is logged by global interceptor
-  @get('/languages', {
+  @get('/v1/languages', {
     tags: ['Languages'],
     responses: RESPONSES,
     operationId: 'get-available-languages',

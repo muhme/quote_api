@@ -97,7 +97,7 @@ export class UsersController {
     public usersRepository: UsersRepository
   ) { }
   // http access is logged by global interceptor
-  @get('/users', {
+  @get('/v1/users', {
     tags: ['Users'],
     responses: RESPONSES,
     operationId: 'get-users',

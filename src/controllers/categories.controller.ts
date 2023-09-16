@@ -97,7 +97,7 @@ export class CategoriesController {
   ) { }
 
   // http access is logged by global interceptor
-  @get('/categories', {
+  @get('/v1/categories', {
     tags: ['Categories'],
     responses: RESPONSES,
     operationId: 'get-categories',

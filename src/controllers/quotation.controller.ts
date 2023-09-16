@@ -78,7 +78,7 @@ export class QuotationController {
   ) { }
 
   // http access is logged by global interceptor
-  @get('/quote', {
+  @get('/v1/quote', {
     tags: ['Random Quote'],
     responses: RESPONSES,
     operationId: 'get-quotation',

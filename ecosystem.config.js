@@ -9,6 +9,7 @@ module.exports = {
       },
       env_production: {
         NODE_ENV: 'production',
+        PORT: '4000', // rails is already on 3000
       },
       output: '/dev/null',
       error: '/dev/null',
