@@ -17,7 +17,7 @@ import {URL} from './script.js';
  * @returns {string[]} languages
  */
 export function languages() {
-  let url = `${URL}/languages`;
+  let url = `${URL}/v1/languages`;
   let response = http.get(url);
   const languages = JSON.parse(response.body);
   if (!languages) {
@@ -35,7 +35,7 @@ export function languages() {
  *  - login {string}
  */
 export function users() {
-  let response = http.get(`${URL}/users`);
+  let response = http.get(`${URL}/v1/users`);
   let body = JSON.parse(response.body);
 
   let users = body.users.map(user => {
@@ -70,7 +70,9 @@ export function categories(languages) {
   let categoriesMap = new Map();
 
   for (let language of languages) {
-    let response = http.get(`${URL}/categories?language=${language}&size=1000`);
+    let response = http.get(
+      `${URL}/v1/categories?language=${language}&size=1000`,
+    );
     let body = JSON.parse(response.body);
 
     body.categories.forEach(category => {
@@ -120,7 +122,7 @@ export function authors(languages) {
   let authorsMap = new Map();
 
   for (let language of languages) {
-    let response = http.get(`${URL}/authors?language=${language}&size=1000`);
+    let response = http.get(`${URL}/v1/authors?language=${language}&size=1000`);
     let body = JSON.parse(response.body);
 
     body.authors.forEach(author => {

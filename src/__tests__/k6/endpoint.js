@@ -31,7 +31,7 @@ export function quote(data) {
   } else if (whichOne < 0.3) {
     parameter = addParam(parameter, randomCategoryIdOrNotParameter(data), 0.5);
   }
-  return `quote${parameter}`;
+  return `v1/quote${parameter}`;
 }
 
 /**
@@ -49,7 +49,7 @@ export function users(users) {
     // independent 50% some starting characters from valid firstname
     parameter = addParam('', randomStartingUserParameter(users));
   }
-  return `users${parameter}`;
+  return `v1/users${parameter}`;
 }
 
 /**
@@ -62,7 +62,7 @@ export function author(data) {
   let parameter = addParam('', languageParameter(randomLanguage(data)), 0.9);
   // 10% none, 90% valid random authorId
   parameter = addParam(parameter, randomAuthorIdOrNotParameter(data), 0.9);
-  return `author${parameter}`;
+  return `v1/author${parameter}`;
 }
 
 /**
@@ -119,7 +119,7 @@ export function authors(data) {
       );
     }
   }
-  return `authors${parameter}`;
+  return `v1/authors${parameter}`;
 }
 
 /**
@@ -150,7 +150,7 @@ export function categories(data) {
     );
   }
 
-  return `categories${param}`;
+  return `v1/categories${param}`;
 }
 
 /**
