@@ -71,6 +71,9 @@ const AUTHORS_RESPONSES = {
   '500': {
     description: 'Internal Server Error.',
   },
+  '503': {
+    description: 'Service Unavailable.',
+  },
 };
 
 const AUTHOR_RESPONSES = {
@@ -135,6 +138,9 @@ const AUTHOR_RESPONSES = {
         }
       },
     },
+  },
+  '503': {
+    description: 'Service Unavailable.',
   },
 };
 

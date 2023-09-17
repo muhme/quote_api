@@ -31,6 +31,9 @@ const RESPONSES = {
       },
     },
   },
+  '503': {
+    description: 'Service Unavailable.',
+  },
 };
 
 /**
