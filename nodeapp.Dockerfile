@@ -30,9 +30,6 @@ RUN npm run build
 ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=production
 
 EXPOSE ${PORT}
-# CMD [ "node", "." ]
+
 # CMD [ "node", "--trace-warnings", "." ]
-# "--trace-warnings" can be set in package.json
-# CMD [ "pm2-runtime", "npm", "--", "start" ]
-# CMD [ "pm2-runtime", "ecosystem.config.js", "--env", "production" ]
-CMD [ "pm2-runtime", "ecosystem.config.js" ]
+CMD [ "node", "." ]
