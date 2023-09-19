@@ -6,100 +6,15 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link
-      rel="shortcut icon"
-      type="image/x-icon"
-      href="https://loopback.io/favicon.ico"
-    />
-
-    <style>
-      h3 {
-        text-align: center;
-      }
-
-      a {
-        color: #000;
-        text-decoration: none;
-      }
-
-      a:link,
-      a:visited {
-        border-bottom: 1px dashed #000;
-      }
-
-      a:hover {
-        background-color: #bb88bb;
-      }
-
-      .power {
-        margin-top: 3em;
-        display: flex;
-        justify-content: center;
-      }
-
-      .info h1 {
-        text-align: center;
-        margin-top: 3em;
-        margin-bottom: 2em;
-      }
-
-      .info p {
-        text-align: center;
-        margin-bottom: 3em;
-        margin-top: 1em;
-      }
-
-      body {
-        background-color: #ddffde;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position: bottom right;
-      }
-      body::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-image: url('flower.png');
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        background-position: bottom right;
-        z-index: -1;
-      }
-      @media (prefers-color-scheme: dark) {
-        body {
-          background-color: #002200;
-          color: #ccc;
-        }
-        body::before {
-          opacity: 0.1;
-        }
-        a {
-          color: #fff;
-          text-decoration: none;
-        }
-        a:link,
-        a:visited {
-          border-bottom: 1px dashed #ccc;
-        }
-      }
-      a.no-decoration {
-        text-decoration: none;
-        border: none;
-        outline: none;
-      }
-      .margin-top-3em {
-        margin-top: 3em;
-      }
-    </style>
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="stylesheet" href="styles.css" />
   </head>
 
   <body>
     <div class="info">
       <h1>api.zitat-service.de</h1>
 
+      <h3>API Explorer: <a href="./v1/explorer">/explorer</a></h3>
       <h3>
         Quote Service:
         <a href="https://www.zitat-service.de">zitat-service.de</a>
@@ -107,7 +22,7 @@
       <h3>
         OpenAPI specification: <a href="./v1/openapi.json">/openapi.json</a>
       </h3>
-      <h3>API Explorer: <a href="./v1/explorer">/explorer</a></h3>
+
       <h3>
         Open Source:
         <a href="https://github.com/muhme/quote_api"
@@ -116,10 +31,16 @@
       </h3>
     </div>
 
-    <h3 class="margin-top-3em">
-      <a class="no-decoration" href="https://loopback.io" target="_blank">
-        <img src="powered-by-loopback-sm.png" />
-      </a>
-    </h3>
+    <div class="quote-overall-container">
+      <div class="quote-centered">
+        <div class="quote-label" id="quoteLabel">Data sample</div>
+        <div class="quote-container">
+          <a href="" id="quoteLink"><div id="quoteText"></div></a>
+          <div class="quote-author-source" id="quoteAuthorSource"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="api.js"></script>
   </body>
 </html>

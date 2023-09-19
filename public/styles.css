@@ -1,0 +1,109 @@
+h3 {
+  text-align: center;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover div#quoteText,
+a:hover div#quoteAuthorOrSource,
+.quote-author-source a:hover,
+a:hover {
+  background-color: #bb88bb;
+  color: black;
+}
+
+.power {
+  margin-top: 3em;
+  display: flex;
+  justify-content: center;
+}
+
+.info h1 {
+  text-align: center;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.info p {
+  text-align: center;
+  margin-bottom: 3em;
+  margin-top: 1em;
+}
+
+body {
+  background-color: #ddffde;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: bottom right;
+}
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: url('flower.png');
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: bottom right;
+  z-index: -1;
+}
+.margin-top-3em {
+  margin-top: 3em;
+}
+.quote-overall-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  margin-top: 2em;
+}
+.quote-centered {
+  width: 500px;
+}
+.quote-container {
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid black;
+  text-align: center;
+}
+.quote-text {
+  margin-bottom: 10px;
+}
+.quote-container a {
+  color: black;
+}
+.quote-label {
+  font-size: smaller;
+  /*color: darkgray;*/
+}
+.quote-author-source,
+.quote-author-source a {
+  color: darkgray;
+}
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #002200;
+    color: #888;
+  }
+  body::before {
+    opacity: 0.1;
+  }
+  a {
+    color: #fff;
+    text-decoration: none;
+  }
+  .quote-container a {
+    color: #ccc;
+  }
+  .quote-container {
+    border: 1px solid #888;
+  }
+  .quote-author-source,
+  .quote-author-source a {
+    color: #888;
+  }
+}
