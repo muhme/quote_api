@@ -31,10 +31,10 @@ async function fetchQuote() {
       );
     }
 
-    // const response = await fetch(`https://api.zitat-service.de/v1/quote${languageParameter}`);
     const response = await fetch(
-      `http://localhost:3000/v1/quote${languageParameter}`,
+      `https://api.zitat-service.de/v1/quote${languageParameter}`,
     );
+    // const response = await fetch( `http://localhost:3000/v1/quote${languageParameter}`, );
     const data = await response.json();
     // console.log(data);
 

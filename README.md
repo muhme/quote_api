@@ -4,7 +4,7 @@ This will be the new API for [zitat-service.de](https://www.zitat-service.de)
 
 ## Docker Containers
 
-There is a Docker test and development environment prepared. You can create your own test and development instance with:
+There is a Docker based test and development environment prepared. You can create your own application installation with:
 
 ```
 $ git clone https://github.com/muhme/quote_api
@@ -12,7 +12,7 @@ $ cd quote_api
 $ docker compose up -d
 ```
 
-Then you should have three containers running:
+Then you should have three Docker containers running:
 
 ```
 $ docker ps
@@ -43,7 +43,7 @@ Logging goes via Winston into file. By default log level is `DEBUG` and filename
 
 ## Debug
 
-With `LoopBack4` debug strings can be set as environment variables. For example `DEBUG=loopback:connector:*` show database queries and responses.
+For `LoopBack4` debug strings can be set as environment variables. For example `DEBUG=loopback:connector:*` shows database queries and responses.
 
 ## Tests
 
@@ -58,7 +58,9 @@ node $ npm run test
 
 There is a script for load testing with [K6](https://k6.io/). This runs home, OpenAPI spec, API explorer and all endpoints with all parameter combinations.
 
-For example, on an 8-core Docker running 50 virtual users in parallel for three minutes, more than 100,000 requests are executed in an average of 25 ms (maximum 423 ms). The Node.js container is using only a quarter of the CPU and the MariaDB container using three quarters. With 90% HTTP status 200. The remaining 10% are HTTP Status 404 from the /quote endpoint combinations of language with author/user/category ID for which there are no matches.
+First example: local on an 8-core Docker running 50 virtual users in parallel for three minutes, more than 100,000 requests are executed in an average of 25 ms (max 423 ms). The Node.js container is using only a quarter of the CPU and the MariaDB container using three quarters. With 90% HTTP status 200. The remaining 10% are HTTP Status 404 from the /quote endpoint combinations of language with author/user/category ID for which there are no matches.
+
+Second example: small 1-CPU/1 GB RAM VPS remote, with average 25 ms ping time. 7 virtual users in parallel result in VPS 85% CPU load. 10.770 requests are executed in the three minutes. Requests are responded in average 65 ms (max 635 ms).
 
 ```sh
 host $ cd src/__tests__/k6
