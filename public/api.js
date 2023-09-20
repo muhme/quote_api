@@ -21,9 +21,12 @@ async function fetchQuote() {
   try {
     languageParameter = languageParameter();
     // console.log(`languageParameter=${languageParameter}`);
+    const randomQuote = `/v1/quote${languageParameter}`;
 
+    quoteLabel = document.getElementById('quoteLabel');
+    // if usable language found show it the user
+    // e.g. as "Data sample for your browser language=de"
     if (languageParameter) {
-      quoteLabel = document.getElementById('quoteLabel');
       quoteLabel.appendChild(
         document.createTextNode(
           ` for your browser ${languageParameter.substring(1)}`,
@@ -31,10 +34,15 @@ async function fetchQuote() {
       );
     }
 
-    const response = await fetch(
-      `https://api.zitat-service.de/v1/quote${languageParameter}`,
-    );
-    // const response = await fetch( `http://localhost:3000/v1/quote${languageParameter}`, );
+    // link "Data Sample *" to the used quote URL
+    const linkElement = document.createElement('a');
+    linkElement.href = randomQuote;
+    linkElement.textContent = quoteLabel.textContent;
+    // replace div content with the anchor element
+    quoteLabel.innerHTML = '';
+    quoteLabel.appendChild(linkElement);
+
+    const response = await fetch(randomQuote);
     const data = await response.json();
     // console.log(data);
 

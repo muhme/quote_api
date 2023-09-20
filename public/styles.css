@@ -73,7 +73,8 @@ body::before {
 .quote-text {
   margin-bottom: 10px;
 }
-.quote-container a {
+.quote-container a,
+.quote-label a {
   color: black;
 }
 .quote-label {
