@@ -9,15 +9,16 @@
  */
 
 import http from 'k6/http';
-import {URL} from './script.js';
 
 /**
  * Gets the list of all available languages.
  *
+ * @param {string} root_url
+ *
  * @returns {string[]} languages
  */
-export function languages() {
-  let url = `${URL}/v1/languages`;
+export function languages(root_url) {
+  let url = `${root_url}/v1/languages`;
   let response = http.get(url);
   const languages = JSON.parse(response.body);
   if (!languages) {
@@ -30,12 +31,14 @@ export function languages() {
 /**
  * Gets the list of all available users.
  *
+ * @param {string} root_url
+ *
  * @returns {Object[]} users - user object array with properties:
  *  - id {number}
  *  - login {string}
  */
-export function users() {
-  let response = http.get(`${URL}/v1/users`);
+export function users(root_url) {
+  let response = http.get(`${root_url}/v1/users`);
   let body = JSON.parse(response.body);
 
   let users = body.users.map(user => {
@@ -52,7 +55,8 @@ export function users() {
 /**
  * Gets the list of all available categories in all languages.
  *
- * @param  {string[]} languages
+ * @param {string} root_url
+ * @param {string[]} languages
  *
  * @returns {Object[]} categories - category object array with properties
  *   - id {number}
@@ -66,12 +70,12 @@ export function users() {
  *   ...
  * ]
  */
-export function categories(languages) {
+export function categories(root_url, languages) {
   let categoriesMap = new Map();
 
   for (let language of languages) {
     let response = http.get(
-      `${URL}/v1/categories?language=${language}&size=1000`,
+      `${root_url}/v1/categories?language=${language}&size=1000`,
     );
     let body = JSON.parse(response.body);
 
@@ -90,7 +94,9 @@ export function categories(languages) {
 /**
  * Gets the list of all available authors in all languages.
  *
+ * @param {string} root_url
  * @param {string[]} languages - language codes array
+ *
  *
  * @returns {Object[]} - author objects array with properties:
  *  - authorId {number}
@@ -118,11 +124,13 @@ export function categories(languages) {
  *   ...
  * ]
  */
-export function authors(languages) {
+export function authors(root_url, languages) {
   let authorsMap = new Map();
 
   for (let language of languages) {
-    let response = http.get(`${URL}/v1/authors?language=${language}&size=1000`);
+    let response = http.get(
+      `${root_url}/v1/authors?language=${language}&size=1000`,
+    );
     let body = JSON.parse(response.body);
 
     body.authors.forEach(author => {

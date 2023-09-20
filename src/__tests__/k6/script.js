@@ -39,15 +39,15 @@ export function setup() {
   const showRequests = __ENV.SHOW_REQUESTS;
   console.log(`Testing ${rootUrl}`);
 
-  const languages = read.languages();
+  const languages = read.languages(rootUrl);
   // return the full URL so that it can be used in the default function
   return {
     rootUrl: rootUrl,
     showRequests: showRequests,
     languages: languages,
-    users: read.users(),
-    authors: read.authors(languages),
-    categories: read.categories(languages),
+    users: read.users(rootUrl),
+    authors: read.authors(rootUrl, languages),
+    categories: read.categories(rootUrl, languages),
   };
 }
 
