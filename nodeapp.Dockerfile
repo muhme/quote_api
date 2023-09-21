@@ -1,34 +1,29 @@
-# Check out https://hub.docker.com/_/node to select a new base image
-FROM node:18-slim
+# using current version, released April 2023
+FROM node:20-slim
 
-RUN npm install pm2 -g && apt-get update && apt-get install -y htop
+# like to have some utilities for working
+RUN apt-get update && apt-get install -y htop net-tools vim
 
-# Set to a non-root built-in user `node`
+# use non-root user
 USER node
 
-# Create app directory (with user `node`)
+# create app directory
 RUN mkdir -p /home/node/app
-
 WORKDIR /home/node/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY --chown=node package*.json ./
-
+# install app dependencies
+COPY --chown=node package.json package-lock.json ./
 RUN npm install
 
-# Bundle app source code
+# bundle app source code
 COPY --chown=node . .
-
 RUN npm run build
 
-# Bind to all network interfaces so that it can be mapped to the host OS
+# bind to all network interfaces so that it can be mapped to the host OS
 # other useful ENV variables are:
 #   DEBUG=loopback:connector:*
 #   NODE_ENV=production
-ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=production
-
+ENV HOST=0.0.0.0 PORT=3000 NODE_ENV=development
 EXPOSE ${PORT}
 
 # CMD [ "node", "--trace-warnings", "." ]

@@ -8,8 +8,8 @@ import {
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
 import {ServiceMixin} from '@loopback/service-proxy';
-import path from 'path';
-import winston from 'winston';
+import * as path from 'path';
+import * as winston from 'winston';
 import {MySequence} from './sequence';
 
 export {ApplicationConfig};
