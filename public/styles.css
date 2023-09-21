@@ -79,7 +79,6 @@ body::before {
 }
 .quote-label {
   font-size: smaller;
-  /*color: darkgray;*/
 }
 .quote-author-source,
 .quote-author-source a {
@@ -97,7 +96,8 @@ body::before {
     color: #fff;
     text-decoration: none;
   }
-  .quote-container a {
+  .quote-container a,
+  .quote-label a {
     color: #ccc;
   }
   .quote-container {
