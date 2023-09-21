@@ -9,6 +9,7 @@ a {
 a:hover div#quoteText,
 a:hover div#quoteAuthorOrSource,
 .quote-author-source a:hover,
+.quote-label a:hover,
 a:hover {
   background-color: #bb88bb;
   color: black;
