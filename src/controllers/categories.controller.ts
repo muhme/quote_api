@@ -117,12 +117,12 @@ export class CategoriesController {
       default: 'en'
     }) language = 'en',
 
-    @param.query.number('page', {
+    @param.query.integer('page', {
       description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
       default: 1
     }) page = 1,
 
-    @param.query.number('size', {
+    @param.query.integer('size', {
       description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
       default: 100
     }) size = 100,

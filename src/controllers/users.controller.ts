@@ -45,7 +45,7 @@ const RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'page' must be greater than 1."
+            message: "Parameter 'page' must be greater than or equal to 1."
           }
         }
       },
@@ -111,12 +111,12 @@ export class UsersController {
   // log method invocations
   @logInvocation()
   async getUsers(
-    @param.query.number('page', {
+    @param.query.integer('page', {
       description: "The response is made page by page, the optional parameter \
         'page' controls the page number of the result. Starting with page 1.",
       default: 1
     }) page = 1,
-    @param.query.number('size', {
+    @param.query.integer('size', {
       description: "The response is made page by page, the optional parameter \
         'size' controls how many entries are returned on a page.",
       default: 100

@@ -5,6 +5,13 @@ import {checkAndSetLanguage, LANGUAGES, QuoteFilter, RandomQuote, SupportedLangu
 import {Author, Quotation} from '../models';
 import {AuthorsRepository, CategoriesRepository, QuotationRepository, UsersRepository} from '../repositories';
 
+const DESCRIPTIONS = {
+  'language': "The language for the random quote. See /languages for available languages. If the language parameter is missing, all languages will be used for the quotes. Authors name and the links are used in quotations language.",
+  'userId': "Restrict to pick-up quotes only from given 'userId'. See /users for available user entries.",
+  'authorId': "Restrict to pick-up quotes only from given 'authorId'. See /authors for available author entries.",
+  'categoryId': "Restrict to pick-up quotes only from given 'categoryId'. See /categories for available category entries."
+}
+
 const RESPONSES = {
   '200': {
     description: "OK – a random quote retrieved successfully. \
@@ -34,7 +41,7 @@ const RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'userId' must be a positive number."
+            message: "Parameter 'userId' must be a positive integer."
           }
         }
       },
@@ -97,19 +104,16 @@ export class QuotationController {
   @logInvocation()
   async getQuotations(
     @param.query.string('language', {
-      description: "The language for the random quote. See /languages for available languages. If the language parameter is missing, all languages will be used for the quotes. Authors name and the links are used in quotations language.",
+      description: DESCRIPTIONS['language']
     }) language?: SupportedLanguage,
-
-    @param.query.number('userId', {
-      description: "Restrict to pick-up quotes only from given 'userId'. See /users for available user entries."
+    @param.query.integer('userId', {
+      description: DESCRIPTIONS['userId']
     }) userId?: number,
-
-    @param.query.number('authorId', {
-      description: "Restrict to pick-up quotes only from given 'authorId'. See /authors for available author entries."
+    @param.query.integer('authorId', {
+      description: DESCRIPTIONS['authorId']
     }) authorId?: number,
-
-    @param.query.number('categoryId', {
-      description: "Restrict to pick-up quotes only from given 'categoryId'. See /categories for available category entries."
+    @param.query.integer('categoryId', {
+      description: DESCRIPTIONS['categoryId']
     }) categoryId?: number
   ): Promise<RandomQuote> {
 
@@ -157,13 +161,13 @@ export class QuotationController {
 
   private validateParameters(userId?: number, authorId?: number, categoryId?: number): void {
     if (userId && userId < 0) {
-      throw new HttpErrors.BadRequest("Parameter 'userId' must be a positive number.");
+      throw new HttpErrors.BadRequest("Parameter 'userId' must be a positive integer.");
     }
     if (authorId && authorId < 0) {
-      throw new HttpErrors.BadRequest("Parameter 'authorId' must be a positive number.");
+      throw new HttpErrors.BadRequest("Parameter 'authorId' must be a positive integer.");
     }
     if (categoryId && categoryId < 0) {
-      throw new HttpErrors.BadRequest("Parameter 'categoryId' must be a positive number.");
+      throw new HttpErrors.BadRequest("Parameter 'categoryId' must be a positive integer.");
     }
   }
 

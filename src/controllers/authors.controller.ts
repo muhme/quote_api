@@ -48,7 +48,7 @@ const AUTHORS_RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'authorId' must be a positive number."
+            message: "Parameter 'authorId' must be a positive integer."
           }
         }
       },
@@ -106,7 +106,7 @@ const AUTHOR_RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'authorId' must be a positive number."
+            message: "Parameter 'authorId' must be a positive integer."
           }
         }
       },
@@ -182,12 +182,12 @@ export class AuthorsController {
       default: 'en'
     }) language = 'en',
 
-    @param.query.number('page', {
+    @param.query.integer('page', {
       description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
       default: 1
     }) page = 1,
 
-    @param.query.number('size', {
+    @param.query.integer('size', {
       description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
       default: 100
     }) size = 100,
@@ -270,7 +270,7 @@ export class AuthorsController {
       default: 'en'
     }) language = 'en',
 
-    @param.query.number('authorId', {
+    @param.query.integer('authorId', {
       description: 'Authors ID. For a list of all author entries with their IDs see /authors',
       default: 1
     }) authorId = 1
@@ -280,7 +280,7 @@ export class AuthorsController {
       authorId: authorId,
     };
     if (authorId < 0) {
-      throw new HttpErrors.BadRequest("Parameter 'authorId' must be a positive number.");
+      throw new HttpErrors.BadRequest("Parameter 'authorId' must be a positive integer.");
     }
     const author: (Author | undefined) = await this.authorsRepository.findAuthor(filter);
 

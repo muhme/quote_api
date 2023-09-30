@@ -111,6 +111,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/users?page=0').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/users?page=1.1', async () => {
+    const response = await client.get('/v1/users?page=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/users?page=1000', async () => {
     const response = await client.get('/v1/users?page=1000').expect(404);
     response.text.should.containEql('NotFoundError');
@@ -125,6 +129,10 @@ describe('api.zitat-service.de (end2end)', () => {
   });
   it('invokes GET /v1/users?size=0', async () => {
     const response = await client.get('/v1/users?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/users?size=1.1', async () => {
+    const response = await client.get('/v1/users?size=1.1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /v1/users?size=S', async () => {
@@ -287,6 +295,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/categories?page=0').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/categories?page=1.1', async () => {
+    const response = await client.get('/v1/categories?page=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/categories?page=A', async () => {
     const response = await client.get('/v1/categories?page=A').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -301,6 +313,10 @@ describe('api.zitat-service.de (end2end)', () => {
   });
   it('invokes GET /v1/categories?size=0', async () => {
     const response = await client.get('/v1/categories?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/categories?size=1.1', async () => {
+    const response = await client.get('/v1/categories?size=1.1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /v1/categories?size=Y', async () => {
@@ -475,6 +491,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/authors?page=0').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/authors?page=1.1', async () => {
+    const response = await client.get('/v1/authors?page=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/authors?page=A', async () => {
     const response = await client.get('/v1/authors?page=A').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -489,6 +509,10 @@ describe('api.zitat-service.de (end2end)', () => {
   });
   it('invokes GET /v1/authors?size=0', async () => {
     const response = await client.get('/v1/authors?size=0').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/authors?size=1.1', async () => {
+    const response = await client.get('/v1/authors?size=1.1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /v1/authors?size=Y', async () => {
@@ -612,6 +636,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/author?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/author?authorId=1.1', async () => {
+    const response = await client.get('/v1/author?authorId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/author?authorId=', async () => {
     const response = await client.get('/v1/author?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -702,6 +730,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/quote?userId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/quote?userId=1.1', async () => {
+    const response = await client.get('/v1/quote?userId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/quote?userId=A', async () => {
     const response = await client.get('/v1/quote?userId=A').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -718,6 +750,10 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/quote?authorId=-1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
+  it('invokes GET /v1/quote?authorId=1.1', async () => {
+    const response = await client.get('/v1/quote?authorId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
   it('invokes GET /v1/quote?authorId=A', async () => {
     const response = await client.get('/v1/quote?authorId=A').expect(400);
     response.text.should.containEql('BadRequestError');
@@ -732,6 +768,10 @@ describe('api.zitat-service.de (end2end)', () => {
   });
   it('invokes GET /v1/quote?categoryId=-1', async () => {
     const response = await client.get('/v1/quote?categoryId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote?categoryId=1.1', async () => {
+    const response = await client.get('/v1/quote?categoryId=1.1').expect(400);
     response.text.should.containEql('BadRequestError');
   });
   it('invokes GET /v1/quote?categoryId=A', async () => {
