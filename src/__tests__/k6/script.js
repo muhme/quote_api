@@ -68,13 +68,13 @@ export default function (data) {
     uri = '';
   } else if (whichEndpoint < 0.04) {
     // 2% OpenAPI spec /openapi.json
-    uri = 'openapi.json';
+    uri = 'v1/openapi.json';
   } else if (whichEndpoint < 0.06) {
     // 2% API explorer /explorer
-    uri = 'explorer';
+    uri = 'v1/explorer';
   } else if (whichEndpoint < 0.1) {
     // 4% endpoint /languages
-    uri = 'languages';
+    uri = 'v1/languages';
   } else if (whichEndpoint < 0.15) {
     // 5% endpoint /users
     uri = endpoint.users(data.users);
@@ -87,9 +87,12 @@ export default function (data) {
   } else if (whichEndpoint < 0.3) {
     // 5% endpoint /author
     uri = endpoint.author(data);
-  } else {
-    // 70% endpoint /quote
+  } else if (whichEndpoint < 0.4) {
+    // 10% endpoint /quote (JSON)
     uri = endpoint.quote(data);
+  } else {
+    // 60% endpoint /quote_html
+    uri = endpoint.quote_html(data);
   }
 
   const response = http.get(`${rootUrl}/${uri}`);

@@ -16,7 +16,7 @@ import {
 } from './parameter.js';
 
 /**
- * Returns endpoint '/quote' with valid random parameters language, UserId, AuthorId and/or CategoryId.
+ * Returns endpoint 'v1/quote' with valid random parameters language, UserId, AuthorId and/or CategoryId.
  * @param {Object} data
  * @returns e.g. "quote?language=uk&authorId=509"
  */
@@ -35,7 +35,38 @@ export function quote(data) {
 }
 
 /**
- * Returns endpoint '/users' with random valid parameters page&size or starting.
+ * Returns endpoint 'v1/quote_html' with valid random parameters language,
+ *   userId, authorId, categoryId, style, contentOnly or target.
+ * @param {Object} data
+ * @returns e.g. "quote?language=uk&authorId=509"
+ */
+export function quote_html(data) {
+  // 10% none, 90% one valid language
+  let parameter = addParam('', languageParameter(randomLanguage(data)), 0.9);
+  const whichOne = Math.random();
+  // 10% userId, 10% authorId or 10% categoryId
+  if (whichOne < 0.1) {
+    parameter = addParam(parameter, randomUserIdOrNotParameter(data), 0.5);
+  } else if (whichOne < 0.2) {
+    parameter = addParam(parameter, randomAuthorIdOrNotParameter(data));
+  } else if (whichOne < 0.3) {
+    parameter = addParam(parameter, randomCategoryIdOrNotParameter(data), 0.5);
+  }
+
+  // 20% contentOnly and 20% style and 20% target
+  parameter = addParam(parameter, 'contentOnly=true', 0.2);
+  parameter = addParam(
+    parameter,
+    'style=https://www.zitat-service.de/quote.css',
+    0.2,
+  );
+  parameter = addParam(parameter, 'target=quote_window', 0.2);
+
+  return `v1/quote_html${parameter}`;
+}
+
+/**
+ * Returns endpoint 'v1/users' with random valid parameters page&size or starting.
  * @param {Object[]} users
  * @returns e.g. "/users?starting=Sabin"
  */
@@ -53,7 +84,7 @@ export function users(users) {
 }
 
 /**
- * Returns endpoint '/author' with random valid parameters language and/or AuthorId.
+ * Returns endpoint 'v1/author' with random valid parameters language and/or AuthorId.
  * @param {Object} data
  * @returns e.g. "/author?language=de&authorId=412"
  */
@@ -66,7 +97,7 @@ export function author(data) {
 }
 
 /**
- * Returns endpoint '/authors' with random valid parameters language, page&size, firstname, lastname, description or lfd.
+ * Returns endpoint 'v1/authors' with random valid parameters language, page&size, firstname, lastname, description or lfd.
  * @param {Object} data
  * @returns e.g.
  */
@@ -123,7 +154,7 @@ export function authors(data) {
 }
 
 /**
- * create parameter for endpoint /categories with:
+ * create parameter for endpoint v1/categories with:
  *   -  9% language parameter set
  *   -  9% valid page and size parameter set
  *   - 90% starting parameter with random number of initial letters for valid category
