@@ -9,7 +9,7 @@ import {UsersRepository} from '../repositories/users.repository';
 
 const RESPONSES = {
   '200': {
-    description: 'OK – the login names and there IDs retrieved successfully. The result is sorted by login names.',
+    description: 'OK – the login names and their IDs are retrieved successfully. The result is sorted by login names.',
     content: {
       'application/json': {
         example: {
@@ -49,6 +49,9 @@ const RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>BadRequestError</h1> <h2><em>400</em> Parameter &#39;page&#39; must be greater than or equal to 1.</h2> ..."
+      },
     }
   },
   '404': {
@@ -63,6 +66,9 @@ const RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>NotFoundError</h1> <h2><em>404</em> No user entries found for given parameters.</h2> ..."
+      }
     }
   },
   '500': {
@@ -76,10 +82,13 @@ const RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
+      }
     },
   },
   '503': {
-    description: 'Service Unavailable.',
+    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 
@@ -104,8 +113,8 @@ export class UsersController {
     tags: ['Users'],
     responses: RESPONSES,
     operationId: 'get-users',
-    summary: 'Get list of users login names and there IDs.',
-    description: 'Get users login names and there IDs. Only users who have \
+    summary: 'Get list of users login names and their IDs.',
+    description: 'Get users login names and their IDs. Only users who have \
       created quotes and whose quotes are public are provided.'
   })
   // log method invocations
@@ -113,18 +122,18 @@ export class UsersController {
   async getUsers(
     @param.query.integer('page', {
       description: "The response is made page by page, the optional parameter \
-        'page' controls the page number of the result. Starting with page 1.",
+        `page` controls the page number of the result. Starting with page 1.",
       default: 1
     }) page = 1,
     @param.query.integer('size', {
       description: "The response is made page by page, the optional parameter \
-        'size' controls how many entries are returned on a page.",
+        `size` controls how many entries are returned on a page.",
       default: 100
     }) size = 100,
     @param.query.string('starting', {
       description: `The beginning of the login name to limit the list for \
-      type-ahead. The parameter 'starting' may contain only up-to \
-      ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
+      type-ahead. The parameter \`starting\` may contain only up-to \
+      ${PARAM_MAX_LENGTH} characters and cannot start with an apostrophe.`
     }) starting?: string
   ): Promise<UsersPaged> {
 

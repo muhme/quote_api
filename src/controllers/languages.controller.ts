@@ -29,10 +29,13 @@ const RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
+      }
     },
   },
   '503': {
-    description: 'Service Unavailable.',
+    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 

@@ -7,14 +7,14 @@ import {AuthorsRepository} from '../repositories/authors.repository';
 
 const AUTHORS_RESPONSES = {
   '200': {
-    description: 'OK – the authors retrieved successfully. \
-      Object \'paging\' contains the two-letter \'language\' code, \
-      the \'totalCount\' as number of all entries, the requested \'page\' \
-      number and the requested number of entries with \'size\'. \
-      If the result is using preselection with \'firstnam\', \'name\' or \
-      \'description\' the values are shown. The \'authors\' result array \
-      is sorted by the the authors \'lastname\'. Attributes \'authorId\' and \
-      \'name\' are always present. Other only if the contain values.',
+    description: 'OK – the list of author entries retrieved successfully. \
+      Object `paging` contains the two-letter `language` code. \
+      The `totalCount` as number of all entries, retrievable for given parameters. \
+      The requested `page` number and the requested number of entries with `size`. \
+      If the result is using preselection with `firstname`, `name` or \
+      `description` the values are shown. The `authors` result array \
+      is sorted by the the authors `lastname`. Attributes `authorId` and \
+      `name` are always present. Other only if they contain values.',
     content: {
       'application/json': {
         example: {
@@ -52,6 +52,9 @@ const AUTHORS_RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>BadRequestError</h1> <h2><em>400</em> Parameter &#39;authorId&#39; must be a positive integer.</h2> ..."
+      }
     }
   },
   '404': {
@@ -66,23 +69,39 @@ const AUTHORS_RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>NotFoundError</h1> <h2><em>404</em> No authors found for given parameters (language: &#39;en&#39;, page: &#39;1&#39;, size: &#39;100&#39;, lastname: &#39;XXX&#39;).</h2> ..."
+      },
     }
   },
   '500': {
     description: 'Internal Server Error.',
+    content: {
+      'application/json': {
+        example: {
+          error: {
+            statusCode: 500,
+            message: "Internal Server Error"
+          }
+        }
+      },
+      'text/html': {
+        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
+      }
+    },
   },
   '503': {
-    description: 'Service Unavailable.',
+    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 
 const AUTHOR_RESPONSES = {
   '200': {
-    description: "OK – the author retrieved successfully. \
-      Always present are the attributes 'authorId' and 'name'. The attributes \
-      'firstname', 'lastname', 'description' and 'link' are only present \
+    description: "OK – the author entry was retrieved successfully. \
+      Always present are the attributes `authorId` and `name`. The attributes \
+      `firstname`, `lastname`, `description` and `link` are only present \
       if they are exist. All attributes are returned in the requested \
-      'language'.",
+      `language`.",
     content: {
       'application/json': {
         example: {
@@ -110,6 +129,9 @@ const AUTHOR_RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>BadRequestError</h1> <h2><em>400</em> Parameter &#39;authorId&#39; must be a positive integer.</h2> ..."
+      }
     }
   },
   '404': {
@@ -120,10 +142,13 @@ const AUTHOR_RESPONSES = {
           error: {
             statusCode: 404,
             name: "NotFoundError",
-            message: "No authors found for the given parameters."
+            message: "No authors found for given parameters (language: 'en', page: '1', size: '100', lastname: 'XXX')"
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>NotFoundError</h1> <h2><em>404</em> No authors found for given parameters (language: &#39;en&#39;, page: &#39;1&#39;, size: &#39;100&#39;, lastname: &#39;XXX&#39;).</h2> ..."
+      }
     }
   },
   '500': {
@@ -137,10 +162,13 @@ const AUTHOR_RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
+      }
     },
   },
   '503': {
-    description: 'Service Unavailable.',
+    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 
@@ -161,59 +189,59 @@ export class AuthorsController {
     tags: ['Authors'],
     responses: AUTHORS_RESPONSES,
     operationId: 'get-authors',
-    summary: 'Get list of authors and there IDs.',
+    summary: 'Get list of authors and their IDs.',
     description: "Get paged list of authors. List can be restricted with \
-      'lastname', 'firstname' and 'description'. These tree parameters can be \
-      combined as one comma-separated parameter 'lfd'. Returned 'paging' contains \
-      used 'language', total number of author entries found with parameter 'totalCount', \
-      the requested page number with parameter 'page', the maximal number of \
-      page entries with parameter 'size'. If the list is restricted the \
-      'paging' parameters 'firstname', 'lastname' or 'description' are returned. \
-      The entries of the 'authors' array always contain the attributes 'authorId' \
-      and 'name'. If they exist, the optional attributes 'firstname', \
-      'lastname', 'link' and 'description' will be returned. All attributes \
-      are given in the requested 'language'. Only public authors are provided."
+      `lastname`, `firstname` and `description`. These three parameters can be \
+      combined as one comma-separated parameter `lfd`. Returned `paging` contains \
+      used `language`, total number of author entries found with parameter `totalCount`, \
+      the requested page number with parameter `page`, the maximal number of \
+      page entries with parameter `size`. If the list is restricted the \
+      `paging` parameters `firstname`, `lastname` or `description` are returned. \
+      The entries of the `authors` array always contain the attributes `authorId` \
+      and `name`. If they exist, the optional attributes `firstname`, \
+      `lastname`, `link` and `description` will be returned. All attributes \
+      are given in the requested `language`. Only public authors are returned."
   })
   // log method invocation
   @logInvocation()
   async getAuthors(
     @param.query.string('language', {
-      description: 'The language for the author entries. See /languages for available languages.',
+      description: 'The `language` for the author entries. See `/v1/languages` for available language codes.',
       default: 'en'
     }) language = 'en',
 
     @param.query.integer('page', {
-      description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
+      description: 'The response is made page by page, the parameter `page` controls the page number of the result. Starting with page 1.',
       default: 1
     }) page = 1,
 
     @param.query.integer('size', {
-      description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
+      description: 'The response is made page by page, the parameter `size` controls how many entries are returned on a page.',
       default: 100
     }) size = 100,
 
     @param.query.string('lastname', {
       description: `The beginning of the authors last name to limit the list \
-        for type-ahead. The parameter 'lastname' may contain only up-to \
-        ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
+        for type-ahead. The parameter \`lastname\` may contain only up-to \
+        ${PARAM_MAX_LENGTH} characters and cannot start with an apostrophe.`
     }) lastname?: string,
 
     @param.query.string('firstname', {
       description: `The beginning of the authors first name to limit the list \
-        for type-ahead. The parameter 'lastname' may contain only up-to \
-        ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
+        for type-ahead. The parameter \`lastname\` may contain only up-to \
+        ${PARAM_MAX_LENGTH} characters and cannot start with an apostrophe.`
     }) firstname?: string,
 
     @param.query.string('description', {
       description: `The beginning of the authors description to limit the list \
-      for type-ahead. The parameter 'lastname' may contain only up-to \
-      ${PARAM_MAX_LENGTH} and cannot start with an apostrophe.`
+      for type-ahead. The parameter \`lastname\` may contain only up-to \
+      ${PARAM_MAX_LENGTH} characters and cannot start with an apostrophe.`
     }) description?: string,
 
     @param.query.string('lfd', {
-      description: "The beginning of the authors 'lastname,firstname,description' \
-      to limit the list for type-ahead. The parameter 'lfd' is used to set the \
-      parameters 'lastname', 'firstname' and 'description'. See restrictions there."
+      description: "The beginning of the authors `lastname,firstname,description` \
+      to limit the list for type-ahead. The parameter `lfd` is used to set the \
+      parameters `lastname`, `firstname` and `description`. See restrictions there."
     }) lfd?: string
   ): Promise<AuthorsPaged> {
 
@@ -256,22 +284,22 @@ export class AuthorsController {
     responses: AUTHOR_RESPONSES,
     operationId: 'get-authors',
     summary: 'Get one author entry by ID.',
-    description: "Get one author entry for given 'authorId' in given 'language'. \
-      Always returned attributes are 'authorId' and 'name'. If they exist, the optional attributes 'firstname', \
-      'lastname', 'link' and 'description' will be returned. All attributes \
-      are given in the requested 'language'. \
+    description: "Get one author entry for given `authorId` in given `language`. \
+      Always returned attributes are `authorId` and `name`. If they exist, the optional attributes `firstname`, \
+      `lastname`, `link` and `description` will be returned. All attributes \
+      are given in the requested `language`. \
       Requested author entry have to be public."
   })
   // log method invocation
   @logInvocation()
   async getAuthor(
     @param.query.string('language', {
-      description: 'The language for the author entry. See /languages for available languages.',
+      description: 'The `language` for the author entry. See `/v1/languages` for all available languages.',
       default: 'en'
     }) language = 'en',
 
     @param.query.integer('authorId', {
-      description: 'Authors ID. For a list of all author entries with their IDs see /authors',
+      description: 'Authors ID. For a list of all author entries with their IDs see `/v1/authors`.',
       default: 1
     }) authorId = 1
   ): Promise<AuthorReturned | null> {

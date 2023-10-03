@@ -795,4 +795,182 @@ describe('api.zitat-service.de (end2end)', () => {
     const response = await client.get('/v1/quote?categoryId=623').expect(404);
     response.text.should.containEql('NotFoundError');
   });
+
+  //*************
+  // quote_html *
+  //*************
+
+  it('invokes GET /v1/quote_html', async () => {
+    const response = await client.get('/v1/quote_html').expect(200);
+    response.text.should.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
+    response.text.should.not.containEql('target="');
+  });
+  it('invokes GET /v1/quote_html?contentOnly=true', async () => {
+    const response = await client.get('/v1/quote_html?contentOnly=true').expect(200);
+    response.text.should.not.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
+    response.text.should.not.containEql('target="');
+  });
+  it('invokes GET /v1/quote_html?contentOnly=false', async () => {
+    const response = await client.get('/v1/quote_html?contentOnly=false').expect(200);
+    response.text.should.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
+    response.text.should.not.containEql('target="');
+  });
+  it('invokes GET /v1/quote_html?target=quote_window', async () => {
+    const response = await client.get('/v1/quote_html?target=quote_window').expect(200);
+    response.text.should.containEql('target="quote_window"');
+    response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
+  });
+  // explicit testing authorID 0 (unknown) and using category+user as there is only one quote w/o source
+  it('invokes GET /v1/quote_html?authorId=0&categoryId=545&userId=85', async () => {
+    const response = await client.get('/v1/quote_html?authorId=0&categoryId=545&userId=85').expect(200);
+    response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
+    response.text.should.not.containEql('<div class="source">');
+  });
+  // following tests are figured out with exactly one quote returned
+  it('invokes GET /v1/quote_html?authorId=601', async () => {
+    const response = await client.get('/v1/quote_html?authorId=601').expect(200);
+    response.text.should.containEql(
+      `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>www.zitat-service.de</title>
+</head>
+<body>
+  <div class="quote"><div class="quotation"><a href="https://www.zitat-service.de/en/quotations/1906">Dance is the hidden language of the soul.</a></div><div class="source"><a href="https://archive.nytimes.com/www.nytimes.com/library/arts/033185graham.html">Martha Graham Reflects on Her Art and a Life in Dance, The New York Times, 1985</a>, <a href="https://en.wikipedia.org/wiki/Martha_Graham">Martha Graham</a></div></div>
+</body>
+</html>
+`);
+  });
+  it('invokes GET /v1/quote_html?userId=97&language=de', async () => {
+    const response = await client.get('/v1/quote_html?userId=97&language=de').expect(200);
+    response.text.should.containEql(
+      `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>www.zitat-service.de</title>
+</head>
+<body>
+  <div class="quote"><div class="quotation"><a href="https://www.zitat-service.de/de/quotations/1527">Missverständnis? Die häufigste Form menschlicher Kommunikation.</a></div><div class="source"><a href="https://de.wikipedia.org/wiki/Peter_Benary">Peter Benary</a></div></div>
+</body>
+</html>
+`);
+  });
+  it('invokes GET /v1/quote_html?authorId=0&categoryId=16&userId=73&language=es', async () => {
+    const response = await client.get('/v1/quote_html?authorId=0&categoryId=16&userId=73&language=es').expect(200);
+    response.text.should.containEql(
+      `<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>www.zitat-service.de</title>
+</head>
+<body>
+  <div class="quote"><div class="quotation"><a href="https://www.zitat-service.de/es/quotations/1903">Vivir con miedo, es como vivir a medias.</a></div></div>
+</body>
+</html>
+`);
+  });
+  it('invokes GET /v1/quote_html?authorId=33&categoryId=501&language=de', async () => {
+    const response = await client.get('/v1/quote_html?authorId=33&categoryId=501&language=de').expect(200);
+    response.text.should.containEql(
+      `<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>www.zitat-service.de</title>
+</head>
+<body>
+  <div class="quote"><div class="quotation"><a href="https://www.zitat-service.de/de/quotations/1687">Was nicht umstritten ist, ist auch nicht sonderlich interessant.</a></div><div class="source"><a href="https://de.wikipedia.org/wiki/Johann_Wolfgang_von_Goethe">Johann Wolfgang von Goethe</a></div></div>
+</body>
+</html>
+`);
+  });
+
+  // incorrect parameters
+  it('invokes GET /v1/quote_html?userId=', async () => {
+    const response = await client.get('/v1/quote_html?userId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?userId=-1', async () => {
+    const response = await client.get('/v1/quote_html?userId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?userId=1.1', async () => {
+    const response = await client.get('/v1/quote_html?userId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?userId=A', async () => {
+    const response = await client.get('/v1/quote_html?userId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?userId=1000', async () => {
+    const response = await client.get('/v1/quote_html?userId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /v1/quote_html?authorId=', async () => {
+    const response = await client.get('/v1/quote_html?authorId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?authorId=-1', async () => {
+    const response = await client.get('/v1/quote_html?authorId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?authorId=1.1', async () => {
+    const response = await client.get('/v1/quote_html?authorId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?authorId=A', async () => {
+    const response = await client.get('/v1/quote_html?authorId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?authorId=1000', async () => {
+    const response = await client.get('/v1/quote_html?authorId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /v1/quote_html?categoryId=', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?categoryId=-1', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=-1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?categoryId=1.1', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=1.1').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?categoryId=A', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=A').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?categoryId=1000', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=1000').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /v1/quote_html?language=', async () => {
+    const response = await client.get('/v1/quote_html?language=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?language=XXX', async () => {
+    const response = await client.get('/v1/quote_html?language=XXX').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  // testing #1919 non-public quote with non-public category #623
+  it('invokes GET /v1/quote_html?categoryId=623', async () => {
+    const response = await client.get('/v1/quote_html?categoryId=623').expect(404);
+    response.text.should.containEql('NotFoundError');
+  });
+  it('invokes GET /v1/quote_html?contentOnly=', async () => {
+    const response = await client.get('/v1/quote_html?contentOnly=').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
+  it('invokes GET /v1/quote_html?contentOnly=oops', async () => {
+    const response = await client.get('/v1/quote_html?contentOnly=oops').expect(400);
+    response.text.should.containEql('BadRequestError');
+  });
 });

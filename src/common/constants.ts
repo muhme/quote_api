@@ -17,7 +17,9 @@ export const NO_USER_ENTRY = "no user entry";
 export const NO_AUTHOR_ENTRY = "no author entry";
 // used as category name if category was not found, e.g. in error messages
 export const NO_CATEGORY_ENTRY = "no category entry";
+// the domain
+export const ZITAT_SERVICE_DE = "www.zitat-service.de"
 // the URL
-export const ZITAT_SERVICE_DE = "https://www.zitat-service.de"
+export const ZITAT_SERVICE_DE_URL = `https://${ZITAT_SERVICE_DE}`
 // my own Winston logger single instance
 export const MY_WINSTON_LOGGER = 'services.MyWinstonLogger';

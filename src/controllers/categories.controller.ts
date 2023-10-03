@@ -6,12 +6,12 @@ import {CategoriesRepository} from '../repositories/categories.repository';
 
 const RESPONSES = {
   '200': {
-    description: 'OK – the category names and there IDs retrieved \
-      successfully. Object \'paging\' contains the two-letter \'language\' \
-      code, the \'totalCount\' as number of all entries, the requested \
-      \'page\' number and the requested number of entries with \'size\'. \
-      The \'categories\' result array gives the unique \'id\' for each \
-      entry and is sorted by \'category\' names.',
+    description: 'OK – the category names and their IDs retrieved \
+      successfully. Object `paging` contains the two-letter `language` \
+      code, the `totalCount` as number of all entries, the requested \
+      `page` number and the requested number of entries with `size`. \
+      The `categories` result array gives the unique `id` for each \
+      entry and is sorted by `category` names.',
     content: {
       'application/json': {
         example: {
@@ -48,10 +48,13 @@ const RESPONSES = {
           error: {
             statusCode: 400,
             name: "BadRequestError",
-            message: "Parameter 'page' must be greater than 1."
+            message: "Parameter 'page' must be greater than or equal to 1."
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>BadRequestError</h1> <h2><em>400</em> Parameter &#39;page&#39; must be greater than or equal to 1.</h2> ..."
+      }
     }
   },
   '404': {
@@ -62,10 +65,13 @@ const RESPONSES = {
           error: {
             statusCode: 404,
             name: "NotFoundError",
-            message: "No categories found for the given parameters."
+            message: "No categories found for given parameters: language: 'en', page: '1', size: '100', starting: 'XXX'"
           }
         }
       },
+      'text/html': {
+        example: "<html> ... <h1>NotFoundError</h1> <h2><em>404</em> No categories found for given parameters: language: &#39;en&#39;, page: &#39;1&#39;, size: &#39;100&#39;, starting: &#39;XXX&#39;</h2> ..."
+      }
     }
   },
   '500': {
@@ -79,10 +85,13 @@ const RESPONSES = {
           }
         }
       },
+      'text/html': {
+        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
+      }
     },
   },
   '503': {
-    description: 'Service Unavailable.',
+    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 
@@ -104,33 +113,33 @@ export class CategoriesController {
     tags: ['Categories'],
     responses: RESPONSES,
     operationId: 'get-categories',
-    summary: 'Get list of category names with IDs.',
+    summary: 'Get list of category names with their IDs.',
     description: "Get paged list of categories. List can be restricted with \
-      parameter 'starting'. Category names are in the requested 'language'. \
-      Only public categories are provided."
+      parameter `starting`. Category names are in the requested `language`. \
+      Only public categories are used."
   })
   // log method invocation
   @logInvocation()
   async getCategories(
     @param.query.string('language', {
-      description: 'The language for the author entries. See /languages for available languages.',
+      description: 'The language for the category entries. See `/v1/languages` for available languages.',
       default: 'en'
     }) language = 'en',
 
     @param.query.integer('page', {
-      description: 'The response is made page by page, this parameter controls the page number of the result. Starting with page 1.',
+      description: 'The response is made page by page, the parameter `page` controls the page number of the result. Starting with page 1.',
       default: 1
     }) page = 1,
 
     @param.query.integer('size', {
-      description: 'The response is made page by page, this parameter controls how many entries are returned on a page.',
+      description: 'The response is made page by page, the parameter `size` controls how many entries are returned on a page.',
       default: 100
     }) size = 100,
 
     @param.query.string('starting', {
-      description: `Use the \'starting\' parameter to specify the beginning of \
+      description: `Use the \`starting\` parameter to specify the beginning of \
         the category name to limit the list for preselection. The parameter \
-        'starting' may contain only up-to ${PARAM_MAX_LENGTH} letters or spaces.`,
+        \`starting\` may contain only up-to ${PARAM_MAX_LENGTH} letters or spaces.`,
     }) starting?: string
   ): Promise<CategoriesPaged> {
 
