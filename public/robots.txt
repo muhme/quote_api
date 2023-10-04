@@ -1,0 +1,5 @@
+# https://api.zitat-service.de/robots.txt
+#
+# all robots can visit all files
+User-agent: *
+Disallow:
