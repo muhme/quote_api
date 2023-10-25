@@ -267,7 +267,7 @@ export class QuotationController {
     const quote = await this.quotationRepository.findQuotation(filter);
 
     if (!quote.length) {
-      await this.throwNotFoundWithGivenParametes(filter);
+      await this.throwNotFoundWithGivenParameters(filter);
     }
     if (!quote || quote.length !== 1) {
       throw new HttpErrors.NotFound(`Could not find a quote for given parameters.`);
@@ -340,13 +340,14 @@ export class QuotationController {
     const quote = await this.quotationRepository.findQuotation(filter);
 
     if (!quote.length) {
-      await this.throwNotFoundWithGivenParametes(filter);
+      await this.throwNotFoundWithGivenParameters(filter);
     }
     if (!quote || quote.length !== 1) {
       throw new HttpErrors.NotFound(`Could not find a quote for given parameters.`);
     }
 
     const result = await this.mapQuoteToHtml(quote[0], style, contentOnly, target);
+
 
     // as @loopback4/rest/src/writer.ts simple set
     //    response.setHeader('Content-Type', 'text/plain');
@@ -419,7 +420,7 @@ export class QuotationController {
   }
 
   // create descriptive error message with all parameters set and throw 404
-  private async throwNotFoundWithGivenParametes(filter: QuoteFilter) {
+  private async throwNotFoundWithGivenParameters(filter: QuoteFilter) {
 
     const givenParams = [];
     if (filter.language !== undefined) {
