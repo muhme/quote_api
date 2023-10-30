@@ -358,47 +358,47 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /v1/authors?language=de&page=100&size=1', async () => {
     const response = await client.get('/v1/authors?language=de&page=100&size=1').expect(200);
     expect([{
-      "authorId": 331,
-      "lastname": "Chanel",
-      "firstname": "Coco",
-      "description": "Französische Modeschöpferin (1883 – 1971)",
-      "link": "https://de.wikipedia.org/wiki/Coco_Chanel",
-      "name": "Coco Chanel"
+      "authorId": 61,
+      "lastname": "Creamer",
+      "firstname": "Stephan",
+      "description": "Inhaber und Mitbegründer der Coachingacademie Bielefeld",
+      "name": "Stephan Creamer"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /v1/authors?language=es&page=120&size=1', async () => {
     const response = await client.get('/v1/authors?language=es&page=120&size=1').expect(200);
     expect([{
-      "authorId": 451,
-      "lastname": "Cramer",
-      "firstname": "Dettmar",
-      "description": "Futbolista y entrenador alemán (n. 1925)",
-      "link": "https://es.wikipedia.org/wiki/Dettmar_Cramer",
-      "name": "Dettmar Cramer"
+      "authorId": 525,
+      "lastname": "Diekmann",
+      "firstname": "Kai",
+      "description": "Periodista y consultor alemán (n. 1964)",
+      "link": "https://es.wikipedia.org/wiki/Kai_Diekmann",
+      "name": "Kai Diekmann"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /v1/authors?language=ja&page=140&size=1', async () => {
     const response = await client.get('/v1/authors?language=ja&page=140&size=1').expect(200);
     expect([{
-      "authorId": 425,
-      "lastname": "グロッサー",
-      "firstname": "ピーター",
-      "description": "ドイツのサッカー選手、監督（*1938年）",
-      "name": "グロッサー・ピーター"
+      "authorId": 106,
+      "lastname": "コクトー",
+      "firstname": "ジャン",
+      "description": "フランスの作家、演出家、画家、振付家（1889年～1963年）",
+      "link": "https://ja.wikipedia.org/wiki/ジャン・コクトー",
+      "name": "コクトー・ジャン"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /v1/authors?language=uk&page=160&size=1', async () => {
     const response = await client.get('/v1/authors?language=uk&page=160&size=1').expect(200);
     expect([{
-      "authorId": 599,
-      "lastname": "Григорович",
-      "firstname": "Шевченко Тарас",
-      "description": "Український поет і художник (1814 - 1861)",
-      "link": "https://uk.wikipedia.org/wiki/Шевченко_Тарас_Григорович",
-      "name": "Шевченко Тарас Григорович"
+      "authorId": 171,
+      "lastname": "Девіто",
+      "firstname": "Денні",
+      "description": "Американський актор (нар. 1944)",
+      "link": "https://uk.wikipedia.org/wiki/Денні_Девіто",
+      "name": "Денні Девіто"
     }]).to.eql(response.body.authors);
   });
-  // missing language defaults to :en
+  // if no language given, it defaults to :en
   it('invokes GET /v1/authors?page=200&size=1', async () => {
     const response = await client.get('/v1/authors?page=200&size=1').expect(200);
     expect({
@@ -408,12 +408,11 @@ describe('api.zitat-service.de (end2end)', () => {
       "size": 1
     }).to.eql(response.body.paging);
     expect([{
-      "authorId": 419,
-      "lastname": "Grillparzer",
-      "firstname": "Franz",
-      "description": "Austrian writer (1791 - 1872)",
-      "link": "https://en.wikipedia.org/wiki/Franz_Grillparzer",
-      "name": "Franz Grillparzer"
+      "authorId": 590,
+      "lastname": "Hartung",
+      "firstname": "Michael",
+      "description": "from IBM",
+      "name": "Michael Hartung"
     }]).to.eql(response.body.authors);
   });
   it('invokes GET /v1/authors?lastname=A&firstname=D&size=1', async () => {
@@ -472,6 +471,22 @@ describe('api.zitat-service.de (end2end)', () => {
   it('invokes GET /v1/authors?lfd=&size=1000', async () => {
     const response = await client.get('/v1/authors?lfd=&size=1000').expect(200);
     expect(response.body.authors.length).to.equal(562);
+  });
+
+  // issue #4 authors without last name at the end
+  it('retrieves the first author entry and checks that lastname is set', async () => {
+    const response = await client.get('/v1/authors?language=en&page=1&size=1').expect(200);
+    expect(response.body.authors).to.have.lengthOf(1);
+    expect(response.body.authors[0]).to.have.property('lastname');
+    expect(response.body.authors[0]).to.have.property('firstname');
+  });
+  it('retrieves the the last author entry and checks that lastname is not set', async () => {
+    let response = await client.get('/v1/authors?size=1').expect(200);
+    const totalCount = response.body.paging.totalCount;
+    response = await client.get(`/v1/authors?page=${totalCount}&size=1`).expect(200);
+    expect(response.body.authors).to.have.lengthOf(1);
+    expect(response.body.authors[0]).to.not.have.property('lastname');
+    expect(response.body.authors[0]).to.have.property('firstname');
   });
 
   // incorrect parameters

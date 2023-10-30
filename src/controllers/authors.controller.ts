@@ -13,8 +13,9 @@ const AUTHORS_RESPONSES = {
       The requested `page` number and the requested number of entries with `size`. \
       If the result is using preselection with `firstname`, `name` or \
       `description` the values are shown. The `authors` result array \
-      is sorted by the the authors `lastname`. Attributes `authorId` and \
-      `name` are always present. Other only if they contain values.',
+      is sorted by the the authors `lastname` first and authors `firstname` second. \
+      Attributes `authorId` and `name` are always present. \
+      The other attributes are only present if they contain values.',
     content: {
       'application/json': {
         example: {
@@ -269,7 +270,7 @@ export class AuthorsController {
     // page and size >= 1?
     validatePageAndSize(page, size);
 
-    const authorsPaged = await this.authorsRepository.findAuthors(filter);
+    const authorsPaged: AuthorsPaged = await this.authorsRepository.findAuthors(filter);
 
     if (authorsPaged.authors.length === 0) {
       throw new HttpErrors.NotFound(`No authors found for given parameters (${myStringify(filter)}).`)

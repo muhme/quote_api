@@ -129,6 +129,12 @@ export class AuthorsRepository extends DefaultCrudRepository<
 
   // whereClause is between "" and
   // "mst_name.value LIKE ? AND mst_firstname.value LIKE ? AND  mst_description.value LIKE ? AND "
+  // ORDER BY:
+  //   - CASE statement assigns a value of 1 when lastname is NULL and 0 otherwise
+  //     his ensures that entries without a lastname are ordered at the end
+  //   - entries are then sorted by lastname in ascending order
+  //   - for those entries with the same name or those without a lastname,
+  //     they are sorted by firstname in ascending order
   private mainSqlQuery(whereClause: string): string {
     return `
       SELECT DISTINCT
@@ -167,7 +173,9 @@ export class AuthorsRepository extends DefaultCrudRepository<
           ${whereClause}
           a.public = 1
         ORDER BY
-          mst_name.value ASC
+          CASE WHEN mst_name.value IS NULL THEN 1 ELSE 0 END,
+          mst_name.value ASC,
+          mst_firstname.value ASC
         LIMIT ?, ?;
     `;
   }
