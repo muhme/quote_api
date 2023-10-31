@@ -123,17 +123,26 @@ export class CategoriesController {
   async getCategories(
     @param.query.string('language', {
       description: 'The language for the category entries. See `/v1/languages` for available languages.',
-      default: 'en'
+      schema: {
+        type: 'string',
+        default: 'en'
+      }
     }) language = 'en',
 
     @param.query.integer('page', {
       description: 'The response is made page by page, the parameter `page` controls the page number of the result. Starting with page 1.',
-      default: 1
+      schema: {
+        type: 'integer',
+        default: 1
+      }
     }) page = 1,
 
     @param.query.integer('size', {
       description: 'The response is made page by page, the parameter `size` controls how many entries are returned on a page.',
-      default: 100
+      schema: {
+        type: 'integer',
+        default: 100
+      }
     }) size = 100,
 
     @param.query.string('starting', {

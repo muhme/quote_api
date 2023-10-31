@@ -321,7 +321,10 @@ export class QuotationController {
     }) style?: string,
     @param.query.boolean('contentOnly', {
       description: DESCRIPTIONS['contentOnly'],
-      default: false
+      schema: {
+        type: 'boolean',
+        default: false
+      }
     }) contentOnly?: boolean,
     @param.query.string('target', {
       description: DESCRIPTIONS['target']

@@ -123,12 +123,18 @@ export class UsersController {
     @param.query.integer('page', {
       description: "The response is made page by page, the optional parameter \
         `page` controls the page number of the result. Starting with page 1.",
-      default: 1
+      schema: {
+        type: 'integer',
+        default: 1
+      }
     }) page = 1,
     @param.query.integer('size', {
       description: "The response is made page by page, the optional parameter \
         `size` controls how many entries are returned on a page.",
-      default: 100
+      schema: {
+        type: 'integer',
+        default: 100
+      }
     }) size = 100,
     @param.query.string('starting', {
       description: `The beginning of the login name to limit the list for \

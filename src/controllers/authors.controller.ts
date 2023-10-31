@@ -208,17 +208,26 @@ export class AuthorsController {
   async getAuthors(
     @param.query.string('language', {
       description: 'The `language` for the author entries. See `/v1/languages` for available language codes.',
-      default: 'en'
+      schema: {
+        type: 'string',
+        default: 'en'
+      }
     }) language = 'en',
 
     @param.query.integer('page', {
       description: 'The response is made page by page, the parameter `page` controls the page number of the result. Starting with page 1.',
-      default: 1
+      schema: {
+        type: 'integer',
+        default: 1
+      }
     }) page = 1,
 
     @param.query.integer('size', {
       description: 'The response is made page by page, the parameter `size` controls how many entries are returned on a page.',
-      default: 100
+      schema: {
+        type: 'integer',
+        default: 100
+      }
     }) size = 100,
 
     @param.query.string('lastname', {
@@ -296,12 +305,18 @@ export class AuthorsController {
   async getAuthor(
     @param.query.string('language', {
       description: 'The `language` for the author entry. See `/v1/languages` for all available languages.',
-      default: 'en'
+      schema: {
+        type: 'string',
+        default: 'en'
+      }
     }) language = 'en',
 
     @param.query.integer('authorId', {
       description: 'Authors ID. For a list of all author entries with their IDs see `/v1/authors`.',
-      default: 1
+      schema: {
+        type: 'integer',
+        default: 1
+      }
     }) authorId = 1
   ): Promise<AuthorReturned | null> {
     const filter: AuthorFilter = {
