@@ -97,7 +97,7 @@ Fetched 570 categories
 
 ## History
 
-- October 31, 2023 v1.1.2 fixing validator.swagger.io errors ([Issue #4](../../issues/4))
+- October 31, 2023 v1.1.2 fixing validator.swagger.io errors ([Issue #5](../../issues/5))
 - October 30, 2023 v1.1.1 [/v1/authors](https://api.zitat-service.de/v1/authors) list is now sorted by lastname first and firstname second ([Issue #4](../../issues/4))
 - October 3, 2023 v1.1.0 with additional endpoint [/v1/quote_html](https://api.zitat-service.de/v1/quote_html)
 - September 20, 2023 v1.0.0 launched with six JSON endpoints
