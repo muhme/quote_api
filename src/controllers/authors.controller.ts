@@ -292,7 +292,7 @@ export class AuthorsController {
   @get('/v1/author', {
     tags: ['Authors'],
     responses: AUTHOR_RESPONSES,
-    operationId: 'get-authors',
+    operationId: 'get-author',
     summary: 'Get one author entry by ID.',
     description: "Get one author entry for given `authorId` in given `language`. \
       Always returned attributes are `authorId` and `name`. If they exist, the optional attributes `firstname`, \
