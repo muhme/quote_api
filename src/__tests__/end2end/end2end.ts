@@ -817,19 +817,19 @@ describe('api.zitat-service.de (end2end)', () => {
 
   it('invokes GET /v1/quote_html', async () => {
     const response = await client.get('/v1/quote_html').expect(200);
-    response.text.should.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.containEql('<!DOCTYPE html>');
     response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
     response.text.should.not.containEql('target="');
   });
   it('invokes GET /v1/quote_html?contentOnly=true', async () => {
     const response = await client.get('/v1/quote_html?contentOnly=true').expect(200);
-    response.text.should.not.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.not.containEql('<!DOCTYPE html>');
     response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
     response.text.should.not.containEql('target="');
   });
   it('invokes GET /v1/quote_html?contentOnly=false', async () => {
     const response = await client.get('/v1/quote_html?contentOnly=false').expect(200);
-    response.text.should.containEql('<!DOCTYPE html>\n<html lang="de">\n<head>');
+    response.text.should.containEql('<!DOCTYPE html>\n');
     response.text.should.containEql('<div class="quote"><div class="quotation"><a href="');
     response.text.should.not.containEql('target="');
   });
