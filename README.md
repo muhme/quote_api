@@ -50,8 +50,7 @@ For `LoopBack4` debug strings can be set as environment variables. For example `
 Acceptance, unit and integration tests exist only as examples. But more than 100 end-to-end tests are existing. Go into quote_api_nodeapp container first and then run all the tests:
 
 ```sh
-host $ docker exec -it quote_api_nodeapp /bin/bash
-node $ npm run test
+host $ docker exec -it quote_api_nodeapp /usr/local/bin/npm run test
 ```
 
 ### K6
@@ -97,6 +96,7 @@ Fetched 570 categories
 
 ## History
 
+- Januar 24, 2024 v1.1.3 npm update
 - October 31, 2023 v1.1.2 fixing validator.swagger.io errors ([Issue #5](../../issues/5))
 - October 30, 2023 v1.1.1 [/v1/authors](https://api.zitat-service.de/v1/authors) list is now sorted by lastname first and firstname second ([Issue #4](../../issues/4))
 - October 3, 2023 v1.1.0 with additional endpoint [/v1/quote_html](https://api.zitat-service.de/v1/quote_html)
