@@ -36,7 +36,10 @@ const DESCRIPTIONS = {
     "HTML `target` attribute used in links: When not specified, \
     all links will open in the same window/tab by browser default. \
     Use `_blank` to open each link in a new window/tab or use a custom name \
-    like `quote_window` to open all links in a specific other window/tab."
+    like `quote_window` to open all links in a specific other window/tab. \
+    This is crucial for integrating into a webpage, for example, using an iframe. \
+    For security reasons, opening a new webpage within the original page is not allowed. \
+    The `target` parameter now allows for the links to be opened in a new tab or window."
 }
 
 const RESPONSES = {
