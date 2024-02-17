@@ -1,6 +1,6 @@
 {
   "name": "api.zitat-service.de",
-  "version": "1.1.3",
+  "version": "1.1.4",
   "description": "The API provides functionality to retrieve quotes, along with related entries such as their respective authors and associated categories, from the website <a href=\"https://www.zitat-service.de\">zitat.service.de</a>. The content delivered by the API is available in five languages: English 🇺🇸, Español 🇪🇸, 日本語 🇯🇵, Українська 🇺🇦 and Deutsch 🇩🇪. While the content is multilingual, the API itself is provided only in English. You can find the open-source software project hosted on GitHub at <a href=\"https://github.com/muhme/quote_api\">github.com/muhme/quote_api</a>.",
   "keywords": [
     "loopback-application",
@@ -52,29 +52,29 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^6.1.1",
-    "@loopback/core": "^5.1.1",
-    "@loopback/logging": "^0.11.2",
-    "@loopback/repository": "^6.1.1",
-    "@loopback/rest": "^13.1.1",
-    "@loopback/rest-explorer": "^6.1.1",
-    "@loopback/service-proxy": "^6.1.1",
-    "dotenv": "^16.3.1",
-    "loopback-connector-mysql": "^5.4.4",
-    "ts-node": "^10.9.1",
-    "tslib": "^2.0.0",
-    "winston": "^3.10.0"
+    "@loopback/boot": "^6.1.5",
+    "@loopback/core": "^5.1.5",
+    "@loopback/logging": "^0.11.5",
+    "@loopback/repository": "^6.1.5",
+    "@loopback/rest": "^13.1.5",
+    "@loopback/rest-explorer": "^6.1.5",
+    "@loopback/service-proxy": "^6.1.5",
+    "dotenv": "^16.4.4",
+    "loopback-connector-mysql": "^7.0.7",
+    "ts-node": "^10.9.2",
+    "tslib": "^2.6.2",
+    "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@loopback/build": "^10.1.1",
-    "@loopback/eslint-config": "^14.0.2",
-    "@loopback/testlab": "^6.1.2",
-    "@types/node": "^16.18.38",
-    "eslint": "^8.45.0",
-    "eslint-plugin-chai-friendly": "^0.7.2",
-    "mocha": "^10.2.0",
+    "@loopback/build": "^10.1.5",
+    "@loopback/eslint-config": "^14.0.5",
+    "@loopback/testlab": "^6.1.5",
+    "@types/node": "^20.11.19",
+    "eslint": "^8.56.0",
+    "eslint-plugin-chai-friendly": "^0.7.4",
+    "mocha": "^10.3.0",
     "source-map-support": "^0.5.21",
-    "supertest": "^6.3.3",
-    "typescript": "~5.1.6"
+    "supertest": "^6.3.4",
+    "typescript": "~5.3.3"
   }
 }

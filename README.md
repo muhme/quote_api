@@ -1,6 +1,10 @@
 # api.zitat-service.de
 
-API [api.zitat-service.de](https://api.zitat-service.de) for the web application [www.zitat-service.de](https://www.zitat-service.de). The endpoints with the different parameters are documented (and testable) with the [API explorer](https://api.zitat-service.de/v1/explorer/).
+![API screen shot](images/quote_api_preview.png)
+
+API [api.zitat-service.de](https://api.zitat-service.de) for the quote collection of the user community [zitat-service.de](https://www.zitat-service.de). The endpoints with the different parameters are documented (and testable) with the [API explorer](https://api.zitat-service.de/v1/explorer/).
+
+Or simple try: <a href="https://api.zitat-service.de/v1/quote_html?language=en&style=https://www.zitat-service.de/quote.css">api.zitat-service.de/v1/quote_html?language=en&style=https://www.zitat-service.de/quote.css</a>
 
 ## Docker Containers
 
@@ -96,6 +100,7 @@ Fetched 570 categories
 
 ## History
 
+- February 27, 2024 v1.1.4 npm update
 - Januar 24, 2024 v1.1.3 npm update
 - October 31, 2023 v1.1.2 fixing validator.swagger.io errors ([Issue #5](../../issues/5))
 - October 30, 2023 v1.1.1 [/v1/authors](https://api.zitat-service.de/v1/authors) list is now sorted by lastname first and firstname second ([Issue #4](../../issues/4))
