@@ -59,7 +59,7 @@
     "@loopback/rest": "^13.1.5",
     "@loopback/rest-explorer": "^6.1.5",
     "@loopback/service-proxy": "^6.1.5",
-    "dotenv": "^16.4.4",
+    "dotenv": "^16.4.5",
     "loopback-connector-mysql": "^7.0.7",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
