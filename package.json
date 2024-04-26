@@ -52,29 +52,29 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^6.1.5",
-    "@loopback/core": "^5.1.5",
-    "@loopback/logging": "^0.11.5",
-    "@loopback/repository": "^6.1.5",
-    "@loopback/rest": "^13.1.5",
-    "@loopback/rest-explorer": "^6.1.5",
-    "@loopback/service-proxy": "^6.1.5",
+    "@loopback/boot": "^7.0.1",
+    "@loopback/core": "^6.0.1",
+    "@loopback/logging": "^0.12.1",
+    "@loopback/repository": "^7.0.1",
+    "@loopback/rest": "^14.0.1",
+    "@loopback/rest-explorer": "^7.0.1",
+    "@loopback/service-proxy": "^7.0.1",
     "dotenv": "^16.4.5",
-    "loopback-connector-mysql": "^7.0.7",
+    "loopback-connector-mysql": "^7.0.9",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
-    "winston": "^3.11.0"
+    "winston": "^3.13.0"
   },
   "devDependencies": {
-    "@loopback/build": "^10.1.5",
-    "@loopback/eslint-config": "^14.0.5",
-    "@loopback/testlab": "^6.1.5",
-    "@types/node": "^20.11.20",
+    "@loopback/build": "^11.0.1",
+    "@loopback/eslint-config": "^15.0.1",
+    "@loopback/testlab": "^7.0.1",
+    "@types/node": "^20.12.7",
     "eslint": "^8.57.0",
     "eslint-plugin-chai-friendly": "^0.7.4",
-    "mocha": "^10.3.0",
+    "mocha": "^10.4.0",
     "source-map-support": "^0.5.21",
-    "supertest": "^6.3.4",
-    "typescript": "~5.3.3"
+    "supertest": "^7.0.0",
+    "typescript": "~5.4.5"
   }
 }
