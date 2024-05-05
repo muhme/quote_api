@@ -20,6 +20,8 @@ services:
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mariadb
+      PMA_USER: root
+      PMA_PASSWORD: root
     ports:
       - "3001:80"
     restart: unless-stopped
