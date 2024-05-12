@@ -30,7 +30,7 @@ quote_api-mariadb            0.0.0.0:3002->3306/tcp       quote_api_mariadb
   - admin user is root/root
   - internal database port 3306 is mapped to host's port 3002
   ```sh
-    host $ mysql -h localhost -P 3002 -u quote_development -pquote_development
+    mysql -h localhost -P 3002 -u quote_development -pquote_development
   ```
   - Database quote_development
     - user quote_development/quote_development
@@ -56,7 +56,7 @@ For `LoopBack4` debug strings can be set as environment variables. For example `
 Acceptance, unit and integration tests exist only as examples. But more than 100 end-to-end tests are existing. Run all the tests with:
 
 ```sh
-host $ scripts/test.sh
+scripts/test.sh
 ```
 
 ### K6
@@ -68,15 +68,15 @@ First example: local on an 8-core Docker running 50 virtual users in parallel fo
 Second example: small 1-CPU/1 GB RAM VPS remote, with average 25 ms ping time. 7 virtual users in parallel result in VPS 85% CPU load. 10.770 requests are executed in the three minutes. Requests are responded in average 65 ms (max 635 ms).
 
 ```sh
-host $ cd src/__tests__/k6
-host $ k6 -u 50 -d 3m run script.js
+cd src/__tests__/k6
+k6 -u 50 -d 3m run script.js
 ```
 
 All requests can be shown with env variable SHOW_REQUESTS:
 
 ```sh
-host $ cd src/__tests__/k6
-host $ k6 -e SHOW_REQUESTS=true -d 1s run script.js
+cd src/__tests__/k6
+k6 -e SHOW_REQUESTS=true -d 1s run script.js
 Testing http://localhost:3000
 Fetched 5 languages: de,en,es,ja,uk
 Fetched 60 users
