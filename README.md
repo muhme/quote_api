@@ -53,7 +53,7 @@ For `LoopBack4` debug strings can be set as environment variables. For example `
 
 ## Tests
 
-Acceptance, unit and integration tests exist only as examples. But more than 100 end-to-end tests are existing. Go into quote_api_nodeapp container first and then run all the tests:
+Acceptance, unit and integration tests exist only as examples. But more than 100 end-to-end tests are existing. Run all the tests with:
 
 ```sh
 host $ scripts/test.sh
