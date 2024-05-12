@@ -11,15 +11,15 @@ Or simple try: <a href="https://api.zitat-service.de/v1/quote_html?language=en&s
 There is a Docker based test and development environment prepared. [Docker](https://www.docker.com/), [git](https://git-scm.com/), [node](https://nodejs.org/) >= v20 and [npm](https://www.npmjs.com/) must be installed (under Microsoft Windows in WSL2). To create your own test and development environment run:
 
 ```
-$ git clone https://github.com/muhme/quote_api
-$ cd quote_api
-$ scripts/create.sh
+git clone https://github.com/muhme/quote_api
+cd quote_api
+scripts/create.sh
 ```
 
 Then you should have three Docker containers running:
 
 ```
-$ docker ps
+docker ps
 IMAGE                        PORTS                        NAMES
 quote_api-nodeapp            0.0.0.0:3000->3000/tcp       quote_api_nodeapp
 phpmyadmin/phpmyadmin        0.0.0.0:3001->80/tcp         quote_api_mysqladmin
