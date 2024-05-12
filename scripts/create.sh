@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# create.sh - delete all docker containers and build them new
+# create.sh - delete all Docker containers and build them new
 #
 # MIT License, Copyright (c) 2023 - 2024 Heiko Lübbe
 # OpenAPI api.zitat-service.de, see https://github.com/muhme/quote_api
@@ -8,11 +8,11 @@
 # First delete all docker containters
 scripts/clean.sh
 
-echo "** npm run clean"
-npm run clean
-
 echo "*** npm install"
 npm install
+
+echo "*** npm run clean"
+npm run clean
 
 echo "*** npm run build"
 npm run build

@@ -11,14 +11,6 @@ USER node
 RUN mkdir -p /home/node/app
 WORKDIR /home/node/app
 
-# install app dependencies
-COPY --chown=node package.json package-lock.json ./
-RUN npm install
-
-# bundle app source code
-COPY --chown=node . .
-RUN npm run build
-
 # bind to all network interfaces so that it can be mapped to the host OS
 # other useful ENV variables are:
 #   DEBUG=loopback:connector:*
@@ -28,3 +20,5 @@ EXPOSE ${PORT}
 
 # CMD [ "node", "--trace-warnings", "." ]
 CMD [ "node", "." ]
+
+# CMD [ "sleep", "1000000" ]
