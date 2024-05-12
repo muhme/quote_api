@@ -1,4 +1,4 @@
-# using current version, released April 2023
+# using current LTS version, released April 2023
 FROM node:20-slim
 
 # like to have some utilities for working

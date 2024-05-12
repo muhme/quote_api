@@ -8,12 +8,12 @@ Or simple try: <a href="https://api.zitat-service.de/v1/quote_html?language=en&s
 
 ## Docker Containers
 
-There is a Docker based test and development environment prepared. You can create your own application installation with:
+There is a Docker based test and development environment prepared. [Docker](https://www.docker.com/), [git](https://git-scm.com/), [node](https://nodejs.org/) >= v20 and [npm](https://www.npmjs.com/) must be installed (under Microsoft Windows in WSL2). To create your own test and development environment run:
 
 ```
 $ git clone https://github.com/muhme/quote_api
 $ cd quote_api
-$ docker compose up -d
+$ scripts/create.sh
 ```
 
 Then you should have three Docker containers running:
@@ -41,6 +41,8 @@ quote_api-mariadb            0.0.0.0:3002->3306/tcp       quote_api_mariadb
   - http://localhost:3000
   - there you have OpenAPI spec and the API explorer
 
+This have been tested on macOS 14 (Sonoma), Ubuntu 22.04 LTS (Jammy Jellyfish), and Windows 11 with Ubuntu 22.04 LTS running under WSL2.
+
 ## Logging
 
 Logging goes via Winston into file. By default log level is `DEBUG` and filename is `development.log`. Is the environment variable `NODE_ENV` set to `production`, log level is set to `INFO` and filename is `production.log`.
@@ -54,7 +56,7 @@ For `LoopBack4` debug strings can be set as environment variables. For example `
 Acceptance, unit and integration tests exist only as examples. But more than 100 end-to-end tests are existing. Go into quote_api_nodeapp container first and then run all the tests:
 
 ```sh
-host $ docker exec -it quote_api_nodeapp /usr/local/bin/npm run test
+host $ scripts/test.sh
 ```
 
 ### K6
