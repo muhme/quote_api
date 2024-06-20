@@ -5,8 +5,18 @@
 # MIT License, Copyright (c) 2023 - 2024 Heiko Lübbe
 # OpenAPI api.zitat-service.de, see https://github.com/muhme/quote_api
 
-echo '*** Removing all Docker containers quote_api_*'
-docker ps -a --format '{{.Names}}' | grep '^quote_api_' | xargs -r docker rm -f
+PREFIX="quote_api_"
+NETWORK_NAME="${PREFIX}default"
 
-echo '*** Removing ./dist'
+# the following two docker commands are equal to 'docker compose down'
+
+echo '*** Remove following Docker containers'
+docker ps -a --format '{{.Names}}' | grep "^${PREFIX}" | xargs -r docker rm -f
+
+echo '*** Remove following Docker network'
+if docker network inspect "$NETWORK_NAME" >/dev/null 2>&1; then
+  docker network rm "$NETWORK_NAME"
+fi
+
+echo '*** Remove folder ./dist'
 rm -rf dist
