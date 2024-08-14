@@ -102,6 +102,7 @@ Fetched 570 categories
 
 ## History
 
+- August 14, 2024 v1.1.5 npm update
 - February 27, 2024 v1.1.4 npm update
 - Januar 24, 2024 v1.1.3 npm update
 - October 31, 2023 v1.1.2 fixing validator.swagger.io errors ([Issue #5](../../issues/5))

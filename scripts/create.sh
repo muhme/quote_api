@@ -8,8 +8,8 @@
 # First delete all docker containters
 scripts/clean.sh
 
-echo "*** npm install"
-npm install
+echo "*** npm clean install"
+npm ci
 
 echo "*** npm run clean"
 npm run clean
