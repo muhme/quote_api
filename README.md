@@ -102,6 +102,7 @@ Fetched 570 categories
 
 ## History
 
+- January 29, 2025 v1.1.6 npm update
 - August 14, 2024 v1.1.5 npm update
 - February 27, 2024 v1.1.4 npm update
 - Januar 24, 2024 v1.1.3 npm update

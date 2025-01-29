@@ -2,7 +2,7 @@
 #
 # scripts/clean.sh - delete all quote_api_* Docker containers and dir ./dist
 #
-# MIT License, Copyright (c) 2023 - 2024 Heiko Lübbe
+# MIT License, Copyright (c) 2023 - 2025 Heiko Lübbe
 # OpenAPI api.zitat-service.de, see https://github.com/muhme/quote_api
 
 PREFIX="quote_api_"
@@ -20,3 +20,6 @@ fi
 
 echo '*** Remove folder ./dist'
 rm -rf dist
+
+echo '*** Remove files'
+rm -rf development.log tsconfig.tsbuildinfo

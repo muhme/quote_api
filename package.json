@@ -1,6 +1,6 @@
 {
   "name": "api.zitat-service.de",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "The API provides functionality to retrieve quotes, along with related entries such as their respective authors and associated categories, from the website <a href=\"https://www.zitat-service.de\">zitat.service.de</a>. The content delivered by the API is available in five languages: English 🇺🇸, Español 🇪🇸, 日本語 🇯🇵, Українська 🇺🇦 and Deutsch 🇩🇪. While the content is multilingual, the API itself is provided only in English. You can find the open-source software project hosted on GitHub at <a href=\"https://github.com/muhme/quote_api\">github.com/muhme/quote_api</a>.",
   "keywords": [
     "loopback-application",
@@ -52,30 +52,29 @@
     "!*/__tests__"
   ],
   "dependencies": {
-    "@loopback/boot": "^7.0.4",
-    "@loopback/core": "^6.1.1",
-    "@loopback/logging": "^0.12.4",
-    "@loopback/repository": "^7.0.4",
-    "@loopback/rest": "^14.0.4",
-    "@loopback/rest-explorer": "^7.0.4",
-    "@loopback/service-proxy": "^7.0.4",
-    "dotenv": "^16.4.5",
-    "loopback-connector-mysql": "^7.0.13",
+    "@loopback/boot": "^7.0.10",
+    "@loopback/core": "^6.1.7",
+    "@loopback/logging": "^0.12.10",
+    "@loopback/repository": "^7.0.10",
+    "@loopback/rest": "^14.0.10",
+    "@loopback/rest-explorer": "^7.0.10",
+    "@loopback/service-proxy": "^7.0.10",
+    "dotenv": "^16.4.7",
+    "loopback-connector-mysql": "^7.0.18",
     "ts-node": "^10.9.2",
-    "tslib": "^2.6.3",
-    "winston": "^3.14.1"
+    "tslib": "^2.8.1",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@loopback/build": "^11.0.4",
-    "@loopback/eslint-config": "^15.0.3",
-    "@loopback/testlab": "^7.0.4",
-    "@types/node": "^22.2.0",
-    "eslint": "^8.57.0",
+    "@loopback/build": "^11.0.9",
+    "@loopback/testlab": "^7.0.9",
+    "@types/node": "^22.12.0",
+    "eslint": "^9.19.0",
     "eslint-plugin-chai-friendly": "^1.0.1",
-    "mocha": "^10.7.3",
+    "mocha": "^11.1.0",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
-    "typescript": "^5.5.4",
+    "typescript": "^5.7.3",
     "wait-on": ""
   }
 }
