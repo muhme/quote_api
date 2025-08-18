@@ -41,7 +41,7 @@ quote_api-mariadb            0.0.0.0:3002->3306/tcp       quote_api_mariadb
   - http://localhost:3000
   - there you have OpenAPI spec and the API explorer
 
-This have been tested on macOS 14 (Sonoma), Ubuntu 22.04 LTS (Jammy Jellyfish), and Windows 11 with Ubuntu 22.04 LTS running under WSL2.
+This was last tested on macOS 15 (Sequoia), Ubuntu 22.04 LTS (Jammy Jellyfish) and Windows 11 with WSL2 and Ubuntu 22.04 LTS.
 
 ## Logging
 
@@ -102,6 +102,7 @@ Fetched 570 categories
 
 ## History
 
+- August 18, 2025 v1.1.7 npm update
 - January 29, 2025 v1.1.6 npm update
 - August 14, 2024 v1.1.5 npm update
 - February 27, 2024 v1.1.4 npm update
