@@ -1,3 +1,5 @@
+[![Stand With Ukraine](https://raw.githubusercontent.com/vshymanskyy/StandWithUkraine/main/badges/StandWithUkraine.svg)](https://stand-with-ukraine.pp.ua) This API supports a selection of the Ukrainian language. Цей API підтримує вибір української мови.
+
 # api.zitat-service.de
 
 ![API screen shot](images/quote_api_preview.png)
