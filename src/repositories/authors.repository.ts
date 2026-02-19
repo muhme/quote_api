@@ -1,6 +1,13 @@
 import {inject} from '@loopback/core';
 import {DefaultCrudRepository} from '@loopback/repository';
-import {AuthorFilter, AuthorsFilter, AuthorsPaged, LANGUAGE_DEFAULT, NO_AUTHOR_ENTRY, PagingAuthors} from '../common';
+import {
+  AuthorFilter,
+  AuthorsFilter,
+  AuthorsPaged,
+  LANGUAGE_DEFAULT,
+  NO_AUTHOR_ENTRY,
+  PagingAuthors,
+} from '../common';
 import {MariaDbDataSource} from '../datasources';
 import {Author, combineAuthorName} from '../models';
 
@@ -22,30 +29,35 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * @returns AuthorsPaged
    */
   async findAuthors(filter: AuthorsFilter): Promise<AuthorsPaged> {
-
     const params = new Array(4).fill(filter.language);
 
     // generate dynamic query conditions
-    let whereClause = "";
+    let whereClause = '';
     if (filter.lastname) {
-      whereClause += "mst_name.value LIKE ? AND "
+      whereClause += 'mst_name.value LIKE ? AND ';
       params.push(filter.lastname + '%');
     }
     if (filter.firstname) {
-      whereClause += "mst_firstname.value LIKE ? AND "
+      whereClause += 'mst_firstname.value LIKE ? AND ';
       params.push(filter.firstname + '%');
     }
     if (filter.description) {
-      whereClause += "mst_description.value LIKE ? AND "
+      whereClause += 'mst_description.value LIKE ? AND ';
       params.push(filter.description + '%');
     }
 
     // execute count query
-    const totalCountResult = await this.dataSource.execute(this.countSqlQuery(whereClause), params);
+    const totalCountResult = await this.dataSource.execute(
+      this.countSqlQuery(whereClause),
+      params,
+    );
 
     // extend params with paging parameters and execute the main query
-    params.push(((filter.page - 1) * filter.size), filter.size);
-    let authors = await this.dataSource.execute(this.mainSqlQuery(whereClause), params);
+    params.push((filter.page - 1) * filter.size, filter.size);
+    let authors = await this.dataSource.execute(
+      this.mainSqlQuery(whereClause),
+      params,
+    );
 
     // exclude all null attributes from OpenAPI output
     // create name from firstname and lastname
@@ -53,7 +65,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
 
     return {
       paging: this.createPagingAuthors(filter, totalCountResult[0].totalCount),
-      authors: authors
+      authors: authors,
     };
   }
 
@@ -64,13 +76,17 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * @returns Author
    */
   async findAuthor(filter: AuthorFilter): Promise<Author | undefined> {
-
     const params = new Array(4).fill(filter.language);
-    params.push(filter.authorId)
+    params.push(filter.authorId);
 
-    const authors = await this.dataSource.execute(this.authorByIdSqlQuery(), params);
+    const authors = await this.dataSource.execute(
+      this.authorByIdSqlQuery(),
+      params,
+    );
 
-    return (authors.length === 1) ? this.washAuthorsAttributes(authors, filter.language)[0] : undefined;
+    return authors.length === 1
+      ? this.washAuthorsAttributes(authors, filter.language)[0]
+      : undefined;
   }
 
   /**
@@ -81,12 +97,18 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * @param language locale for authors name (mobility_string_translations.locale) or undefined and default 'en' will be used
    * @returns authors name as e.g. "firstname name" in given locale or "no author entry"
    */
-  async authorName(authorId: number, language: string | undefined): Promise<string> {
-
+  async authorName(
+    authorId: number,
+    language: string | undefined,
+  ): Promise<string> {
     if (!language) {
       language = LANGUAGE_DEFAULT;
     }
-    const [result] = await this.dataSource.execute(this.authorsNameSqlQuery(), [authorId, language, language]);
+    const [result] = await this.dataSource.execute(this.authorsNameSqlQuery(), [
+      authorId,
+      language,
+      language,
+    ]);
 
     if (!result) {
       return NO_AUTHOR_ENTRY;
@@ -104,7 +126,11 @@ export class AuthorsRepository extends DefaultCrudRepository<
       if (author.lastname === null) author.lastname = undefined;
       if (author.description === null) author.description = undefined;
       if (author.link === null) author.link = undefined;
-      author.name = combineAuthorName(author.firstname, author.lastname, language);
+      author.name = combineAuthorName(
+        author.firstname,
+        author.lastname,
+        language,
+      );
     }
     return authors;
   }
@@ -115,7 +141,10 @@ export class AuthorsRepository extends DefaultCrudRepository<
    * @param totalCount
    * @returns PaginAuthors
    */
-  private createPagingAuthors(filter: AuthorsFilter, totalCount: number): PagingAuthors {
+  private createPagingAuthors(
+    filter: AuthorsFilter,
+    totalCount: number,
+  ): PagingAuthors {
     return {
       language: filter.language,
       totalCount: totalCount,
@@ -123,7 +152,7 @@ export class AuthorsRepository extends DefaultCrudRepository<
       size: filter.size,
       ...(filter.lastname && {lastname: filter.lastname}),
       ...(filter.firstname && {firstname: filter.firstname}),
-      ...(filter.description && {description: filter.description})
+      ...(filter.description && {description: filter.description}),
     };
   }
 

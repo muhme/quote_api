@@ -16,7 +16,9 @@ export function checkAndSetLanguage(language: string | undefined): string {
   if (Object.keys(LANGUAGES).includes(language)) {
     return language;
   }
-  throw new HttpErrors.BadRequest(`Parameter 'language' has unknown value '${language}'. You have to choose from ${Object.keys(LANGUAGES).join(", ")}.`);
+  throw new HttpErrors.BadRequest(
+    `Parameter 'language' has unknown value '${language}'. You have to choose from ${Object.keys(LANGUAGES).join(', ')}.`,
+  );
 }
 
 /**
@@ -38,10 +40,14 @@ export function myStringify(obj: Object): string {
  */
 export function validatePageAndSize(page: number, size: number) {
   if (page < 1) {
-    throw new HttpErrors.BadRequest("Parameter 'page' must be greater than or equal to 1.");
+    throw new HttpErrors.BadRequest(
+      "Parameter 'page' must be greater than or equal to 1.",
+    );
   }
   if (size < 1) {
-    throw new HttpErrors.BadRequest("Parameter 'size' must be greater than or equal to 1.");
+    throw new HttpErrors.BadRequest(
+      "Parameter 'size' must be greater than or equal to 1.",
+    );
   }
 }
 
@@ -51,9 +57,14 @@ export function validatePageAndSize(page: number, size: number) {
  * @param param_name parameter variable name
  * Throws 400
  */
-export function validateOnlyLettersAndMaxLength(param: (string | undefined), paramName: string) {
+export function validateOnlyLettersAndMaxLength(
+  param: string | undefined,
+  paramName: string,
+) {
   if (param && param.length > PARAM_MAX_LENGTH) {
-    throw new HttpErrors.BadRequest(`Parameter '${paramName}' has ${param.length} characters, but can have only ${PARAM_MAX_LENGTH}.`);
+    throw new HttpErrors.BadRequest(
+      `Parameter '${paramName}' has ${param.length} characters, but can have only ${PARAM_MAX_LENGTH}.`,
+    );
   }
   /**
    * To prevent typical SQL injection attacks, implementation started with
@@ -76,6 +87,8 @@ export function validateOnlyLettersAndMaxLength(param: (string | undefined), par
   // const regex = /^[0-9.\-_,、 ・*※\p{L}]+$/u;
   // if (param && !regex.test(param)) {
   if (param && param.trimStart().charAt(0) === "'") {
-    throw new HttpErrors.BadRequest(`Parameter '${paramName}' cannot start with an apostrophe.`);
+    throw new HttpErrors.BadRequest(
+      `Parameter '${paramName}' cannot start with an apostrophe.`,
+    );
   }
 }

@@ -21,18 +21,22 @@ export class UsersRepository extends DefaultCrudRepository<
    * @returns
    */
   async findUsersWithQuotations(filter: PagingFilter): Promise<UsersPaged> {
-
-    const params: (string | number)[] = [filter.starting ? filter.starting + '%' : '%%'];
+    const params: (string | number)[] = [
+      filter.starting ? filter.starting + '%' : '%%',
+    ];
 
     // execute count query
-    const totalCountResult = await this.dataSource.execute(this.countSqlQuery(), params);
+    const totalCountResult = await this.dataSource.execute(
+      this.countSqlQuery(),
+      params,
+    );
     // extend params with paging parameters and execute the main query
-    params.push(((filter.page - 1) * filter.size), filter.size);
+    params.push((filter.page - 1) * filter.size, filter.size);
     const users = await this.dataSource.execute(this.mainSqlQuery(), params);
 
     return {
       paging: this.constructPaging(filter, totalCountResult[0].totalCount),
-      users: users
+      users: users,
     };
   }
 
@@ -48,7 +52,9 @@ export class UsersRepository extends DefaultCrudRepository<
       FROM users
       WHERE id = ?;
     `;
-    const [result] = await this.dataSource.execute(sqlQuery, [id]) as {login: string}[];
+    const [result] = (await this.dataSource.execute(sqlQuery, [id])) as {
+      login: string;
+    }[];
 
     if (!result) {
       return NO_USER_ENTRY;
@@ -62,7 +68,7 @@ export class UsersRepository extends DefaultCrudRepository<
       totalCount,
       page: filter.page,
       size: filter.size,
-      ...(filter.starting && {starting: filter.starting})
+      ...(filter.starting && {starting: filter.starting}),
     };
   }
   private mainSqlQuery(): string {

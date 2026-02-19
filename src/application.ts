@@ -1,6 +1,10 @@
 import {BootMixin} from '@loopback/boot';
 import {ApplicationConfig} from '@loopback/core';
-import {LoggingBindings, LoggingComponent, WinstonLoggerOptions} from '@loopback/logging';
+import {
+  LoggingBindings,
+  LoggingComponent,
+  WinstonLoggerOptions,
+} from '@loopback/logging';
 import {RepositoryMixin} from '@loopback/repository';
 import {RestApplication} from '@loopback/rest';
 import {
@@ -66,11 +70,10 @@ export class QuoteApiApplication extends BootMixin(
    * Configure Winston logging into file 'development.log'.
    */
   private configureLogging(): void {
-
     // configure the main logging component (must be called before this.component() to take effect)
     this.configure(LoggingBindings.COMPONENT).to({
       enableFluent: false,
-      enableHttpAccessLog: true
+      enableHttpAccessLog: true,
     });
 
     /**
@@ -84,19 +87,21 @@ export class QuoteApiApplication extends BootMixin(
      *   DEBUG   5: Used for debugging purposes.
      *   SILLY   6: The most detailed or stupid log level.
      */
-    const customFormatter = winston.format.printf(({timestamp, level, message}) => {
-      // Extract day, month, year, hours, minutes, seconds, and milliseconds from timestamp
-      const date = new Date(timestamp as string);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = String(date.getFullYear()).slice(2); // get last two digits of year
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
+    const customFormatter = winston.format.printf(
+      ({timestamp, level, message}) => {
+        // Extract day, month, year, hours, minutes, seconds, and milliseconds from timestamp
+        const date = new Date(timestamp as string);
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = String(date.getFullYear()).slice(2); // get last two digits of year
+        const hours = String(date.getHours()).padStart(2, '0');
+        const minutes = String(date.getMinutes()).padStart(2, '0');
+        const seconds = String(date.getSeconds()).padStart(2, '0');
+        const milliseconds = String(date.getMilliseconds()).padStart(3, '0');
 
-      return `${year}${month}${day} ${hours}:${minutes}:${seconds}.${milliseconds} ${level.padStart(8).toUpperCase()} ${message}`;
-    });
+        return `${year}${month}${day} ${hours}:${minutes}:${seconds}.${milliseconds} ${level.padStart(8).toUpperCase()} ${message}`;
+      },
+    );
 
     // configure Winston logger
     this.configure<WinstonLoggerOptions>(LoggingBindings.WINSTON_LOGGER).to({
@@ -109,20 +114,20 @@ export class QuoteApiApplication extends BootMixin(
       defaultMeta: {Application: 'quote_api'},
       transports: [
         new winston.transports.File({
-          filename: process.env.NODE_ENV === 'production' ?
-            'production.log' :
-            'development.log',
+          filename:
+            process.env.NODE_ENV === 'production'
+              ? 'production.log'
+              : 'development.log',
           format: winston.format.combine(
             winston.format.timestamp(),
-            customFormatter
+            customFormatter,
           ),
-          level: process.env.NODE_ENV === 'production' ? 'info' : 'debug'
-        })
-      ]
+          level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+        }),
+      ],
     });
 
     // add logging component
     this.component(LoggingComponent);
-
   }
 }

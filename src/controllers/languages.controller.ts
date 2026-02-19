@@ -4,14 +4,15 @@ import {LANGUAGES} from '../common';
 
 const RESPONSES = {
   '200': {
-    description: 'OK – available languages were successfully retrieved and returned as an array of two-letter ISO 639-1 language codes.',
+    description:
+      'OK – available languages were successfully retrieved and returned as an array of two-letter ISO 639-1 language codes.',
     content: {
       'application/json': {
         schema: {
           type: 'array',
           items: {
             type: 'string',
-            description: 'two-letter ISO 639-1 language code'
+            description: 'two-letter ISO 639-1 language code',
           },
         },
         example: Object.keys(LANGUAGES),
@@ -25,17 +26,19 @@ const RESPONSES = {
         example: {
           error: {
             statusCode: 500,
-            message: "Internal Server Error"
-          }
-        }
+            message: 'Internal Server Error',
+          },
+        },
       },
       'text/html': {
-        example: '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>'
-      }
+        example:
+          '<html> ... <h2><em>500</em> Internal Server Error</h2> ... </html>',
+      },
     },
   },
   '503': {
-    description: 'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
+    description:
+      'Service Unavailable (e.g. Node.js does not run behind the Apache web server).',
   },
 };
 
@@ -46,7 +49,7 @@ const RESPONSES = {
   paths: {},
 })
 export class LanguagesController {
-  constructor() { }
+  constructor() {}
   // http access is logged by global interceptor
   @get('/v1/languages', {
     tags: ['Languages'],

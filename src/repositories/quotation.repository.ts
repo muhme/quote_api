@@ -9,7 +9,7 @@ export class QuotationRepository extends DefaultCrudRepository<
   typeof Quotation.prototype.id
 > {
   constructor(
-    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource
+    @inject('datasources.MariaDB_DataSource') dataSource: MariaDbDataSource,
   ) {
     super(Quotation, dataSource);
   }
@@ -23,7 +23,7 @@ export class QuotationRepository extends DefaultCrudRepository<
     const params: (string | number)[] = [];
     // only join for categories if needed as this is DB expensive
     const categoriesQuotationsTable =
-      (filter.categoryId === undefined) ? "" : ", categories_quotations cq";
+      filter.categoryId === undefined ? '' : ', categories_quotations cq';
     let sqlQuery = `
       SELECT q.id, q.quotation, q.source, q.source_link as sourceLink, q.author_id as authorId, q.locale as language
       FROM quotations q ${categoriesQuotationsTable}

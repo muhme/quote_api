@@ -23,7 +23,6 @@ describe('UsersController (integration)', () => {
     // You can use the real datasources and repositories here, or use test versions
     userRepository = await app.getRepository(UsersRepository);
     controller = new UsersController(userRepository);
-
   });
 
   after(async () => {
@@ -51,31 +50,42 @@ describe('UsersController (integration)', () => {
   });
   it('retrieves list of users with size', async () => {
     const result = await controller.getUsers(undefined, 3);
-    expect(mapToPlainObjectArray(result.users)).to.eql(fixtures.users.slice(0, 3));
+    expect(mapToPlainObjectArray(result.users)).to.eql(
+      fixtures.users.slice(0, 3),
+    );
   });
   it('retrieves list of users with starting page and size', async () => {
     const result = await controller.getUsers(2, 10);
-    expect(mapToPlainObjectArray(result.users)).to.eql(fixtures.users.slice(10, 20));
+    expect(mapToPlainObjectArray(result.users)).to.eql(
+      fixtures.users.slice(10, 20),
+    );
   });
   it('retrieves list of users with starting letter H', async () => {
-    const result = await controller.getUsers(undefined, undefined, "H");
-    expect(mapToPlainObjectArray(result.users)).to.eql(fixtures.users.filter(user => user.login[0].toLowerCase() === 'h'));
+    const result = await controller.getUsers(undefined, undefined, 'H');
+    expect(mapToPlainObjectArray(result.users)).to.eql(
+      fixtures.users.filter(user => user.login[0].toLowerCase() === 'h'),
+    );
   });
   it('retrieves list of users with starting letters HE', async () => {
-    const result = await controller.getUsers(undefined, undefined, "HE");
-    expect(mapToPlainObjectArray(result.users)).to.eql(fixtures.users.filter(user => user.login.substring(0, 2).toLowerCase() === 'he'));
+    const result = await controller.getUsers(undefined, undefined, 'HE');
+    expect(mapToPlainObjectArray(result.users)).to.eql(
+      fixtures.users.filter(
+        user => user.login.substring(0, 2).toLowerCase() === 'he',
+      ),
+    );
   });
   it('retrieves list of users with starting letters Heiko', async () => {
-    const result = await controller.getUsers(1, 100, "Heiko");
-    expect(mapToPlainObjectArray(result.users)).to.eql(fixtures.users.filter(user => user.login.toLowerCase() === 'heiko'));
+    const result = await controller.getUsers(1, 100, 'Heiko');
+    expect(mapToPlainObjectArray(result.users)).to.eql(
+      fixtures.users.filter(user => user.login.toLowerCase() === 'heiko'),
+    );
   });
   it('returns an empty result with starting letters cheesecake', async () => {
     try {
-      await controller.getUsers(undefined, undefined, "cheesecake");
+      await controller.getUsers(undefined, undefined, 'cheesecake');
       throw new Error('Expected the function to throw 404 but it did not');
     } catch (err) {
       expect(err).to.have.property('statusCode', 404);
     }
   });
-
 });

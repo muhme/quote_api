@@ -29,7 +29,6 @@ export class MyWinstonLoggerProvider {
   // ...other logger methods (e.g., error, warn, etc.)
 }
 
-
 // 2. Variante
 // import {Provider, inject} from '@loopback/core';
 // import {LoggingBindings, WinstonLogger} from '@loopback/logging';
@@ -44,7 +43,6 @@ export class MyWinstonLoggerProvider {
 //     return this.winstonLogger;
 //   }
 // }
-
 
 // 1. Variante
 // import {Provider} from '@loopback/core';

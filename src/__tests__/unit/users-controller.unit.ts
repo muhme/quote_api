@@ -10,35 +10,34 @@ describe('UsersController', () => {
 
   beforeEach(givenStubbedRepository);
 
-  const mockUsers: UsersPaged =
-  {
-    "paging": {
-      "totalCount": 5,
-      "page": 1,
-      "size": 100
+  const mockUsers: UsersPaged = {
+    paging: {
+      totalCount: 5,
+      page: 1,
+      size: 100,
     },
-    "users": [
+    users: [
       new User({
         id: 1,
-        login: 'alice'
+        login: 'alice',
       }),
       new User({
         id: 2,
-        login: 'bob'
+        login: 'bob',
       }),
       new User({
         id: 3,
-        login: 'charlie'
+        login: 'charlie',
       }),
       new User({
         id: 4,
-        login: 'david'
+        login: 'david',
       }),
       new User({
         id: 5,
-        login: 'eve'
-      })
-    ]
+        login: 'eve',
+      }),
+    ],
   };
 
   it('retrieves users without any parameters', async () => {
@@ -64,6 +63,8 @@ describe('UsersController', () => {
 
   function givenStubbedRepository() {
     usersRepositoryStub = sinon.createStubInstance(UsersRepository);
-    controller = new UsersController(usersRepositoryStub as unknown as UsersRepository);
+    controller = new UsersController(
+      usersRepositoryStub as unknown as UsersRepository,
+    );
   }
 });

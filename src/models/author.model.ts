@@ -18,29 +18,28 @@ export class Author extends Entity {
 
   // this is the name field in DB
   @property({
-    type: 'string'
+    type: 'string',
   })
   lastname?: string;
 
   @property({
-    type: 'string'
+    type: 'string',
   })
   firstname?: string;
 
   @property({
-    type: 'string'
+    type: 'string',
   })
   description?: string;
 
   @property({
-    type: 'string'
+    type: 'string',
   })
   link?: string;
 
   constructor(data?: Partial<Author>) {
     super(data);
   }
-
 }
 
 /**
@@ -53,11 +52,15 @@ export class Author extends Entity {
  *   "Abraham Lincoln" for "en"
  *   "リンカーン・エイブラハム" for "ja"
  */
-export function combineAuthorName(firstname: string | undefined, lastname: string | undefined, language: string): string {
-  firstname = firstname ?? "";
-  lastname = lastname ?? "";
+export function combineAuthorName(
+  firstname: string | undefined,
+  lastname: string | undefined,
+  language: string,
+): string {
+  firstname = firstname ?? '';
+  lastname = lastname ?? '';
   let name;
-  if (language === "ja") {
+  if (language === 'ja') {
     if (lastname && firstname) {
       name = `${lastname}・${firstname}`;
     } else {
