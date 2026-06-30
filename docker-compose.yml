@@ -17,7 +17,7 @@ services:
 
   mysqladmin:
     container_name: quote_api_mysqladmin
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin:latest
     environment:
       PMA_HOST: mariadb
       PMA_USER: root
